@@ -8,6 +8,8 @@ import dev.wyck.level.LevelCreator;
 import dev.wyck.level.LevelType;
 import dev.wyck.level.entity.LevelSpawner;
 import dev.wyck.util.internal.InternalReflectUtil;
+import dev.wyck.worldgen.chunk.ChunkGenerator;
+import dev.wyck.worldgen.chunk.CraftBukkitChunkGenerator;
 import dev.wyck.worldgen.chunk.CraftBukkitChunkGeneratorImpl;
 import io.papermc.paper.FeatureHooks;
 import io.papermc.paper.world.PaperWorldLoader;
@@ -75,7 +77,7 @@ public final class SimpleLevelFactory implements LevelFactory {
         WorldOptions worldOptions = new WorldOptions(world.seed(), world.generateStructures(), world.bonusChest());
 
         WorldDimensions baseDimensions = presetDimensions(context, world.type());
-        WorldDimensions worldDimensions = withStem(baseDimensions, stemKey, stem);
+        WorldDimensions worldDimensions = withStem(baseDimensions, stemKey, persistableStem(stem, world.levelStem().generator()));
 
         Registry<LevelStem> stemRegistry = context.datapackDimensions().lookupOrThrow(Registries.LEVEL_STEM);
         WorldDimensions.Complete complete = worldDimensions.bake(stemRegistry); // TODO
@@ -127,6 +129,13 @@ public final class SimpleLevelFactory implements LevelFactory {
         minecraftServer.prepareLevel(serverLevel);
 
         return serverLevel.getWorld();
+    }
+
+    private static LevelStem persistableStem(LevelStem stem, ChunkGenerator generator) {
+        if (generator instanceof CraftBukkitChunkGenerator craftBukkit) {
+            return new LevelStem(stem.type(), craftBukkit.delegate().asHandle());
+        }
+        return stem;
     }
 
     // TODO: just wrap WorldPreset
