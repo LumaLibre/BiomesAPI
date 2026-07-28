@@ -24,6 +24,12 @@ data class ModulePublication(
 val modulePublications = listOf(
     ModulePublication("wyckApi", "wyck-api", ":api"),
     ModulePublication("wyckCommons", "wyck-commons", ":commons", listOf("wyck-api")),
+    ModulePublication(
+        "wyckDecoders",
+        "wyck-decoders",
+        ":decoders",
+        listOf("wyck-api", "wyck-commons"),
+    ),
 ) + minecraftProjects.map { name ->
     ModulePublication(
         "wyckMinecraft${name.replaceFirstChar(Char::uppercaseChar)}",
