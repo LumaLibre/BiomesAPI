@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.paperweight.userdev)
 }
 
+// TODO: flags for quickly skipping decoder tests
+
 group = "dev.wyck.tests"
 
 dependencies {
