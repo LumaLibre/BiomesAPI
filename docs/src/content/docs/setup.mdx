@@ -44,7 +44,7 @@ public class ExampleLoader implements PluginLoader {
     @Override
     public void classloader(PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
-        resolver.addDependency(new Dependency(new DefaultArtifact("dev.wyck:Wyck:${latestRelease}"), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("dev.wyck:wyck:${latestRelease}"), null));
         resolver.addRepository(new RemoteRepository.Builder("wyck", "default", "https://repo.wyck.dev/public/").build());
         classpathBuilder.addLibrary(resolver);
     }
@@ -64,7 +64,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.wyck:Wyck:${latestRelease}")
+    implementation("dev.wyck:wyck:${latestRelease}")
 }
 
 tasks {
@@ -93,7 +93,7 @@ tasks {
 }
 
 dependencies {
-    compileOnly("dev.wyck:Wyck:${latestRelease}")
+    compileOnly("dev.wyck:wyck:${latestRelease}")
 }`,
         },
     ]}
@@ -143,6 +143,10 @@ dependencies:
 />
 
 Wyck external dependency plugin can be found on our GitHub releases or [Modrinth](https://modrinth.com/plugin/biomesapi).
+
+### Modules
+
+Want to reduce the size of your final `jar`? See our docs about our [modules](/misc/modules/)!
 
 ## Leave a Star, Please!
 

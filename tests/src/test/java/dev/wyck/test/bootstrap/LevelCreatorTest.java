@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 // not live
 @Disabled
+@SuppressWarnings("removal")
 @ExtendWith(MinecraftBootstrap.class)
 class LevelCreatorTest {
 

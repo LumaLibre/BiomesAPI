@@ -1,0 +1,77 @@
+---
+title: Decoders
+description: Read Minecraft registry values back into Wyck objects.
+---
+
+import CodeBlock from "@/components/CodeBlock.astro";
+import SourceLink from "@/components/SourceLink.astro";
+
+Wyck <SourceLink path="wrapper/decode/Decoder.java">Decoder</SourceLink>s convert Minecraft objects into their corresponding Wyck interfaces. They're included
+in the full `wyck` artifact. Modular projects must add `wyck-decoders` alongside their existing dependencies — see [modules](/misc/modules/).
+
+## Resolving References with `wrap()`
+
+Registry-backed interfaces expose `wrap()`. It looks up the reference's key in Minecraft's registry
+and returns the fully decoded Wyck object.
+
+<CodeBlock
+    lang="java"
+    filename="Examples.java"
+    code={
+`import dev.wyck.biome.Biome;
+import dev.wyck.keys.ResourceKey;
+import dev.wyck.level.dimension.Dimension;
+import dev.wyck.worldgen.function.DensityFunction;
+
+Biome plains = Biome.reference(ResourceKey.minecraft("plains")).wrap();
+Dimension overworld = Dimension.reference(ResourceKey.minecraft("overworld")).wrap();
+DensityFunction continents = DensityFunction
+    .reference(ResourceKey.minecraft("overworld/continents"))
+    .wrap();`
+    }
+/>
+
+`wrap()` is available on select interfaces that use the `reference(ResourceKey)` accessor.
+
+### Example Usage
+
+<CodeBlock
+    lang="java"
+    filename="ExamplePlugin.java"
+    code={
+`import dev.wyck.biome.Biomes;
+import dev.wyck.environment.attribute.EnvironmentAttributes;
+import dev.wyck.keys.ResourceKey;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public final class ExamplePlugin extends JavaPlugin {
+    @Override
+    public void onEnable() {
+        Biomes.PLAINS // Or: Biome.reference(ResourceKey.of("minecraft:plains"))
+            .wrap() // Wrap this reference into a new Wyck wrapper.
+            .toBuilder() // Convert it into a builder so we can modify it.
+            // Make our changes
+            .resourceKey(ResourceKey.of("wyck:custom_plains"))
+            .attribute(EnvironmentAttributes.FOG_COLOR, "#FF0000")
+            .register(); // Register my new biome that's based on vanilla's 'plains'.
+    }
+}`}
+/>
+
+## Decoding a Minecraft Object Directly
+
+If you already have a Minecraft object or holder, pass it to the interface's static `decode` method:
+
+<CodeBlock
+    lang="java"
+    filename="Examples.java"
+    code={
+`import dev.wyck.environment.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+
+SoundEvent cave = SoundEvent.decode(SoundEvents.AMBIENT_CAVE);`
+    }
+/>
+
+Prefer `wrap()` when starting from a registry key. Use `decode(...)` when you're compiling against `net.minecraft.*` and you already have
+the Minecraft value or object.

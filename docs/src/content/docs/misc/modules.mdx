@@ -1,0 +1,24 @@
+---
+title: Wyck Modules
+description: Only including what you need from Wyck for your project.
+---
+
+import {getLatestRelease} from "@/utils/versions.ts";
+
+export const latestSnapshot = await getLatestRelease();
+
+Wyck includes a few publications allowing you to pick and choose what modules you need from Wyck and leaving out
+any unnecessary bloat. For example, if you have a plugin that only targets **Minecraft 26.2** and doesn't require Wyck's
+`decoders` then you could include `wyck-api`, `wyck-commons`, and `wyck-26.2` in your project and leave out the other modules.
+
+
+| Artifact                                                        | Contents                                                   |
+|-----------------------------------------------------------------|------------------------------------------------------------|
+| <code>dev.wyck:wyck:{latestSnapshot}</code>                     | Includes everything                                        |
+| <code>dev.wyck:wyck-api:{latestSnapshot}</code>                 | Public API                                                 |
+| <code>dev.wyck:wyck-commons:{latestSnapshot}</code>             | Common implementation; brings in `wyck-api`                |
+| <code>dev.wyck:wyck-decoders:{latestSnapshot}</code>            | Optional decoders; brings in `wyck-api` and `wyck-commons` |
+| <code>dev.wyck:wyck-26.2:{latestSnapshot}</code>                | Minecraft 26.2 adapter; brings in `wyck-commons`           |
+| <code>dev.wyck:wyck-26.1.2:{latestSnapshot}</code>              | Minecraft 26.1.2 adapter; brings in `wyck-commons`         |
+| <code>dev.wyck:wyck-1.21.11:{latestSnapshot}</code>             | Minecraft 1.21.11 adapter; brings in `wyck-commons`        |
+| <code>dev.wyck:wyck-vanilla:{latestSnapshot}</code>             | Shaded API, commons, and every Minecraft adapter           |

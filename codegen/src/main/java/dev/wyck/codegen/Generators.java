@@ -475,20 +475,6 @@ public final class Generators {
         );
     }
 
-    private static GeneratorSpec levelTypes() {
-        return new EnumSpec(
-            "dev.wyck.level",
-            "LevelType",
-            WorldPresets.class,
-            Generators::serializedName,
-            List.of(
-                "The level types that vanilla registers for world generation presets."
-            ),
-            "3.2.0"
-        );
-    }
-
-
     private static @Nullable Identifier fluidLocation(Object entry) {
         if (entry instanceof Fluid fluid) {
             return BuiltInRegistries.FLUID.getKey(fluid);
