@@ -38,9 +38,9 @@ val modulePublications = listOf(
         listOf("wyck-commons"),
     )
 }
-val wyckBasicProjects = listOf(":api", ":commons") + minecraftProjects.map { "${minecraft}:${it}" }
+val wyckVanillaProjects = listOf(":api", ":commons") + minecraftProjects.map { "${minecraft}:${it}" }
 
-val wyckBasic by configurations.creating {
+val wyckVanilla by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
@@ -56,8 +56,8 @@ dependencies {
         api(project(path = "${minecraft}:${project}"))
     }
 
-    wyckBasicProjects.forEach { path ->
-        add(wyckBasic.name, project(path))
+    wyckVanillaProjects.forEach { path ->
+        add(wyckVanilla.name, project(path))
     }
 }
 
@@ -91,17 +91,17 @@ val moduleSourcesJars = modulePublications.associate { publication ->
     }
 }
 
-val wyckBasicSourcesJar by tasks.registering(Jar::class) {
+val wyckVanillaSourcesJar by tasks.registering(Jar::class) {
     archiveBaseName.set("wyck-basic")
     archiveClassifier.set("sources")
-    wyckBasicProjects.forEach { path ->
+    wyckVanillaProjects.forEach { path ->
         val sourceProject = project(path)
         val main = sourceProject.extensions
             .getByType<SourceSetContainer>()
             .getByName("main")
         from(main.allSource)
     }
-    dependsOn(wyckBasicProjects.map { project(it).tasks.named("classes") })
+    dependsOn(wyckVanillaProjects.map { project(it).tasks.named("classes") })
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -131,13 +131,13 @@ tasks.shadowJar {
     }
 }
 
-val wyckBasicJar by tasks.registering(ShadowJar::class) {
-    archiveBaseName.set("wyck-basic")
+val wyckVanillaJar by tasks.registering(ShadowJar::class) {
+    archiveBaseName.set("wyck-vanilla")
     archiveClassifier.set("")
-    configurations = listOf(wyckBasic)
+    configurations = listOf(wyckVanilla)
     exclude("com/google/**")
     minimize {
-        wyckBasicProjects.forEach { path ->
+        wyckVanillaProjects.forEach { path ->
             exclude(project(path))
         }
         exclude("META-INF/**")
@@ -145,7 +145,7 @@ val wyckBasicJar by tasks.registering(ShadowJar::class) {
 }
 
 tasks.build {
-    dependsOn(wyckBasicJar, wyckBasicSourcesJar, moduleSourcesJars.values)
+    dependsOn(wyckVanillaJar, wyckVanillaSourcesJar, moduleSourcesJars.values)
 }
 
 publishing {
@@ -224,11 +224,11 @@ publishing {
             artifactId = "wyck-vanilla"
             version = project.version.toString()
 
-            artifact(wyckBasicJar.get().archiveFile) {
-                builtBy(wyckBasicJar)
+            artifact(wyckVanillaJar.get().archiveFile) {
+                builtBy(wyckVanillaJar)
             }
 
-            artifact(wyckBasicSourcesJar.get())
+            artifact(wyckVanillaSourcesJar.get())
         }
     }
 }
