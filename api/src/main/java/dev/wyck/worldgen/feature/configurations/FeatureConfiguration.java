@@ -433,6 +433,26 @@ public interface FeatureConfiguration extends Wrapper {
     }
 
     /**
+     * Creates a builder for a {@link HugeFungusConfiguration}.
+     * @return a new huge fungus configuration builder
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static HugeFungusConfiguration.Builder hugeFungus() {
+        return HugeFungusConfiguration.builder();
+    }
+
+    /**
+     * Creates a builder for a {@link FossilFeatureConfiguration}.
+     * @return a new fossil feature configuration builder
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static FossilFeatureConfiguration.Builder fossil() {
+        return FossilFeatureConfiguration.builder();
+    }
+
+    /**
      * Reads the configuration owned by a Minecraft configured feature.
      * @param minecraftConfiguredFeature the Minecraft configured feature carrying the configuration
      * @return the wrapper for the configuration
