@@ -144,6 +144,9 @@ public interface ParticleOptionsFactory {
     @AsOf("3.0.0")
     ParticleOptions geyserBase(ParticleType type, int waterBlocks, float burstImpulseBase);
 
+    @AsOf("3.3.0")
+    ParticleOptions shriek(int delay); // intnl so no javadocs, TODO: remove javadocs from the rest of the class
+
     /**
      * Retrieves a particle type handle by its key.
      * @param key The key of the particle type.

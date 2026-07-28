@@ -10,6 +10,7 @@ import dev.wyck.environment.particle.options.GeyserParticle;
 import dev.wyck.environment.particle.options.ItemParticle;
 import dev.wyck.environment.particle.options.PowerParticle;
 import dev.wyck.environment.particle.options.SculkChargeParticle;
+import dev.wyck.environment.particle.options.ShriekParticle;
 import dev.wyck.environment.particle.options.SpellParticle;
 import dev.wyck.environment.particle.options.TrailParticle;
 import dev.wyck.environment.particle.options.VibrationParticle;
@@ -150,7 +151,7 @@ public enum ParticleTypes implements WrappedConstant<ParticleTypes> {
     WAX_OFF("wax_off"),
     ELECTRIC_SPARK("electric_spark"),
     SCRAPE("scrape"),
-    SHRIEK("shriek"),
+    SHRIEK("shriek", ShriekParticle.class),
     EGG_CRACK("egg_crack"),
     DUST_PLUME("dust_plume"),
     TRIAL_SPAWNER_DETECTED_PLAYER("trial_spawner_detection"),

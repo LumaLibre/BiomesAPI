@@ -13,6 +13,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.core.particles.SculkChargeParticleOptions;
+import net.minecraft.core.particles.ShriekParticleOption;
 import net.minecraft.core.particles.SpellParticleOption;
 import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.core.particles.VibrationParticleOption;
@@ -113,6 +114,11 @@ public final class ParticleOptionsFactoryImpl implements ParticleOptionsFactory 
     @Override
     public ParticleOptions geyserBase(ParticleType type, int waterBlocks, float burstImpulseBase) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ParticleOptions shriek(int delay) {
+        return new ParticleOptionsImpl(new ShriekParticleOption(delay));
     }
 
     @Override
