@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,8 +19,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface ConstantSimpleFunction extends SimpleFunction, Registerable<ConstantSimpleFunction> {
-    @ApiStatus.Internal
-    ConstructWireProvider<ConstantSimpleFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.simple.ConstantSimpleFunctionImpl");
 
     /**
      * The constant value.
@@ -40,7 +37,10 @@ public interface ConstantSimpleFunction extends SimpleFunction, Registerable<Con
      */
     @AsOf("3.0.0")
     static ConstantSimpleFunction of(@Nullable ResourceKey resourceKey, double value) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), value);
+        record Holder() {
+            static final ConstructWireProvider<ConstantSimpleFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.simple.ConstantSimpleFunctionImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), value);
     }
 
     /**

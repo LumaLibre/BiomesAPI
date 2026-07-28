@@ -9,7 +9,6 @@ import dev.wyck.wrapper.Registerable;
 import dev.wyck.wrapper.Wrapper;
 import dev.wyck.wrapper.decode.Decoder;
 import net.kyori.adventure.key.Keyed;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -25,12 +24,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.3.0")
 public interface LevelStem extends Wrapper, Keyed, Registerable<LevelStem> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<LevelStem> WIRE = ConstructWireProvider.create("dev.wyck.level.dimension.LevelStemImpl");
-
-    @ApiStatus.Internal
-    Decoder<LevelStem> DECODER = Decoder.create("dev.wyck.decode.dimension.LevelStemDecoder");
 
     /**
      * Gets the resource key of this level stem, if it set.
@@ -96,7 +89,10 @@ public interface LevelStem extends Wrapper, Keyed, Registerable<LevelStem> {
      */
     @AsOf("3.3.0")
     static LevelStem of(@Nullable ResourceKey resourceKey, Dimension dimension, ChunkGenerator chunkGenerator) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), dimension, chunkGenerator);
+        record Holder() {
+            static final ConstructWireProvider<LevelStem> WIRE = ConstructWireProvider.create("dev.wyck.level.dimension.LevelStemImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), dimension, chunkGenerator);
     }
 
     /**
@@ -119,7 +115,10 @@ public interface LevelStem extends Wrapper, Keyed, Registerable<LevelStem> {
      */
     @AsOf("3.3.0")
     static LevelStem decode(Object minecraftStem) {
-        return DECODER.decode(minecraftStem);
+        record Holder() {
+            static final Decoder<LevelStem> DECODER = Decoder.create("dev.wyck.decode.dimension.LevelStemDecoder");
+        }
+        return Holder.DECODER.decode(minecraftStem);
     }
 
     /**

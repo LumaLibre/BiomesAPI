@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.feature.configurations.end.EndSpike;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +23,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface EndSpikeConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<EndSpikeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.EndSpikeConfigurationImpl");
 
     /**
      * Whether the End crystals on top of the spikes are invulnerable.
@@ -72,7 +68,10 @@ public interface EndSpikeConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static EndSpikeConfiguration of(boolean crystalInvulnerable, List<EndSpike> spikes, @Nullable BlockVector crystalBeamTarget) {
-        return WIRE.construct(crystalInvulnerable, spikes, crystalBeamTarget);
+        record Holder() {
+            static final ConstructWireProvider<EndSpikeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.EndSpikeConfigurationImpl");
+        }
+        return Holder.WIRE.construct(crystalInvulnerable, spikes, crystalBeamTarget);
     }
 
     /**

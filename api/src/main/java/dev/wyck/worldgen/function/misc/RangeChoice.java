@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +23,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface RangeChoice extends DensityFunction, Registerable<RangeChoice> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RangeChoice> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.RangeChoiceImpl");
 
     /**
      * The value to compare against the range.
@@ -91,7 +87,10 @@ public interface RangeChoice extends DensityFunction, Registerable<RangeChoice> 
      */
     @AsOf("3.0.0")
     static RangeChoice of(@Nullable ResourceKey resourceKey, DensityFunction input, double minInclusive, double maxExclusive, DensityFunction whenInRange, DensityFunction whenOutOfRange) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), input, minInclusive, maxExclusive, whenInRange, whenOutOfRange);
+        record Holder() {
+            static final ConstructWireProvider<RangeChoice> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.RangeChoiceImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), input, minInclusive, maxExclusive, whenInRange, whenOutOfRange);
     }
 
     /**

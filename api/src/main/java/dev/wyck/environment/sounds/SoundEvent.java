@@ -8,7 +8,6 @@ import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Keyed;
 import org.bukkit.Sound;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -23,12 +22,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("2.4.1")
 public interface SoundEvent extends Wrapper, Keyed {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SoundEvent> WIRE = WireProvider.construct("dev.wyck.environment.sounds.SoundEventImpl");
-
-    @ApiStatus.Internal
-    Decoder<SoundEvent> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.SoundEventDecoder");
 
     /**
      * Gets the location of the sound event.
@@ -54,7 +47,7 @@ public interface SoundEvent extends Wrapper, Keyed {
      */
     @AsOf("2.4.1")
     static SoundEvent variableRange(ResourceKey location) {
-        return WIRE.construct(location, Optional.empty());
+        return create(location, Optional.empty());
     }
 
     /**
@@ -66,7 +59,7 @@ public interface SoundEvent extends Wrapper, Keyed {
      */
     @AsOf("2.4.1")
     static SoundEvent fixedRange(ResourceKey location, float range) {
-        return WIRE.construct(location, Optional.of(range));
+        return create(location, Optional.of(range));
     }
 
     /**
@@ -115,6 +108,14 @@ public interface SoundEvent extends Wrapper, Keyed {
         return BukkitSoundEvent.fixedRange(sound, range);
     }
 
+    private static SoundEvent create(ResourceKey location, Optional<Float> range) {
+        record Holder() {
+            static final ConstructWireProvider<SoundEvent> WIRE =
+                WireProvider.construct("dev.wyck.environment.sounds.SoundEventImpl");
+        }
+        return Holder.WIRE.construct(location, range);
+    }
+
     /**
      * Reads a Minecraft sound event, or a holder of one, into a wrapper.
      * @param minecraftSoundEvent the sound event to read
@@ -123,6 +124,9 @@ public interface SoundEvent extends Wrapper, Keyed {
      */
     @AsOf("3.3.0")
     static SoundEvent decode(Object minecraftSoundEvent) {
-        return DECODER.decode(minecraftSoundEvent);
+        record Holder() {
+            static final Decoder<SoundEvent> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.SoundEventDecoder");
+        }
+        return Holder.DECODER.decode(minecraftSoundEvent);
     }
 }

@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.Material;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -22,9 +21,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface MatchingBlocksPredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MatchingBlocksPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.MatchingBlocksPredicateImpl");
 
     /**
      * The offset from the block to check.
@@ -61,7 +57,10 @@ public interface MatchingBlocksPredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static MatchingBlocksPredicate of(BlockVector offset, List<Material> blocks) {
-        return WIRE.construct(offset, blocks);
+        record Holder() {
+            static final ConstructWireProvider<MatchingBlocksPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.MatchingBlocksPredicateImpl");
+        }
+        return Holder.WIRE.construct(offset, blocks);
     }
 
     /**
@@ -72,7 +71,7 @@ public interface MatchingBlocksPredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static MatchingBlocksPredicate of(List<Material> blocks) {
-        return WIRE.construct(new BlockVector(0, 0, 0), blocks);
+        return of(new BlockVector(0, 0, 0), blocks);
     }
 
     /**

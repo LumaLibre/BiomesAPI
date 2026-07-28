@@ -19,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @ApiStatus.Internal
 public interface BiasedToBottomInt extends IntProvider {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<BiasedToBottomInt> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.BiasedToBottomIntImpl");
-
     /**
      * Creates a new builder from this provider.
      * @return a new builder
@@ -41,7 +38,10 @@ public interface BiasedToBottomInt extends IntProvider {
      */
     @AsOf("3.0.0")
     static BiasedToBottomInt of(int min, int max) {
-        return WIRE.construct(min, max);
+        record Holder() {
+            static final ConstructWireProvider<BiasedToBottomInt> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.BiasedToBottomIntImpl");
+        }
+        return Holder.WIRE.construct(min, max);
     }
 
     /**

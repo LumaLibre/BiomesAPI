@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,12 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("1.1.0")
 public interface AmbientParticle extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AmbientParticle> WIRE = ConstructWireProvider.construct("dev.wyck.environment.particle.AmbientParticleImpl");
-
-    @ApiStatus.Internal
-    Decoder<AmbientParticle> DECODER = Decoder.create("dev.wyck.decode.environment.particle.AmbientParticleDecoders");
 
     /**
      * Gets the particle type.
@@ -60,7 +53,7 @@ public interface AmbientParticle extends Wrapper {
     default ParticleOptions particleOptions() {
         ParticleType particleType = this.type().particleType();
         if (this.type().isSimple()) {
-            return ParticleOptionsFactory.WIRE.get().simple(particleType);
+            return ParticleOptionsFactory.instance().simple(particleType);
         }
 
         ParticleData particleData = this.particleData();
@@ -88,7 +81,11 @@ public interface AmbientParticle extends Wrapper {
      */
     @AsOf("3.0.0")
     static AmbientParticle of(ParticleTypes ambientParticle, float probability, @Nullable ParticleData particleData) {
-        return WIRE.construct(ambientParticle, probability, particleData);
+        record Holder() {
+            static final ConstructWireProvider<AmbientParticle> WIRE =
+                ConstructWireProvider.construct("dev.wyck.environment.particle.AmbientParticleImpl");
+        }
+        return Holder.WIRE.construct(ambientParticle, probability, particleData);
     }
 
     /**
@@ -100,7 +97,7 @@ public interface AmbientParticle extends Wrapper {
      */
     @AsOf("3.0.0")
     static AmbientParticle of(ParticleTypes ambientParticle, float probability) {
-        return WIRE.construct(ambientParticle, probability);
+        return of(ambientParticle, probability, null);
     }
 
     /**
@@ -121,7 +118,10 @@ public interface AmbientParticle extends Wrapper {
      */
     @AsOf("3.3.0")
     static AmbientParticle decode(Object minecraftAmbientParticle) {
-        return DECODER.decode(minecraftAmbientParticle);
+        record Holder() {
+            static final Decoder<AmbientParticle> DECODER = Decoder.create("dev.wyck.decode.environment.particle.AmbientParticleDecoders");
+        }
+        return Holder.DECODER.decode(minecraftAmbientParticle);
     }
 
     /**

@@ -7,7 +7,6 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.feature.ConfiguredFeature;
 import dev.wyck.worldgen.feature.custom.CustomFeature;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -26,9 +25,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface CustomComposedConfiguredFeature<C> extends ConfiguredFeature, Registerable<CustomComposedConfiguredFeature<C>> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CustomComposedConfiguredFeature<?>> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.types.CustomComposedConfiguredFeatureImpl");
 
     /**
      * The custom feature this configured feature composes.
@@ -68,7 +64,10 @@ public interface CustomComposedConfiguredFeature<C> extends ConfiguredFeature, R
     @AsOf("3.0.0")
     @SuppressWarnings("unchecked")
     static <C> CustomComposedConfiguredFeature<C> of(@Nullable ResourceKey resourceKey, CustomFeature<C> feature, C config) {
-        return (CustomComposedConfiguredFeature<C>) WIRE.construct(Optional.ofNullable(resourceKey), feature, config);
+        record Holder() {
+            static final ConstructWireProvider<CustomComposedConfiguredFeature<?>> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.types.CustomComposedConfiguredFeatureImpl");
+        }
+        return (CustomComposedConfiguredFeature<C>) Holder.WIRE.construct(Optional.ofNullable(resourceKey), feature, config);
     }
 
     /**

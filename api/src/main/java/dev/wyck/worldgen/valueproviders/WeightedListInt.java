@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.WeightedList;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -20,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface WeightedListInt extends IntProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<WeightedListInt> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.WeightedListIntImpl");
 
     /**
      * The weighted pool of providers to sample from.
@@ -62,7 +58,10 @@ public interface WeightedListInt extends IntProvider {
     static WeightedListInt of(WeightedList<IntProvider> distribution) {
         Preconditions.checkNotNull(distribution, "distribution");
         Preconditions.checkArgument(!distribution.unwrap().isEmpty(), "distribution must not be empty");
-        return WIRE.construct(distribution);
+        record Holder() {
+            static final ConstructWireProvider<WeightedListInt> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.WeightedListIntImpl");
+        }
+        return Holder.WIRE.construct(distribution);
     }
 
     /**

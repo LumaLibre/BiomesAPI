@@ -3,7 +3,6 @@ package dev.wyck.worldgen.placement;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.HeightmapType;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface HeightmapPlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<HeightmapPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.HeightmapPlacementImpl");
 
     /**
      * The heightmap to use.
@@ -37,6 +33,9 @@ public interface HeightmapPlacement extends PlacementModifier {
      */
     @AsOf("3.0.0")
     static HeightmapPlacement of(HeightmapType heightmap) {
-        return WIRE.construct(heightmap);
+        record Holder() {
+            static final ConstructWireProvider<HeightmapPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.HeightmapPlacementImpl");
+        }
+        return Holder.WIRE.construct(heightmap);
     }
 }

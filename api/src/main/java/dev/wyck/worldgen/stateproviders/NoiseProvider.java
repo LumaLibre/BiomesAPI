@@ -7,7 +7,6 @@ import dev.wyck.util.BukkitBootstrapUtil;
 import dev.wyck.worldgen.synth.NoiseParameters;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -24,9 +23,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface NoiseProvider extends NoiseBasedProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NoiseProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.NoiseProviderImpl");
 
     /**
      * List of optional block states.
@@ -60,7 +56,10 @@ public interface NoiseProvider extends NoiseBasedProvider {
      */
     @AsOf("3.0.0")
     static NoiseProvider of(long seed, NoiseParameters parameters, float scale, List<BlockData> states) {
-        return WIRE.construct(seed, parameters, scale, states);
+        record Holder() {
+            static final ConstructWireProvider<NoiseProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.NoiseProviderImpl");
+        }
+        return Holder.WIRE.construct(seed, parameters, scale, states);
     }
 
     /**

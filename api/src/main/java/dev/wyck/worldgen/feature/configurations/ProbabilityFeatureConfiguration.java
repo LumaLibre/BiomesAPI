@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.configurations;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,9 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface ProbabilityFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ProbabilityFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.ProbabilityFeatureConfigurationImpl");
 
     /**
      * Gets the probability of the feature being placed between 0.0 and 1.0.
@@ -37,7 +33,10 @@ public interface ProbabilityFeatureConfiguration extends FeatureConfiguration {
     @AsOf("3.0.0")
     static ProbabilityFeatureConfiguration of(float probability) {
         Preconditions.checkArgument(probability >= 0.0F && probability <= 1.0F, "probability must be between 0.0 and 1.0");
-        return WIRE.construct(probability);
+        record Holder() {
+            static final ConstructWireProvider<ProbabilityFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.ProbabilityFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(probability);
     }
 
 }

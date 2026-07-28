@@ -25,7 +25,7 @@ public record TrailParticle(Location target, int color, int duration) implements
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().trail(target, color, duration);
+        return ParticleOptionsFactory.instance().trail(target, color, duration);
     }
 
     @AsOf("2.0.0")

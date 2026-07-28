@@ -7,7 +7,6 @@ import dev.wyck.worldgen.heightproviders.HeightProvider;
 import dev.wyck.worldgen.heightproviders.VerticalAnchor;
 import dev.wyck.worldgen.valueproviders.FloatProvider;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +23,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("2.3.0")
 public interface CaveCarverConfiguration extends CarverConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CaveCarverConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.carver.CaveCarverConfigurationImpl");
 
     /**
      * The horizontal radius multiplier.
@@ -88,7 +84,10 @@ public interface CaveCarverConfiguration extends CarverConfiguration {
         FloatProvider verticalRadiusMultiplier,
         FloatProvider floorLevel
     ) {
-        return WIRE.construct(probability, y, yScale, lavaLevel, debugSettings, replaceable, horizontalRadiusMultiplier, verticalRadiusMultiplier, floorLevel);
+        record Holder() {
+            static final ConstructWireProvider<CaveCarverConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.carver.CaveCarverConfigurationImpl");
+        }
+        return Holder.WIRE.construct(probability, y, yScale, lavaLevel, debugSettings, replaceable, horizontalRadiusMultiplier, verticalRadiusMultiplier, floorLevel);
     }
 
     /**

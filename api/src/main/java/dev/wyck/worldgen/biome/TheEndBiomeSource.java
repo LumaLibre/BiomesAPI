@@ -2,7 +2,6 @@ package dev.wyck.worldgen.biome;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,14 +15,15 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface TheEndBiomeSource extends BiomeSource {
-    @ApiStatus.Internal
-    ConstructWireProvider<TheEndBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.TheEndBiomeSourceImpl");
 
     /** The singleton instance of {@link TheEndBiomeSource}. */
     @AsOf("3.0.0")
     TheEndBiomeSource INSTANCE = of();
 
     private static TheEndBiomeSource of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<TheEndBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.TheEndBiomeSourceImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

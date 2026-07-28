@@ -19,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @ApiStatus.Obsolete
 public interface CraftBukkitChunkGenerator extends ChunkGenerator {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<CraftBukkitChunkGenerator> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.CraftBukkitChunkGeneratorImpl");
-
     /**
      * The delegate Minecraft chunk generator for everything Bukkit's chunk generator can't do.
      * @return the delegate
@@ -57,7 +54,10 @@ public interface CraftBukkitChunkGenerator extends ChunkGenerator {
      */
     @AsOf("3.0.0")
     static CraftBukkitChunkGenerator of(ChunkGenerator delegate, org.bukkit.generator.ChunkGenerator generator) {
-        return WIRE.construct(delegate, generator);
+        record Holder() {
+            static final ConstructWireProvider<CraftBukkitChunkGenerator> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.CraftBukkitChunkGeneratorImpl");
+        }
+        return Holder.WIRE.construct(delegate, generator);
     }
 
     /**

@@ -2,7 +2,6 @@ package dev.wyck.worldgen.heightproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface UniformHeight extends HeightProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<UniformHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.UniformHeightImpl");
 
     /**
      * Converts this object back to a builder.
@@ -40,7 +36,10 @@ public interface UniformHeight extends HeightProvider {
      */
     @AsOf("3.0.0")
     static UniformHeight of(VerticalAnchor minInclusive, VerticalAnchor maxInclusive) {
-        return WIRE.construct(minInclusive, maxInclusive);
+        record Holder() {
+            static final ConstructWireProvider<UniformHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.UniformHeightImpl");
+        }
+        return Holder.WIRE.construct(minInclusive, maxInclusive);
     }
 
     /**

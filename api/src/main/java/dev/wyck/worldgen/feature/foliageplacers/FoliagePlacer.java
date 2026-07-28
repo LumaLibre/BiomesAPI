@@ -20,9 +20,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface FoliagePlacer extends Wrapper {
 
-    @ApiStatus.Internal
-    Decoder<FoliagePlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.FoliagePlacerDecoders");
-
     /**
      * The radius of the foliage.
      * @return the radius
@@ -153,7 +150,10 @@ public interface FoliagePlacer extends Wrapper {
 
     @ApiStatus.Internal
     static FoliagePlacer decode(Object minecraftFoliagePlacer) {
-        return DECODER.decode(minecraftFoliagePlacer);
+        record Holder() {
+            static final Decoder<FoliagePlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.FoliagePlacerDecoders");
+        }
+        return Holder.DECODER.decode(minecraftFoliagePlacer);
     }
 
     /**

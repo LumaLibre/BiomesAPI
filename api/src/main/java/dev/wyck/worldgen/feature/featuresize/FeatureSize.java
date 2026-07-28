@@ -24,9 +24,6 @@ import java.util.OptionalInt;
 @AsOf("3.0.0")
 public interface FeatureSize extends Wrapper {
 
-    @ApiStatus.Internal
-    Decoder<FeatureSize> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.FeatureSizeDecoders");
-
     /**
      * If specified and lower than the trunk height,
      * specifies the minimum free height required for the tree to generate.
@@ -62,7 +59,10 @@ public interface FeatureSize extends Wrapper {
 
     @ApiStatus.Internal
     static FeatureSize decode(Object minecraftFeatureSize) {
-        return DECODER.decode(minecraftFeatureSize);
+        record Holder() {
+            static final Decoder<FeatureSize> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.FeatureSizeDecoders");
+        }
+        return Holder.DECODER.decode(minecraftFeatureSize);
     }
 
     /**

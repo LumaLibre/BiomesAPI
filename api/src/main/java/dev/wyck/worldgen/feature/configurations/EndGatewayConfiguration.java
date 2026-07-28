@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.configurations;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface EndGatewayConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<EndGatewayConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.EndGatewayConfigurationImpl");
 
     /**
      * The block position where the gateway should exit, or empty if the exit is searched for on use.
@@ -59,7 +55,7 @@ public interface EndGatewayConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static EndGatewayConfiguration knownExit(BlockVector exit, boolean exact) {
-        return WIRE.construct(Optional.of(exit), exact);
+        return create(Optional.of(exit), exact);
     }
 
     /**
@@ -69,7 +65,15 @@ public interface EndGatewayConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static EndGatewayConfiguration delayedExitSearch() {
-        return WIRE.construct(Optional.<BlockVector>empty(), false);
+        return create(Optional.empty(), false);
+    }
+
+    private static EndGatewayConfiguration create(Optional<BlockVector> exit, boolean exact) {
+        record Holder() {
+            static final ConstructWireProvider<EndGatewayConfiguration> WIRE =
+                ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.EndGatewayConfigurationImpl");
+        }
+        return Holder.WIRE.construct(exit, exact);
     }
 
     /**

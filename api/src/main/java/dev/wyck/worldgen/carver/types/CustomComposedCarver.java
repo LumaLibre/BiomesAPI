@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.carver.ConfiguredWorldCarver;
 import dev.wyck.worldgen.carver.custom.CustomCarver;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface CustomComposedCarver<C> extends ConfiguredWorldCarver, Registerable<CustomComposedCarver<C>> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CustomComposedCarver<?>> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.carver.types.CustomComposedCarverImpl");
 
     /**
      * The custom carver.
@@ -73,7 +69,10 @@ public interface CustomComposedCarver<C> extends ConfiguredWorldCarver, Register
     @AsOf("3.0.0")
     @SuppressWarnings("unchecked")
     static <C> CustomComposedCarver<C> of(CustomCarver<C> carver, C config) {
-        return (CustomComposedCarver<C>) WIRE.construct(carver, config);
+        record Holder() {
+            static final ConstructWireProvider<CustomComposedCarver<?>> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.carver.types.CustomComposedCarverImpl");
+        }
+        return (CustomComposedCarver<C>) Holder.WIRE.construct(carver, config);
     }
 
     /**

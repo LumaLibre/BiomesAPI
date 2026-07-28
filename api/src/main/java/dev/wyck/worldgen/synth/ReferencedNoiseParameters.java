@@ -3,7 +3,6 @@ package dev.wyck.worldgen.synth;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface ReferencedNoiseParameters extends NoiseParameters {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<ReferencedNoiseParameters> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.synth.ReferencedNoiseParametersImpl");
-
     /**
      * Create a new reference to a noise parameters.
      * @param key the key of the noise parameters
@@ -28,6 +24,9 @@ public interface ReferencedNoiseParameters extends NoiseParameters {
      */
     @AsOf("3.0.0")
     static ReferencedNoiseParameters of(ResourceKey key) {
-        return WIRE.construct(key);
+        record Holder() {
+            static final ConstructWireProvider<ReferencedNoiseParameters> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.synth.ReferencedNoiseParametersImpl");
+        }
+        return Holder.WIRE.construct(key);
     }
 }

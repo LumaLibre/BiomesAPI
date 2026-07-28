@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface RandomOffsetPlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RandomOffsetPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.RandomOffsetPlacementImpl");
 
     /**
      * The offset applied to both the X and Z axes, sampled individually per axis.
@@ -60,7 +56,10 @@ public interface RandomOffsetPlacement extends PlacementModifier {
      */
     @AsOf("3.0.0")
     static RandomOffsetPlacement of(IntProvider xzSpread, IntProvider ySpread) {
-        return WIRE.construct(xzSpread, ySpread);
+        record Holder() {
+            static final ConstructWireProvider<RandomOffsetPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.RandomOffsetPlacementImpl");
+        }
+        return Holder.WIRE.construct(xzSpread, ySpread);
     }
 
     /**

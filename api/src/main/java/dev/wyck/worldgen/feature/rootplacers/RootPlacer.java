@@ -24,9 +24,6 @@ import java.util.Optional;
 @AsOf("3.0.0")
 public interface RootPlacer extends Wrapper {
 
-    @ApiStatus.Internal
-    Decoder<RootPlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.RootPlacerDecoders");
-
     /**
      * The offset perpendicular to the trunk.
      * @return the trunk offset
@@ -65,7 +62,10 @@ public interface RootPlacer extends Wrapper {
 
     @ApiStatus.Internal
     static RootPlacer decode(Object minecraftRootPlacer) {
-        return DECODER.decode(minecraftRootPlacer);
+        record Holder() {
+            static final Decoder<RootPlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.RootPlacerDecoders");
+        }
+        return Holder.DECODER.decode(minecraftRootPlacer);
     }
 
     /**

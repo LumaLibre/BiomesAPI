@@ -32,16 +32,11 @@ public record EnvironmentAttributeMap(
 
     public static final EnvironmentAttributeMap EMPTY = new EnvironmentAttributeMap(Map.of(), List.of());
 
-    @ApiStatus.Internal
-    public static final Decoder<EnvironmentAttributeMap> DECODER =
-        Decoder.create("dev.wyck.decode.environment.attribute.EnvironmentAttributeMapDecoder");
-
     @AsOf("2.1.0")
     public EnvironmentAttributeMap {
         attributes = Map.copyOf(attributes);
         pending = List.copyOf(pending);
     }
-
 
     @AsOf("2.1.0")
     public EnvironmentAttributeMap(Map<ResourceKey, EnvironmentAttribute<?>> attributes) {
@@ -205,7 +200,10 @@ public record EnvironmentAttributeMap(
      */
     @AsOf("3.3.0")
     public static EnvironmentAttributeMap decode(Object minecraftAttributeMap) {
-        return DECODER.decode(minecraftAttributeMap);
+        record Holder() {
+            static final Decoder<EnvironmentAttributeMap> DECODER = Decoder.create("dev.wyck.decode.environment.attribute.EnvironmentAttributeMapDecoder");
+        }
+        return Holder.DECODER.decode(minecraftAttributeMap);
     }
 
     /**

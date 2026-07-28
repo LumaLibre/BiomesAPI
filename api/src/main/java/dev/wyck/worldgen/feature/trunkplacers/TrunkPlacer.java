@@ -19,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface TrunkPlacer extends Wrapper {
 
-    @ApiStatus.Internal
-    Decoder<TrunkPlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.TrunkPlacerDecoders");
-
     int MAX_BASE_HEIGHT = 32; // vanilla constant
     int MAX_RAND = 24; // vanilla constant
 
@@ -143,7 +140,10 @@ public interface TrunkPlacer extends Wrapper {
 
     @ApiStatus.Internal
     static TrunkPlacer decode(Object minecraftTrunkPlacer) {
-        return DECODER.decode(minecraftTrunkPlacer);
+        record Holder() {
+            static final Decoder<TrunkPlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.TrunkPlacerDecoders");
+        }
+        return Holder.DECODER.decode(minecraftTrunkPlacer);
     }
 
     /**

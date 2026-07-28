@@ -22,7 +22,7 @@ public record ColorParticle(int color) implements ParticleData {
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().color(particleType, color);
+        return ParticleOptionsFactory.instance().color(particleType, color);
     }
 
     @AsOf("2.0.0")

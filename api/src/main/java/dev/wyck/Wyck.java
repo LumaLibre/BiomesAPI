@@ -9,6 +9,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Optional;
+
 /**
  * Common interface for miscellaneous Wyck (BiomesAPI) methods and utilities.
  * Implemented by the main plugin class when running as a standalone plugin, and by a default
@@ -103,7 +105,6 @@ public interface Wyck {
             }
             return INSTANCE;
         }
-
 
         private ShadedWyck() {
             Preconditions.checkState(INSTANCE == null, "already initialized");

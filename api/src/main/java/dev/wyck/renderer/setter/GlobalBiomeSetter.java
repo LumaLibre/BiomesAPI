@@ -171,7 +171,6 @@ public class GlobalBiomeSetter implements BiomeSetter {
         }
     }
 
-
     private int getMinHeight(World.Environment environment) {
         return switch (environment) {
             case NORMAL, CUSTOM -> OVERWORLD_MIN_HEIGHT;

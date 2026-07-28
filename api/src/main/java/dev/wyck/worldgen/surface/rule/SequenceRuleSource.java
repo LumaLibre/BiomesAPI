@@ -2,7 +2,6 @@ package dev.wyck.worldgen.surface.rule;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -20,9 +19,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface SequenceRuleSource extends RuleSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SequenceRuleSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.rule.SequenceRuleSourceImpl");
 
     /**
      * The rules evaluated in order.
@@ -50,7 +46,10 @@ public interface SequenceRuleSource extends RuleSource {
      */
     @AsOf("3.0.0")
     static SequenceRuleSource of(List<RuleSource> rules) {
-        return WIRE.construct(List.copyOf(rules));
+        record Holder() {
+            static final ConstructWireProvider<SequenceRuleSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.rule.SequenceRuleSourceImpl");
+        }
+        return Holder.WIRE.construct(List.copyOf(rules));
     }
 
     /**

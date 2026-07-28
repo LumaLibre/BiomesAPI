@@ -2,7 +2,6 @@ package dev.wyck.worldgen.valueproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface ConstantFloat extends FloatProvider {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<ConstantFloat> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.ConstantFloatImpl");
-
     /**
      * A constant float provider.
      * @param value the value to return
@@ -28,7 +24,10 @@ public interface ConstantFloat extends FloatProvider {
      */
     @AsOf("3.0.0")
     static ConstantFloat of(float value) {
-        return WIRE.construct(value);
+        record Holder() {
+            static final ConstructWireProvider<ConstantFloat> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.ConstantFloatImpl");
+        }
+        return Holder.WIRE.construct(value);
     }
 
 }

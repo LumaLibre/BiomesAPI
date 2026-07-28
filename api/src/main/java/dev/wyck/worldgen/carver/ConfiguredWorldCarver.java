@@ -26,10 +26,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("2.3.0")
 public interface ConfiguredWorldCarver extends Wrapper, Keyed {
 
-    @ApiStatus.Internal
-    Decoder<ConfiguredWorldCarver> DECODER =
-        Decoder.create("dev.wyck.decode.worldgen.carver.ConfiguredWorldCarverDecoder");
-
     /**
      * References a configured carver already registered under the given key.
      * @param key the registry key of the configured carver
@@ -116,6 +112,9 @@ public interface ConfiguredWorldCarver extends Wrapper, Keyed {
      */
     @AsOf("3.3.0")
     static ConfiguredWorldCarver decode(Object minecraftConfiguredCarver) {
-        return DECODER.decode(minecraftConfiguredCarver);
+        record Holder() {
+            static final Decoder<ConfiguredWorldCarver> DECODER = Decoder.create("dev.wyck.decode.worldgen.carver.ConfiguredWorldCarverDecoder");
+        }
+        return Holder.DECODER.decode(minecraftConfiguredCarver);
     }
 }

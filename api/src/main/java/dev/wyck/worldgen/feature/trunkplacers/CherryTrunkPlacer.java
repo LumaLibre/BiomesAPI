@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import dev.wyck.worldgen.valueproviders.UniformInt;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface CherryTrunkPlacer extends TrunkPlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CherryTrunkPlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.trunkplacers.CherryTrunkPlacerImpl");
 
     /**
      * The number of branches between 1 and 3.
@@ -79,7 +75,10 @@ public interface CherryTrunkPlacer extends TrunkPlacer {
      */
     @AsOf("3.0.0")
     static CherryTrunkPlacer of(int baseHeight, int heightRandA, int heightRandB, IntProvider branchCount, IntProvider branchHorizontalLength, IntProvider branchStartOffsetFromTop, IntProvider branchEndOffsetFromTop) {
-        return WIRE.construct(baseHeight, heightRandA, heightRandB, branchCount, branchHorizontalLength, branchStartOffsetFromTop, branchEndOffsetFromTop);
+        record Holder() {
+            static final ConstructWireProvider<CherryTrunkPlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.trunkplacers.CherryTrunkPlacerImpl");
+        }
+        return Holder.WIRE.construct(baseHeight, heightRandA, heightRandB, branchCount, branchHorizontalLength, branchStartOffsetFromTop, branchEndOffsetFromTop);
     }
 
     /**

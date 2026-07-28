@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.placement.PlacedFeature;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -22,9 +21,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface CompositeFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CompositeFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.CompositeFeatureConfigurationImpl");
 
     /**
      * Any number of placed features.
@@ -53,7 +49,10 @@ public interface CompositeFeatureConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static CompositeFeatureConfiguration of(List<PlacedFeature> features) {
-        return WIRE.construct(features);
+        record Holder() {
+            static final ConstructWireProvider<CompositeFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.CompositeFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(features);
     }
 
     /**

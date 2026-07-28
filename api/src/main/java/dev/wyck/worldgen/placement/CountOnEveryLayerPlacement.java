@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -21,9 +20,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface CountOnEveryLayerPlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CountOnEveryLayerPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.CountOnEveryLayerPlacementImpl");
 
     /**
      * Count on each layer between 0 and 256.
@@ -44,6 +40,9 @@ public interface CountOnEveryLayerPlacement extends PlacementModifier {
     @AsOf("3.0.0")
     static CountOnEveryLayerPlacement of(IntProvider count) {
         Preconditions.checkArgument(count.minInclusive() >= 0 && count.maxInclusive() <= 256, "count must be between 0 and 256");
-        return WIRE.construct(count);
+        record Holder() {
+            static final ConstructWireProvider<CountOnEveryLayerPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.CountOnEveryLayerPlacementImpl");
+        }
+        return Holder.WIRE.construct(count);
     }
 }

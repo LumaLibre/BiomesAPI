@@ -3,7 +3,6 @@ package dev.wyck.worldgen.heightproviders;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface VerticalAnchor extends Wrapper {
-
-    @ApiStatus.Internal
-    Decoder<VerticalAnchor> DECODER = Decoder.create("dev.wyck.decode.worldgen.heightproviders.VerticalAnchorDecoders");
 
     /**
      * Wraps the given value in a {@link ConstantHeight}
@@ -196,6 +192,9 @@ public interface VerticalAnchor extends Wrapper {
      */
     @AsOf("3.3.0")
     static VerticalAnchor decode(Object minecraftVerticalAnchor) {
-        return DECODER.decode(minecraftVerticalAnchor);
+        record Holder() {
+            static final Decoder<VerticalAnchor> DECODER = Decoder.create("dev.wyck.decode.worldgen.heightproviders.VerticalAnchorDecoders");
+        }
+        return Holder.DECODER.decode(minecraftVerticalAnchor);
     }
 }

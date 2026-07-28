@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.configurations;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.1.0")
 public interface PointedDripstoneConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<PointedDripstoneConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.PointedDripstoneConfigurationImpl");
 
     /**
      * Probability for double-block dripstone between 0.0 and 1.0.
@@ -76,7 +72,10 @@ public interface PointedDripstoneConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.1.0")
     static PointedDripstoneConfiguration of(float chanceOfTallerDripstone, float chanceOfDirectionalSpread, float chanceOfSpreadRadius2, float chanceOfSpreadRadius3) {
-        return WIRE.construct(chanceOfTallerDripstone, chanceOfDirectionalSpread, chanceOfSpreadRadius2, chanceOfSpreadRadius3);
+        record Holder() {
+            static final ConstructWireProvider<PointedDripstoneConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.PointedDripstoneConfigurationImpl");
+        }
+        return Holder.WIRE.construct(chanceOfTallerDripstone, chanceOfDirectionalSpread, chanceOfSpreadRadius2, chanceOfSpreadRadius3);
     }
 
     /**

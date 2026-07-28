@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.heightproviders.VerticalAnchor;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,9 +18,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface YAboveConditionSource extends ConditionSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<YAboveConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.YAboveConditionSourceImpl");
 
     /**
      * The vertical anchor to compare the height with.
@@ -67,7 +63,10 @@ public interface YAboveConditionSource extends ConditionSource {
      */
     @AsOf("3.0.0")
     static YAboveConditionSource of(VerticalAnchor anchor, int surfaceDepthMultiplier, boolean addStoneDepth) {
-        return WIRE.construct(anchor, surfaceDepthMultiplier, addStoneDepth);
+        record Holder() {
+            static final ConstructWireProvider<YAboveConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.YAboveConditionSourceImpl");
+        }
+        return Holder.WIRE.construct(anchor, surfaceDepthMultiplier, addStoneDepth);
     }
 
     /**

@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.synth.NoiseParameters;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface NoiseFunction extends NoiseParameterFunction {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NoiseFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.noise.NoiseFunctionImpl");
 
     /**
      * The xz scale of the noise function.
@@ -62,7 +58,10 @@ public interface NoiseFunction extends NoiseParameterFunction {
      */
     @AsOf("3.0.0")
     static NoiseFunction of(@Nullable ResourceKey resourceKey, NoiseParameters noiseParameters, double xzScale, double yScale) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), noiseParameters, xzScale, yScale);
+        record Holder() {
+            static final ConstructWireProvider<NoiseFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.noise.NoiseFunctionImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), noiseParameters, xzScale, yScale);
     }
 
     /**

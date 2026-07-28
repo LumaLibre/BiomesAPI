@@ -20,12 +20,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface GeodeCrackSettings extends Wrapper {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<GeodeCrackSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.geode.GeodeCrackSettingsImpl");
-
-    @ApiStatus.Internal
-    Decoder<GeodeCrackSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeCrackSettingsDecoder");
-
     /**
      * The probability for generating a crack. Value between 0.0 and 1.0.
      * @return the crack generation chance
@@ -70,7 +64,10 @@ public interface GeodeCrackSettings extends Wrapper {
      */
     @AsOf("3.0.0")
     static GeodeCrackSettings of(double generateCrackChance, double baseCrackSize, int crackPointOffset) {
-        return WIRE.construct(generateCrackChance, baseCrackSize, crackPointOffset);
+        record Holder() {
+            static final ConstructWireProvider<GeodeCrackSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.geode.GeodeCrackSettingsImpl");
+        }
+        return Holder.WIRE.construct(generateCrackChance, baseCrackSize, crackPointOffset);
     }
 
     /**
@@ -85,7 +82,10 @@ public interface GeodeCrackSettings extends Wrapper {
 
     @ApiStatus.Internal
     static GeodeCrackSettings decode(Object minecraftSettings) {
-        return DECODER.decode(minecraftSettings);
+        record Holder() {
+            static final Decoder<GeodeCrackSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeCrackSettingsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftSettings);
     }
 
     /**

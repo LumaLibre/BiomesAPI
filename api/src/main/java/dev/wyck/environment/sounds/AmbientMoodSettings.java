@@ -6,19 +6,12 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Sound;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @NullMarked
 @AsOf("2.4.1")
 public interface AmbientMoodSettings extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AmbientMoodSettings> WIRE = ConstructWireProvider.create("dev.wyck.environment.sounds.AmbientMoodSettingsImpl");
-
-    @ApiStatus.Internal
-    Decoder<AmbientMoodSettings> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientMoodSettingsDecoder");
 
     /**
      * Gets the sound event of the ambient mood settings.
@@ -52,7 +45,6 @@ public interface AmbientMoodSettings extends Wrapper {
     @AsOf("2.4.1")
     double soundPositionOffset();
 
-
     /**
      * Creates a new ambient mood settings record.
      * @param soundEvent the sound event of the ambient mood settings
@@ -64,7 +56,10 @@ public interface AmbientMoodSettings extends Wrapper {
      */
     @AsOf("2.4.1")
     static AmbientMoodSettings of(SoundEvent soundEvent, int tickDelay, int blockSearchExtent, double soundPositionOffset) {
-        return WIRE.construct(soundEvent, tickDelay, blockSearchExtent, soundPositionOffset);
+        record Holder() {
+            static final ConstructWireProvider<AmbientMoodSettings> WIRE = ConstructWireProvider.create("dev.wyck.environment.sounds.AmbientMoodSettingsImpl");
+        }
+        return Holder.WIRE.construct(soundEvent, tickDelay, blockSearchExtent, soundPositionOffset);
     }
 
     /**
@@ -99,7 +94,10 @@ public interface AmbientMoodSettings extends Wrapper {
      */
     @AsOf("3.3.0")
     static AmbientMoodSettings decode(Object minecraftAmbientMoodSettings) {
-        return DECODER.decode(minecraftAmbientMoodSettings);
+        record Holder() {
+            static final Decoder<AmbientMoodSettings> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientMoodSettingsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftAmbientMoodSettings);
     }
 
     /**

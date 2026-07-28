@@ -2,7 +2,6 @@ package dev.wyck.worldgen.placement;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface NoiseBasedCountPlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NoiseBasedCountPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.NoiseBasedCountPlacementImpl");
 
     /**
      * Ratio of noise value to count.
@@ -67,7 +63,10 @@ public interface NoiseBasedCountPlacement extends PlacementModifier {
      */
     @AsOf("3.0.0")
     static NoiseBasedCountPlacement of(int noiseToCountRatio, double noiseFactor, double noiseOffset) {
-        return WIRE.construct(noiseToCountRatio, noiseFactor, noiseOffset);
+        record Holder() {
+            static final ConstructWireProvider<NoiseBasedCountPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.NoiseBasedCountPlacementImpl");
+        }
+        return Holder.WIRE.construct(noiseToCountRatio, noiseFactor, noiseOffset);
     }
 
     /**

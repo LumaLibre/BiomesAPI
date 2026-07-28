@@ -2,7 +2,6 @@ package dev.wyck.worldgen.heightproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BiasedToBottomHeight extends HeightProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BiasedToBottomHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.BiasedToBottomHeightImpl");
 
     /**
      * The bias factor. Values between 1 and {@code max - min} (inclusive) are uniformly
@@ -50,7 +46,10 @@ public interface BiasedToBottomHeight extends HeightProvider {
      */
     @AsOf("3.0.0")
     static BiasedToBottomHeight of(VerticalAnchor minInclusive, VerticalAnchor maxInclusive, int inner) {
-        return WIRE.construct(minInclusive, maxInclusive, inner);
+        record Holder() {
+            static final ConstructWireProvider<BiasedToBottomHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.BiasedToBottomHeightImpl");
+        }
+        return Holder.WIRE.construct(minInclusive, maxInclusive, inner);
     }
 
     /**

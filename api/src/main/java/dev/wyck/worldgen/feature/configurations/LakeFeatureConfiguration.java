@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.blockpredicates.BlockPredicate;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface LakeFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<LakeFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.LakeFeatureConfigurationImpl");
 
     /**
      * The block to use for the fluid of the lake.
@@ -88,7 +84,10 @@ public interface LakeFeatureConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static LakeFeatureConfiguration create(BlockStateProvider fluid, BlockStateProvider barrier, BlockPredicate canPlaceOn, BlockPredicate canReplaceWithAirOrFluid, BlockPredicate canReplaceWithBarrier) {
-        return WIRE.construct(fluid, barrier, canPlaceOn, canReplaceWithAirOrFluid, canReplaceWithBarrier);
+        record Holder() {
+            static final ConstructWireProvider<LakeFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.LakeFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(fluid, barrier, canPlaceOn, canReplaceWithAirOrFluid, canReplaceWithBarrier);
     }
 
     /**

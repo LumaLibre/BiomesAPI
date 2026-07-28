@@ -3,7 +3,6 @@ package dev.wyck.worldgen.surface.rule;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BlockRuleSource extends RuleSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BlockRuleSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.rule.BlockRuleSourceImpl");
 
     /**
      * The block to place.
@@ -37,6 +33,9 @@ public interface BlockRuleSource extends RuleSource {
      */
     @AsOf("3.0.0")
     static BlockRuleSource of(Material block) {
-        return WIRE.construct(block);
+        record Holder() {
+            static final ConstructWireProvider<BlockRuleSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.rule.BlockRuleSourceImpl");
+        }
+        return Holder.WIRE.construct(block);
     }
 }

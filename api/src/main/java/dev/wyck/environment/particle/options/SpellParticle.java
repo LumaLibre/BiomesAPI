@@ -23,7 +23,7 @@ public record SpellParticle(int color, float power) implements ParticleData {
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().spell(particleType, color, power);
+        return ParticleOptionsFactory.instance().spell(particleType, color, power);
     }
 
     @AsOf("2.0.0")

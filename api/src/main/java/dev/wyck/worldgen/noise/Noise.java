@@ -27,9 +27,6 @@ import java.util.Optional;
 @AsOf("2.4.0")
 public interface Noise extends Wrapper {
 
-    @ApiStatus.Internal
-    Decoder<Noise> DECODER = Decoder.create("dev.wyck.decode.worldgen.noise.NoiseDecoder");
-
     Noise OVERWORLD = reference(ResourceKey.minecraft("overworld"));
     Noise NETHER = reference(ResourceKey.minecraft("nether"));
     Noise END = reference(ResourceKey.minecraft("end"));
@@ -90,9 +87,11 @@ public interface Noise extends Wrapper {
      */
     @AsOf("3.3.0")
     static Noise decode(Object minecraftNoise) {
-        return DECODER.decode(minecraftNoise);
+        record Holder() {
+            static final Decoder<Noise> DECODER = Decoder.create("dev.wyck.decode.worldgen.noise.NoiseDecoder");
+        }
+        return Holder.DECODER.decode(minecraftNoise);
     }
-
 
     /**
      * The overworld noise function.

@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.dimension.Dimension;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,16 +17,16 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("2.4.0")
 public interface DimensionRegistry {
 
-    @ApiStatus.Internal
-    WireProvider<DimensionRegistry> WIRE = WireProvider.create("dev.wyck.*.registry.level.dimension.DimensionTypeRegistry");
-
     /**
      * @return the current DimensionRegistry instance.
      * @since 2.4.0
      */
     @AsOf("2.4.0")
     static DimensionRegistry registry() {
-        return WIRE.get();
+        record Holder() {
+            static final WireProvider<DimensionRegistry> WIRE = WireProvider.create("dev.wyck.*.registry.level.dimension.DimensionTypeRegistry");
+        }
+        return Holder.WIRE.get();
     }
 
     /**

@@ -204,7 +204,7 @@ public enum ParticleTypes implements WrappedConstant<ParticleTypes> {
     @AsOf("1.1.0")
     public ParticleType particleType() {
         if (cachedHandle == null) {
-            cachedHandle = ParticleOptionsFactory.WIRE.get().typeByKey(key);
+            cachedHandle = ParticleOptionsFactory.instance().typeByKey(key);
         }
         return cachedHandle;
     }

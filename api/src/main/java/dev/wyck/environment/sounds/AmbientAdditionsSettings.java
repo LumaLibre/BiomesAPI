@@ -7,7 +7,6 @@ import dev.wyck.factory.WireProvider;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Sound;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,12 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("2.4.1")
 public interface AmbientAdditionsSettings extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AmbientAdditionsSettings> WIRE = WireProvider.construct("dev.wyck.environment.sounds.AmbientAdditionsSettingsImpl");
-
-    @ApiStatus.Internal
-    Decoder<AmbientAdditionsSettings> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientAdditionsSettingsDecoder");
 
     /**
      * The sound event to play.
@@ -53,7 +46,10 @@ public interface AmbientAdditionsSettings extends Wrapper {
      */
     @AsOf("2.4.1")
     static AmbientAdditionsSettings of(SoundEvent soundEvent, double tickChance) {
-        return WIRE.construct(soundEvent, tickChance);
+        record Holder() {
+            static final ConstructWireProvider<AmbientAdditionsSettings> WIRE = WireProvider.construct("dev.wyck.environment.sounds.AmbientAdditionsSettingsImpl");
+        }
+        return Holder.WIRE.construct(soundEvent, tickChance);
     }
 
     /**
@@ -86,7 +82,10 @@ public interface AmbientAdditionsSettings extends Wrapper {
      */
     @AsOf("3.3.0")
     static AmbientAdditionsSettings decode(Object minecraftAmbientAdditionsSettings) {
-        return DECODER.decode(minecraftAmbientAdditionsSettings);
+        record Holder() {
+            static final Decoder<AmbientAdditionsSettings> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientAdditionsSettingsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftAmbientAdditionsSettings);
     }
 
     /**

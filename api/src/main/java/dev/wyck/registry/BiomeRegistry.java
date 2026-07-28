@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.biome.Biome;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.keys.ResourceKey;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
@@ -24,9 +23,6 @@ import java.util.List;
 @AsOf("0.0.1")
 public interface BiomeRegistry {
 
-    @ApiStatus.Internal
-    WireProvider<BiomeRegistry> WIRE = WireProvider.create("dev.wyck.registry.BiomeRegistryImpl");
-
     /**
      * This static method returns the current BiomeRegistry instance.
      * @return the current BiomeRegistry instance.
@@ -34,7 +30,10 @@ public interface BiomeRegistry {
      */
     @AsOf("2.3.0")
     static BiomeRegistry registry() {
-        return WIRE.get();
+        record Holder() {
+            static final WireProvider<BiomeRegistry> WIRE = WireProvider.create("dev.wyck.registry.BiomeRegistryImpl");
+        }
+        return Holder.WIRE.get();
     }
 
     /**
@@ -56,7 +55,6 @@ public interface BiomeRegistry {
         register(List.of(biomes));
     }
 
-
     /**
      * Registers a collection of custom biomes to a Minecraft server.
      *
@@ -65,7 +63,6 @@ public interface BiomeRegistry {
      */
     @AsOf("2.3.1")
     void register(Collection<Biome> biomes);
-
 
     /**
      * This method modifies an existing biome on the Minecraft server.
@@ -92,7 +89,6 @@ public interface BiomeRegistry {
      */
     @AsOf("2.3.1")
     void modify(Collection<Biome> biomes);
-
 
     /**
      * Gets an abstract biome from the registry.

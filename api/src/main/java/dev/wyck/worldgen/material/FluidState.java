@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -23,12 +22,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface FluidState extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<FluidState> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.material.FluidStateImpl");
-
-    @ApiStatus.Internal
-    Decoder<FluidState> DECODER = Decoder.create("dev.wyck.decode.worldgen.material.FluidStateDecoder");
 
     /**
      * The fluid this state belongs to.
@@ -109,7 +102,7 @@ public interface FluidState extends Wrapper {
     @AsOf("3.0.0")
     static FluidState source(FluidType fluid, boolean falling) {
         Preconditions.checkNotNull(fluid, "fluid cannot be null");
-        return WIRE.construct(fluid, 8, true, falling);
+        return create(fluid, 8, true, falling);
     }
 
     /**
@@ -136,7 +129,7 @@ public interface FluidState extends Wrapper {
     static FluidState flowing(FluidType fluid, int amount, boolean falling) {
         Preconditions.checkNotNull(fluid, "fluid cannot be null");
         Preconditions.checkArgument(amount >= 1 && amount <= 8, "amount must be within [1, 8], got %s", amount);
-        return WIRE.construct(fluid, amount, false, falling);
+        return create(fluid, amount, false, falling);
     }
 
     /**
@@ -146,7 +139,15 @@ public interface FluidState extends Wrapper {
      */
     @AsOf("3.0.0")
     static FluidState empty() {
-        return WIRE.construct(FluidType.EMPTY, 0, false, false);
+        return create(FluidType.EMPTY, 0, false, false);
+    }
+
+    private static FluidState create(FluidType fluid, int amount, boolean source, boolean falling) {
+        record Holder() {
+            static final ConstructWireProvider<FluidState> WIRE =
+                ConstructWireProvider.create("dev.wyck.worldgen.material.FluidStateImpl");
+        }
+        return Holder.WIRE.construct(fluid, amount, source, falling);
     }
 
     /**
@@ -177,7 +178,10 @@ public interface FluidState extends Wrapper {
      */
     @AsOf("3.3.0")
     static FluidState decode(Object minecraftState) {
-        return DECODER.decode(minecraftState);
+        record Holder() {
+            static final Decoder<FluidState> DECODER = Decoder.create("dev.wyck.decode.worldgen.material.FluidStateDecoder");
+        }
+        return Holder.DECODER.decode(minecraftState);
     }
 
     /**
@@ -273,7 +277,7 @@ public interface FluidState extends Wrapper {
             if (this.fluid == FluidType.EMPTY) {
                 return FluidState.empty();
             }
-            return WIRE.construct(this.fluid, this.amount, this.source, this.falling);
+            return FluidState.create(this.fluid, this.amount, this.source, this.falling);
         }
     }
 }

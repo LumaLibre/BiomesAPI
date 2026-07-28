@@ -8,7 +8,6 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.wrapper.Registerable;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Keyed;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.2.0")
 public interface TimeMarker extends Wrapper, Keyed, Registerable<TimeMarker> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<TimeMarker> WIRE = WireProvider.construct("dev.wyck.level.dimension.clock.TimeMarkerImpl");
 
     ResourceKey DAY = ResourceKey.minecraft("day");
     ResourceKey NOON = ResourceKey.minecraft("noon");
@@ -80,7 +76,10 @@ public interface TimeMarker extends Wrapper, Keyed, Registerable<TimeMarker> {
      */
     @AsOf("3.2.0")
     static TimeMarker of(ResourceKey key, int ticks, boolean showInCommands) {
-        return WIRE.construct(key, ticks, showInCommands);
+        record Holder() {
+            static final ConstructWireProvider<TimeMarker> WIRE = WireProvider.construct("dev.wyck.level.dimension.clock.TimeMarkerImpl");
+        }
+        return Holder.WIRE.construct(key, ticks, showInCommands);
     }
 
     /**

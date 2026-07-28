@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.2.0")
 public interface Keyframe<V> extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<Keyframe<?>> WIRE = WireProvider.construct("dev.wyck.level.dimension.timeline.KeyframeImpl");
 
     /**
      * The number of ticks in this keyframe occurs at.
@@ -50,7 +46,10 @@ public interface Keyframe<V> extends Wrapper {
     @AsOf("3.2.0")
     @SuppressWarnings("unchecked")
     static <V> Keyframe<V> of(int ticks, V value) {
-        return (Keyframe<V>) WIRE.construct(ticks, value);
+        record Holder() {
+            static final ConstructWireProvider<Keyframe<?>> WIRE = WireProvider.construct("dev.wyck.level.dimension.timeline.KeyframeImpl");
+        }
+        return (Keyframe<V>) Holder.WIRE.construct(ticks, value);
     }
 
     /**

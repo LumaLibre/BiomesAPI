@@ -7,7 +7,6 @@ import dev.wyck.util.BukkitBootstrapUtil;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface WouldSurvivePredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<WouldSurvivePredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.WouldSurvivePredicateImpl");
 
     /**
      * The offset from the block to check.
@@ -61,7 +57,10 @@ public interface WouldSurvivePredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static WouldSurvivePredicate of(BlockVector offset, BlockData state) {
-        return WIRE.construct(offset, state);
+        record Holder() {
+            static final ConstructWireProvider<WouldSurvivePredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.WouldSurvivePredicateImpl");
+        }
+        return Holder.WIRE.construct(offset, state);
     }
 
     /**

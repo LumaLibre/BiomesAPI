@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.biome.Biome;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -21,9 +20,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface BiomeConditionSource extends ConditionSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BiomeConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.surface.condition.BiomeConditionSourceImpl");
 
     /**
      * A list of biomes where this condition matches.
@@ -51,7 +47,10 @@ public interface BiomeConditionSource extends ConditionSource {
      */
     @AsOf("3.0.0")
     static BiomeConditionSource of(List<Biome> targets) {
-        return WIRE.construct(targets);
+        record Holder() {
+            static final ConstructWireProvider<BiomeConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.surface.condition.BiomeConditionSourceImpl");
+        }
+        return Holder.WIRE.construct(targets);
     }
 
     /**

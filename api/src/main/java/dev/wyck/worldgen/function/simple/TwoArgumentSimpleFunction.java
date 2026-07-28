@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -14,9 +13,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface TwoArgumentSimpleFunction extends SimpleFunction, Registerable<TwoArgumentSimpleFunction> { // misleading name?: vanilla does not extend SimpleFunction
-
-    @ApiStatus.Internal
-    ConstructWireProvider<TwoArgumentSimpleFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.simple.TwoArgumentSimpleFunctionImpl");
 
     /**
      * The operation to perform.
@@ -42,7 +38,6 @@ public interface TwoArgumentSimpleFunction extends SimpleFunction, Registerable<
     @AsOf("3.0.0")
     DensityFunction second();
 
-
     /**
      * Performs an {@link Operation} on two density functions.
      * @param resourceKey the resource key, or null
@@ -54,7 +49,10 @@ public interface TwoArgumentSimpleFunction extends SimpleFunction, Registerable<
      */
     @AsOf("3.0.0")
     static TwoArgumentSimpleFunction of(@Nullable ResourceKey resourceKey, Operation operation, DensityFunction first, DensityFunction second) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), operation, first, second);
+        record Holder() {
+            static final ConstructWireProvider<TwoArgumentSimpleFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.simple.TwoArgumentSimpleFunctionImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), operation, first, second);
     }
 
     /**

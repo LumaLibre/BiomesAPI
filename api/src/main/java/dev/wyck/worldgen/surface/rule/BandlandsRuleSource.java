@@ -2,7 +2,6 @@ package dev.wyck.worldgen.surface.rule;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,14 +16,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface BandlandsRuleSource extends RuleSource {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<BandlandsRuleSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.rule.BandlandsRuleSourceImpl");
-
     /** The bandlands rule source. */
     @AsOf("3.0.0")
     BandlandsRuleSource INSTANCE = of();
 
     private static BandlandsRuleSource of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<BandlandsRuleSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.rule.BandlandsRuleSourceImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

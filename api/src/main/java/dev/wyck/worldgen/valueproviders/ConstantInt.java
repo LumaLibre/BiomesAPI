@@ -2,7 +2,6 @@ package dev.wyck.worldgen.valueproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface ConstantInt extends IntProvider {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<ConstantInt> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.ConstantIntImpl");
-
     /** A constant int provider which always returns 0. */
     @AsOf("3.0.0")
     ConstantInt ZERO = of(0);
@@ -32,7 +28,10 @@ public interface ConstantInt extends IntProvider {
      */
     @AsOf("3.0.0")
     static ConstantInt of(int value) {
-        return WIRE.construct(value);
+        record Holder() {
+            static final ConstructWireProvider<ConstantInt> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.ConstantIntImpl");
+        }
+        return Holder.WIRE.construct(value);
     }
 
 }

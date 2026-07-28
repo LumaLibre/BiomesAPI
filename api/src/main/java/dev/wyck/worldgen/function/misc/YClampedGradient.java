@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,9 +22,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface YClampedGradient extends DensityFunction, Registerable<YClampedGradient> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<YClampedGradient> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.YClampedGradientImpl");
 
     /**
      * The Y coordinate that maps to {@link #fromValue()}.
@@ -81,7 +77,10 @@ public interface YClampedGradient extends DensityFunction, Registerable<YClamped
      */
     @AsOf("3.0.0")
     static YClampedGradient of(@Nullable ResourceKey resourceKey, int fromY, int toY, double fromValue, double toValue) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), fromY, toY, fromValue, toValue);
+        record Holder() {
+            static final ConstructWireProvider<YClampedGradient> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.YClampedGradientImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), fromY, toY, fromValue, toValue);
     }
 
     /**

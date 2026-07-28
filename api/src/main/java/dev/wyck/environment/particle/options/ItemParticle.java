@@ -24,7 +24,7 @@ public record ItemParticle(ItemStack itemStack) implements ParticleData {
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().item(particleType, itemStack);
+        return ParticleOptionsFactory.instance().item(particleType, itemStack);
     }
 
     @AsOf("2.0.0")

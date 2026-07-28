@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.treedecorators;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BeehiveDecorator extends TreeDecorator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BeehiveDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.BeehiveDecoratorImpl");
 
     /**
      * The probability of placing a beehive, between 0.0F and 1.0F (inclusive).
@@ -48,7 +44,10 @@ public interface BeehiveDecorator extends TreeDecorator {
      */
     @AsOf("3.0.0")
     static BeehiveDecorator of(float probability) {
-        return WIRE.construct(probability);
+        record Holder() {
+            static final ConstructWireProvider<BeehiveDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.BeehiveDecoratorImpl");
+        }
+        return Holder.WIRE.construct(probability);
     }
 
     /**

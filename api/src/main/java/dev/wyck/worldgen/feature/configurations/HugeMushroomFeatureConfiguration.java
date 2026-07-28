@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.blockpredicates.BlockPredicate;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface HugeMushroomFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<HugeMushroomFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.HugeMushroomFeatureConfigurationImpl");
 
     /**
      * The block to use for the cap.
@@ -77,7 +73,10 @@ public interface HugeMushroomFeatureConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static HugeMushroomFeatureConfiguration of(BlockStateProvider capProvider, BlockStateProvider stemProvider, int foliageRadius, BlockPredicate canPlaceOn) {
-        return WIRE.construct(capProvider, stemProvider, foliageRadius, canPlaceOn);
+        record Holder() {
+            static final ConstructWireProvider<HugeMushroomFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.HugeMushroomFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(capProvider, stemProvider, foliageRadius, canPlaceOn);
     }
 
     /**

@@ -3,7 +3,6 @@ package dev.wyck.worldgen.ruletest;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BlockMatchTest extends RuleTest {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BlockMatchTest> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.ruletest.BlockMatchTestImpl");
 
     /**
      * The block to match.
@@ -37,6 +33,9 @@ public interface BlockMatchTest extends RuleTest {
      */
     @AsOf("3.0.0")
     static BlockMatchTest of(Material block) {
-        return WIRE.construct(block);
+        record Holder() {
+            static final ConstructWireProvider<BlockMatchTest> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.ruletest.BlockMatchTestImpl");
+        }
+        return Holder.WIRE.construct(block);
     }
 }

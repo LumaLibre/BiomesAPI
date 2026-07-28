@@ -19,12 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface EndSpike extends Wrapper {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<EndSpike> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.end.EndSpikeImpl");
-
-    @ApiStatus.Internal
-    Decoder<EndSpike> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.EndSpikeDecoder");
-
     /**
      * The X coordinate of the center of the spike.
      * @return the center X coordinate
@@ -87,7 +81,10 @@ public interface EndSpike extends Wrapper {
      */
     @AsOf("3.0.0")
     static EndSpike of(int centerX, int centerZ, int radius, int height, boolean guarded) {
-        return WIRE.construct(centerX, centerZ, radius, height, guarded);
+        record Holder() {
+            static final ConstructWireProvider<EndSpike> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.end.EndSpikeImpl");
+        }
+        return Holder.WIRE.construct(centerX, centerZ, radius, height, guarded);
     }
 
     /**
@@ -108,7 +105,10 @@ public interface EndSpike extends Wrapper {
      */
     @ApiStatus.Internal
     static EndSpike decode(Object minecraftObject) {
-        return DECODER.decode(minecraftObject);
+        record Holder() {
+            static final Decoder<EndSpike> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.EndSpikeDecoder");
+        }
+        return Holder.DECODER.decode(minecraftObject);
     }
 
     /**

@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,11 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.2.0")
 public interface Easing extends Wrapper, EasingType {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<Easing> WIRE = WireProvider.construct("dev.wyck.level.dimension.timeline.EasingImpl");
-    @ApiStatus.Internal
-    ConstructWireProvider<Easing> BEZIER_WIRE = WIRE.resolve("CubicBezier");
 
     /**
      * The identifier of this easing.
@@ -40,7 +34,7 @@ public interface Easing extends Wrapper, EasingType {
      */
     @AsOf("3.2.0")
     static Easing of(String id) {
-        return WIRE.construct((Object) id);
+        return create(id);
     }
 
     /**
@@ -65,7 +59,7 @@ public interface Easing extends Wrapper, EasingType {
      */
     @AsOf("3.2.0")
     static Easing cubicBezier(float x1, float y1, float x2, float y2) {
-        return BEZIER_WIRE.construct(x1, y1, x2, y2);
+        return create(new float[]{x1, y1, x2, y2});
     }
 
     /**
@@ -78,5 +72,20 @@ public interface Easing extends Wrapper, EasingType {
     @AsOf("3.2.0")
     static Easing symmetricCubicBezier(float x1, float y1) {
         return cubicBezier(x1, y1, 1.0F - x1, 1.0F - y1);
+    }
+
+    private static Easing create(Object source) {
+        record Holder() {
+            static final ConstructWireProvider<Easing> WIRE =
+                WireProvider.construct("dev.wyck.level.dimension.timeline.EasingImpl");
+            static final ConstructWireProvider<Easing> BEZIER_WIRE = WIRE.resolve("CubicBezier");
+        }
+        return switch (source) {
+            case String id -> Holder.WIRE.construct((Object) id);
+            case float[] points -> Holder.BEZIER_WIRE.construct(
+                points[0], points[1], points[2], points[3]
+            );
+            default -> throw new IllegalArgumentException("Unsupported easing source: " + source);
+        };
     }
 }

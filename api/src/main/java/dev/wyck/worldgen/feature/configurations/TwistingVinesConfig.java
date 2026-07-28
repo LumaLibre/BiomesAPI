@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.configurations;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface TwistingVinesConfig extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<TwistingVinesConfig> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.TwistingVinesConfigImpl");
 
     /**
      * How far out the vines can spread.
@@ -65,7 +61,10 @@ public interface TwistingVinesConfig extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static TwistingVinesConfig of(int spreadWidth, int spreadHeight, int maxHeight) {
-        return WIRE.construct(spreadWidth, spreadHeight, maxHeight);
+        record Holder() {
+            static final ConstructWireProvider<TwistingVinesConfig> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.TwistingVinesConfigImpl");
+        }
+        return Holder.WIRE.construct(spreadWidth, spreadHeight, maxHeight);
     }
 
     /**

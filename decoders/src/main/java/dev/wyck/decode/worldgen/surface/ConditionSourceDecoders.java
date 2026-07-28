@@ -70,7 +70,7 @@ public final class ConditionSourceDecoders extends DecoderRegistry<ConditionSour
             io.papermc.paper.world.worldgen.OptionallyFlatBedrockConditionSource condition =
                 (io.papermc.paper.world.worldgen.OptionallyFlatBedrockConditionSource) source;
             return OptionallyFlatBedrockConditionSource.of(
-                condition.randomName().toString(),
+                Decoders.key(condition.randomName()),
                 VerticalAnchor.decode(condition.trueAtAndBelow()),
                 VerticalAnchor.decode(condition.falseAtAndAbove()),
                 condition.isRoof()

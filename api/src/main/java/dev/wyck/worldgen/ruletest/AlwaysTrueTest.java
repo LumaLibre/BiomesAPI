@@ -2,7 +2,6 @@ package dev.wyck.worldgen.ruletest;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,14 +15,15 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface AlwaysTrueTest extends RuleTest {
-    @ApiStatus.Internal
-    ConstructWireProvider<AlwaysTrueTest> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.ruletest.AlwaysTrueTestImpl");
 
     /** The singleton instance of this test. */
     @AsOf("3.0.0")
     AlwaysTrueTest INSTANCE = of();
 
     private static AlwaysTrueTest of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<AlwaysTrueTest> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.ruletest.AlwaysTrueTestImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

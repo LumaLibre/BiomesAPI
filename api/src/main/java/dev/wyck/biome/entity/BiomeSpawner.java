@@ -29,12 +29,6 @@ public interface BiomeSpawner extends Wrapper {
     float DEFAULT_CREATURE_GENERATION_PROBABILITY = 0.1F;
 
     @ApiStatus.Internal
-    WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.biome.entity.BiomeSpawnerFactoryImpl");
-
-    @ApiStatus.Internal
-    Decoder<BiomeSpawner> DECODER = Decoder.create("dev.wyck.decode.biome.entity.BiomeSpawnerDecoder");
-
-    @ApiStatus.Internal
     interface Factory {
         BiomeSpawner create(Map<MobCategory, WeightedList.Builder<NaturalSpawner>> spawners, Map<EntityType, SpawnCost> mobSpawnCosts, float creatureGenerationProbability);
     }
@@ -99,7 +93,10 @@ public interface BiomeSpawner extends Wrapper {
      */
     @AsOf("3.3.0")
     static BiomeSpawner decode(Object minecraftBiomeSpawner) {
-        return DECODER.decode(minecraftBiomeSpawner);
+        record Holder() {
+            static final Decoder<BiomeSpawner> DECODER = Decoder.create("dev.wyck.decode.biome.entity.BiomeSpawnerDecoder");
+        }
+        return Holder.DECODER.decode(minecraftBiomeSpawner);
     }
 
     /**
@@ -254,7 +251,10 @@ public interface BiomeSpawner extends Wrapper {
         @AsOf("2.3.0")
         public BiomeSpawner build() {
             Preconditions.checkArgument(creatureGenerationProbability >= 0.0F && creatureGenerationProbability <= 1.0F, "creatureGenerationProbability must be between 0.0 and 1.0");
-            return WIRE.get().create(spawners, mobSpawnCosts, creatureGenerationProbability);
+            record Holder() {
+                static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.biome.entity.BiomeSpawnerFactoryImpl");
+            }
+            return Holder.WIRE.get().create(spawners, mobSpawnCosts, creatureGenerationProbability);
         }
     }
 }

@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.util.WeightedList;
 import dev.wyck.worldgen.Rotation;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
@@ -23,9 +22,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.1")
 public interface TemplateFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<TemplateFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.TemplateFeatureConfigurationImpl");
 
     /**
      * The weighted list of templates to choose from.
@@ -53,7 +49,10 @@ public interface TemplateFeatureConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.1")
     static TemplateFeatureConfiguration of(WeightedList<TemplateEntry> templates) {
-        return WIRE.construct(templates);
+        record Holder() {
+            static final ConstructWireProvider<TemplateFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.TemplateFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(templates);
     }
 
     /**

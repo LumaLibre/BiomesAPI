@@ -18,14 +18,14 @@ import org.jspecify.annotations.NullMarked;
 @ApiStatus.Internal
 public interface CustomCarverRegistry {
 
-    @ApiStatus.Internal
-    WireProvider<CustomCarverRegistry> WIRE = WireProvider.create("dev.wyck.registry.worldgen.CustomCarverRegistryImpl");
-
     @AsOf("3.0.0")
     void register(ResourceKey key, CustomCarver<?> carver);
 
     @AsOf("3.0.0")
     static CustomCarverRegistry registry() {
-        return WIRE.get();
+        record Holder() {
+            static final WireProvider<CustomCarverRegistry> WIRE = WireProvider.create("dev.wyck.registry.worldgen.CustomCarverRegistryImpl");
+        }
+        return Holder.WIRE.get();
     }
 }

@@ -26,9 +26,6 @@ import java.util.Set;
 @AsOf("3.0.0")
 public interface MangroveRootPlacement extends Wrapper {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<MangroveRootPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.rootplacers.MangroveRootPlacementImpl");
-
     /**
      * The blocks that roots can grow through.
      * @return the blocks roots can grow through
@@ -104,7 +101,10 @@ public interface MangroveRootPlacement extends Wrapper {
 
     @ApiStatus.Internal
     static MangroveRootPlacement of(Set<Material> canGrowThrough, Set<Material> muddyRootsIn, BlockStateProvider muddyRootsProvider, int maxRootWidth, int maxRootLength, float randomSkewChance) {
-        return WIRE.construct(canGrowThrough, muddyRootsIn, muddyRootsProvider, maxRootWidth, maxRootLength, randomSkewChance);
+        record Holder() {
+            static final ConstructWireProvider<MangroveRootPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.rootplacers.MangroveRootPlacementImpl");
+        }
+        return Holder.WIRE.construct(canGrowThrough, muddyRootsIn, muddyRootsProvider, maxRootWidth, maxRootLength, randomSkewChance);
     }
 
     /**

@@ -21,12 +21,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface GeodeLayerSettings extends Wrapper {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<GeodeLayerSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.geode.GeodeLayerSettingsImpl");
-
-    @ApiStatus.Internal
-    Decoder<GeodeLayerSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeLayerSettingsDecoder");
-
     /**
      * The thickness of the filling layer. Value between 0.01 and 50.0.
      * @return the filling layer thickness
@@ -80,7 +74,10 @@ public interface GeodeLayerSettings extends Wrapper {
      */
     @AsOf("3.0.0")
     static GeodeLayerSettings of(double filling, double innerLayer, double middleLayer, double outerLayer) {
-        return WIRE.construct(filling, innerLayer, middleLayer, outerLayer);
+        record Holder() {
+            static final ConstructWireProvider<GeodeLayerSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.geode.GeodeLayerSettingsImpl");
+        }
+        return Holder.WIRE.construct(filling, innerLayer, middleLayer, outerLayer);
     }
 
     /**
@@ -95,7 +92,10 @@ public interface GeodeLayerSettings extends Wrapper {
 
     @ApiStatus.Internal
     static GeodeLayerSettings decode(Object minecraftSettings) {
-        return DECODER.decode(minecraftSettings);
+        record Holder() {
+            static final Decoder<GeodeLayerSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeLayerSettingsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftSettings);
     }
 
     /**

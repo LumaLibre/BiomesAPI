@@ -30,7 +30,6 @@ public class VirtualBiomeCollector {
 
     private final Set<VirtualBiome> backing = new HashSet<>();
 
-
     /**
      * Appends a phony custom biome to the collector.
      * @param biome the phony custom biome to append
@@ -74,7 +73,6 @@ public class VirtualBiomeCollector {
         return backing.remove(biome);
     }
 
-
     /**
      * Removes a phony custom biome with the given ResourceKey from the collector.
      * @param biomeKey the ResourceKey of the biome to remove
@@ -85,7 +83,6 @@ public class VirtualBiomeCollector {
     public boolean removeBiome(ResourceKey biomeKey) {
         return backing.removeIf((VirtualBiome biome) -> biome.biomeResourceKey().equals(biomeKey));
     }
-
 
     /**
      * Clears all phony custom biomes from the collector.

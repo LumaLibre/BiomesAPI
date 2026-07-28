@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.featuresize;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,6 @@ import java.util.OptionalInt;
 @NullMarked
 @AsOf("3.0.0")
 public interface ThreeLayersFeatureSize extends FeatureSize {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ThreeLayersFeatureSize> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.featuresize.ThreeLayersFeatureSizeImpl");
 
     /**
      * The height of the lower layer, calculated from the bottom of the trunk, between 0 and 80 (inclusive).
@@ -94,7 +90,10 @@ public interface ThreeLayersFeatureSize extends FeatureSize {
     @AsOf("3.0.0")
     static ThreeLayersFeatureSize of(@Nullable Integer minClippedHeight, int limit, int upperLimit, int lowerSize, int middleSize, int upperSize) {
         OptionalInt optionalInt = minClippedHeight == null ? OptionalInt.empty() : OptionalInt.of(minClippedHeight);
-        return WIRE.construct(optionalInt, limit, upperLimit, lowerSize, middleSize, upperSize);
+        record Holder() {
+            static final ConstructWireProvider<ThreeLayersFeatureSize> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.featuresize.ThreeLayersFeatureSizeImpl");
+        }
+        return Holder.WIRE.construct(optionalInt, limit, upperLimit, lowerSize, middleSize, upperSize);
     }
 
     /**

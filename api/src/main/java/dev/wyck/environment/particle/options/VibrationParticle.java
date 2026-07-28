@@ -24,7 +24,7 @@ public record VibrationParticle(Vibration.Destination destination, int arrivalIn
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().vibration(destination, arrivalInTicks);
+        return ParticleOptionsFactory.instance().vibration(destination, arrivalInTicks);
     }
 
     @AsOf("2.0.0")

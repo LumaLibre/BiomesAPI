@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface SculkPatchConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SculkPatchConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.SculkPatchConfigurationImpl");
 
     /**
      * The number of charges between 1 and 32.
@@ -104,7 +100,10 @@ public interface SculkPatchConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static SculkPatchConfiguration of(int chargeCount, int amountPerCharge, int spreadAttempts, int growthRounds, int spreadRounds, IntProvider extraRareGrowths, float catalystChance) {
-        return WIRE.construct(chargeCount, amountPerCharge, spreadAttempts, growthRounds, spreadRounds, extraRareGrowths, catalystChance);
+        record Holder() {
+            static final ConstructWireProvider<SculkPatchConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.SculkPatchConfigurationImpl");
+        }
+        return Holder.WIRE.construct(chargeCount, amountPerCharge, spreadAttempts, growthRounds, spreadRounds, extraRareGrowths, catalystChance);
     }
 
     /**

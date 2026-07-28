@@ -24,7 +24,7 @@ public record DustTransitionParticle(int fromColor, int toColor, float scale) im
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().dustTransition(fromColor, toColor, scale);
+        return ParticleOptionsFactory.instance().dustTransition(fromColor, toColor, scale);
     }
 
     @AsOf("2.0.0")

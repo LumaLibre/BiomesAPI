@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.feature.treedecorators.TreeDecorator;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -25,9 +24,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface FallenTreeConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<FallenTreeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.FallenTreeConfigurationImpl");
 
     /**
      * The block state provider used for the fallen tree's trunk.
@@ -82,7 +78,10 @@ public interface FallenTreeConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static FallenTreeConfiguration of(BlockStateProvider trunkProvider, IntProvider logLength, List<TreeDecorator> stumpDecorators, List<TreeDecorator> logDecorators) {
-        return WIRE.construct(trunkProvider, logLength, stumpDecorators, logDecorators);
+        record Holder() {
+            static final ConstructWireProvider<FallenTreeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.FallenTreeConfigurationImpl");
+        }
+        return Holder.WIRE.construct(trunkProvider, logLength, stumpDecorators, logDecorators);
     }
 
     /**

@@ -6,7 +6,6 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
 import dev.wyck.worldgen.noise.NoiseRouter;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,9 +22,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface Marker extends DensityFunction, Registerable<Marker> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<Marker> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.MarkerImpl");
 
     /**
      * The type of the marker.
@@ -53,7 +49,10 @@ public interface Marker extends DensityFunction, Registerable<Marker> {
      */
     @AsOf("3.0.0")
     static Marker of(@Nullable ResourceKey resourceKey, Type type, DensityFunction input) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), type, input);
+        record Holder() {
+            static final ConstructWireProvider<Marker> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.MarkerImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), type, input);
     }
 
     /**

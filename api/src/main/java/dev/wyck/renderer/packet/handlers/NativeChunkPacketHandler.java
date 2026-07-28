@@ -20,8 +20,12 @@ import org.jspecify.annotations.NullMarked;
 @ApiStatus.Internal
 public interface NativeChunkPacketHandler {
 
-    @ApiStatus.Internal
-    WireProvider<NativeChunkPacketHandler> WIRE = WireProvider.create("dev.wyck.*.renderer.packet.handlers.NmsNativeChunkPacketHandler");
+    static NativeChunkPacketHandler instance() {
+        record Holder() {
+            static final WireProvider<NativeChunkPacketHandler> WIRE = WireProvider.create("dev.wyck.*.renderer.packet.handlers.NmsNativeChunkPacketHandler");
+        }
+        return Holder.WIRE.get();
+    }
 
     int CHUNK_SECTION_SIZE = 16;
     int CHUNK_SECTIONS = 4;

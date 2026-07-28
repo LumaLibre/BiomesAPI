@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
 import dev.wyck.worldgen.synth.NoiseParameters;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface ShiftedNoise2dFunction extends NoiseParameterFunction {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ShiftedNoise2dFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.noise.ShiftedNoise2dFunctionImpl");
 
     /**
      * Shift x density function.
@@ -71,7 +67,10 @@ public interface ShiftedNoise2dFunction extends NoiseParameterFunction {
      */
     @AsOf("3.0.0")
     static ShiftedNoise2dFunction of(@Nullable ResourceKey resourceKey, NoiseParameters noiseParameters, DensityFunction shiftX, DensityFunction shiftZ, double xzScale) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), noiseParameters, shiftX, shiftZ, xzScale);
+        record Holder() {
+            static final ConstructWireProvider<ShiftedNoise2dFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.noise.ShiftedNoise2dFunctionImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), noiseParameters, shiftX, shiftZ, xzScale);
     }
 
     /**

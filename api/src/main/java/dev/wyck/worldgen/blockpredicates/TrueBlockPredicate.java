@@ -2,7 +2,6 @@ package dev.wyck.worldgen.blockpredicates;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,14 +16,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface TrueBlockPredicate extends BlockPredicate {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<TrueBlockPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.TrueBlockPredicateImpl");
-
     /** The singleton instance of {@link TrueBlockPredicate}. */
     @AsOf("3.0.0")
     TrueBlockPredicate INSTANCE = of();
 
     private static TrueBlockPredicate of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<TrueBlockPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.TrueBlockPredicateImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

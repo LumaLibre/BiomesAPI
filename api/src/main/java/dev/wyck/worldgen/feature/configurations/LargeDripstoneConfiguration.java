@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.FloatProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -25,9 +24,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.0")
 public interface LargeDripstoneConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<LargeDripstoneConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.LargeDripstoneConfigurationImpl");
 
     /**
      * Describes which blocks the feature can generate on.
@@ -137,7 +133,10 @@ public interface LargeDripstoneConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static LargeDripstoneConfiguration of(Set<Material> replaceableBlocks, int floorToCeilingSearchRange, IntProvider columnRadius, FloatProvider heightScale, float maxColumnRadiusToCaveHeightRatio, FloatProvider stalactiteBluntness, FloatProvider stalagmiteBluntness, FloatProvider windSpeed, int minRadiusForWind, float minBluntnessForWind) {
-        return WIRE.construct(replaceableBlocks, floorToCeilingSearchRange, columnRadius, heightScale, maxColumnRadiusToCaveHeightRatio, stalactiteBluntness, stalagmiteBluntness, windSpeed, minRadiusForWind, minBluntnessForWind);
+        record Holder() {
+            static final ConstructWireProvider<LargeDripstoneConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.LargeDripstoneConfigurationImpl");
+        }
+        return Holder.WIRE.construct(replaceableBlocks, floorToCeilingSearchRange, columnRadius, heightScale, maxColumnRadiusToCaveHeightRatio, stalactiteBluntness, stalagmiteBluntness, windSpeed, minRadiusForWind, minBluntnessForWind);
     }
 
     /**

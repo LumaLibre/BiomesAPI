@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.WeightedList;
 import dev.wyck.worldgen.placement.PlacedFeature;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -20,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.1")
 public interface WeightedRandomFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<WeightedRandomFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.WeightedRandomFeatureConfigurationImpl");
 
     /**
      * The weighted list of features to choose from.
@@ -50,7 +46,10 @@ public interface WeightedRandomFeatureConfiguration extends FeatureConfiguration
      */
     @AsOf("3.0.1")
     static WeightedRandomFeatureConfiguration of(WeightedList<PlacedFeature> features) {
-        return WIRE.construct(features);
+        record Holder() {
+            static final ConstructWireProvider<WeightedRandomFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.WeightedRandomFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(features);
     }
 
     /**

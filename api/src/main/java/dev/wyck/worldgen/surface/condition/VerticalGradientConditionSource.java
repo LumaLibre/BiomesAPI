@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.heightproviders.VerticalAnchor;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface VerticalGradientConditionSource extends ConditionSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<VerticalGradientConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.VerticalGradientConditionSourceImpl");
 
     /**
      * Used as a seed to randomize the gradient.
@@ -69,7 +65,10 @@ public interface VerticalGradientConditionSource extends ConditionSource {
      */
     @AsOf("3.0.0")
     static VerticalGradientConditionSource of(String randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove) {
-        return WIRE.construct(randomName, trueAtAndBelow, falseAtAndAbove);
+        record Holder() {
+            static final ConstructWireProvider<VerticalGradientConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.VerticalGradientConditionSourceImpl");
+        }
+        return Holder.WIRE.construct(randomName, trueAtAndBelow, falseAtAndAbove);
     }
 
     /**

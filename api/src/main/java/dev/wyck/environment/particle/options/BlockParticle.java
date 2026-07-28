@@ -23,7 +23,7 @@ public record BlockParticle(Material type) implements ParticleData {
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().block(particleType, type);
+        return ParticleOptionsFactory.instance().block(particleType, type);
     }
 
     @AsOf("2.0.0")

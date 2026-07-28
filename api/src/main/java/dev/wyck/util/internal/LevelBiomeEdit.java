@@ -24,7 +24,6 @@ public sealed interface LevelBiomeEdit permits LevelBiomeEdit.Add, LevelBiomeEdi
     @AsOf("2.3.0")
     ResourceKey dimension();
 
-
     /**
      * Adds a biome to a dimension.
      * @param dimension the dimension to add the biome to

@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +23,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface FindTopSurface extends DensityFunction, Registerable<FindTopSurface> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<FindTopSurface> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.FindTopSurfaceImpl");
 
     /**
      * The density function to scan.
@@ -82,7 +78,10 @@ public interface FindTopSurface extends DensityFunction, Registerable<FindTopSur
      */
     @AsOf("3.0.0")
     static FindTopSurface of(@Nullable ResourceKey resourceKey, DensityFunction density, DensityFunction upperBound, int lowerBound, int cellHeight) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), density, upperBound, lowerBound, cellHeight);
+        record Holder() {
+            static final ConstructWireProvider<FindTopSurface> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.FindTopSurfaceImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), density, upperBound, lowerBound, cellHeight);
     }
 
     /**

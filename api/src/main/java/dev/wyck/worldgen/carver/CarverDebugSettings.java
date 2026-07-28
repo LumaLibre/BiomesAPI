@@ -7,7 +7,6 @@ import dev.wyck.wrapper.Wrapper;
 import dev.wyck.wrapper.decode.Decoder;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -20,13 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface CarverDebugSettings extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CarverDebugSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.carver.CarverDebugSettingsImpl");
-
-    @ApiStatus.Internal
-    Decoder<CarverDebugSettings> DECODER =
-        Decoder.create("dev.wyck.decode.worldgen.carver.CarverDebugSettingsDecoder");
 
     /** The default debug settings, as they appear in Minecraft. */
     @AsOf("3.0.0")
@@ -94,7 +86,10 @@ public interface CarverDebugSettings extends Wrapper {
      */
     @AsOf("3.0.0")
     static CarverDebugSettings of(boolean debugMode, BlockData airState, BlockData waterState, BlockData lavaState, BlockData barrierState) {
-        return WIRE.construct(debugMode, airState, waterState, lavaState, barrierState);
+        record Holder() {
+            static final ConstructWireProvider<CarverDebugSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.carver.CarverDebugSettingsImpl");
+        }
+        return Holder.WIRE.construct(debugMode, airState, waterState, lavaState, barrierState);
     }
 
     /**
@@ -115,7 +110,10 @@ public interface CarverDebugSettings extends Wrapper {
      */
     @AsOf("3.3.0")
     static CarverDebugSettings decode(Object minecraftSettings) {
-        return DECODER.decode(minecraftSettings);
+        record Holder() {
+            static final Decoder<CarverDebugSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.carver.CarverDebugSettingsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftSettings);
     }
 
     /**

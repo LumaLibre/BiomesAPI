@@ -7,7 +7,6 @@ import dev.wyck.wrapper.KeyedEnumTranslator;
 import dev.wyck.wrapper.WrappedEnumerator;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,12 +22,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("1.1.0")
 public interface BedRule extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BedRule> WIRE = ConstructWireProvider.construct("dev.wyck.environment.BedRuleImpl");
-
-    @ApiStatus.Internal
-    Decoder<BedRule> DECODER = Decoder.create("dev.wyck.decode.environment.BedRuleDecoder");
 
     /**
      * Gets the rule for sleeping in the bed.
@@ -83,7 +76,10 @@ public interface BedRule extends Wrapper {
      */
     @AsOf("3.0.0")
     static BedRule of(Rule canSleep, Rule canSetSpawn, boolean explodes, @Nullable Component errorMessage) {
-        return WIRE.construct(canSleep, canSetSpawn, explodes, Optional.ofNullable(errorMessage));
+        record Holder() {
+            static final ConstructWireProvider<BedRule> WIRE = ConstructWireProvider.construct("dev.wyck.environment.BedRuleImpl");
+        }
+        return Holder.WIRE.construct(canSleep, canSetSpawn, explodes, Optional.ofNullable(errorMessage));
     }
 
     /**
@@ -104,7 +100,10 @@ public interface BedRule extends Wrapper {
      */
     @AsOf("3.3.0")
     static BedRule decode(Object minecraftBedRule) {
-        return DECODER.decode(minecraftBedRule);
+        record Holder() {
+            static final Decoder<BedRule> DECODER = Decoder.create("dev.wyck.decode.environment.BedRuleDecoder");
+        }
+        return Holder.DECODER.decode(minecraftBedRule);
     }
 
     /**

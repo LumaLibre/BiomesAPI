@@ -5,15 +5,11 @@ import dev.wyck.biome.Biome;
 import dev.wyck.worldgen.biome.BiomeSource;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @AsOf("2.4.0")
 public interface ChunkGenerator extends Wrapper {
-
-    @ApiStatus.Internal
-    Decoder<ChunkGenerator> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.ChunkGeneratorDecoders");
 
     /**
      * The biome source this generator draws from.
@@ -72,6 +68,9 @@ public interface ChunkGenerator extends Wrapper {
      */
     @AsOf("3.3.0")
     static ChunkGenerator decode(Object minecraftGenerator) {
-        return DECODER.decode(minecraftGenerator);
+        record Holder() {
+            static final Decoder<ChunkGenerator> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.ChunkGeneratorDecoders");
+        }
+        return Holder.DECODER.decode(minecraftGenerator);
     }
 }

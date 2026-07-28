@@ -2,7 +2,6 @@ package dev.wyck.worldgen.valueproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -15,8 +14,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface TrapezoidInt extends IntProvider {
-    @ApiStatus.Internal
-    ConstructWireProvider<TrapezoidInt> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.valueproviders.TrapezoidIntImpl");
 
     /**
      * The length of the range in the middle that has a uniform distribution.
@@ -46,7 +43,10 @@ public interface TrapezoidInt extends IntProvider {
      */
     @AsOf("3.0.0")
     static TrapezoidInt of(int min, int max, int plateau) {
-        return WIRE.construct(min, max, plateau);
+        record Holder() {
+            static final ConstructWireProvider<TrapezoidInt> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.valueproviders.TrapezoidIntImpl");
+        }
+        return Holder.WIRE.construct(min, max, plateau);
     }
 
     /**

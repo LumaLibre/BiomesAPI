@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface TagMatchTest extends RuleTest {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<TagMatchTest> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.ruletest.TagMatchTestImpl");
 
     /**
      * The tag to match.
@@ -39,7 +35,10 @@ public interface TagMatchTest extends RuleTest {
      */
     @AsOf("3.0.0")
     static TagMatchTest of(ResourceKey tag) {
-        return WIRE.construct(tag);
+        record Holder() {
+            static final ConstructWireProvider<TagMatchTest> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.ruletest.TagMatchTestImpl");
+        }
+        return Holder.WIRE.construct(tag);
     }
 
     /**

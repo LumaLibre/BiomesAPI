@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.BukkitBootstrapUtil;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -25,9 +24,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.0")
 public interface SpeleothemConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SpeleothemConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.SpeleothemConfigurationImpl");
 
     /**
      * Describes the block forming the base of the speleothem.
@@ -110,7 +106,10 @@ public interface SpeleothemConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static SpeleothemConfiguration of(BlockData baseBlock, BlockData pointedBlock, Set<Material> replaceableBlocks, float chanceOfTallerDripstone, float chanceOfDirectionalSpread, float chanceOfSpreadRadius2, float chanceOfSpreadRadius3) {
-        return WIRE.construct(baseBlock, pointedBlock, replaceableBlocks, chanceOfTallerDripstone, chanceOfDirectionalSpread, chanceOfSpreadRadius2, chanceOfSpreadRadius3);
+        record Holder() {
+            static final ConstructWireProvider<SpeleothemConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.SpeleothemConfigurationImpl");
+        }
+        return Holder.WIRE.construct(baseBlock, pointedBlock, replaceableBlocks, chanceOfTallerDripstone, chanceOfDirectionalSpread, chanceOfSpreadRadius2, chanceOfSpreadRadius3);
     }
 
     /**

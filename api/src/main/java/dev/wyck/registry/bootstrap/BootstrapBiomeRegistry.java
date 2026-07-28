@@ -27,11 +27,6 @@ import org.jspecify.annotations.NullMarked;
 @SuppressWarnings("UnstableApiUsage")
 public interface BootstrapBiomeRegistry {
 
-    @ApiStatus.Internal
-    WireProvider<BootstrapBiomeRegistry> UNSAFE = WireProvider.create("dev.wyck.registry.bootstrap.UnsafePaperBootstrapBiomeRegistry");
-    @ApiStatus.Internal
-    WireProvider<BootstrapBiomeRegistry> DATAPACK = WireProvider.create("dev.wyck.registry.bootstrap.DatapackBootstrapBiomeRegistry");
-
     /**
      * Composes a new BootstrapBiomeRegistry instance.
      * @param context the bootstrap context
@@ -55,7 +50,10 @@ public interface BootstrapBiomeRegistry {
      */
     @AsOf("2.3.0")
     static BootstrapBiomeRegistry injector() {
-        return UNSAFE.getNew();
+        record Holder() {
+            static final WireProvider<BootstrapBiomeRegistry> WIRE = WireProvider.create("dev.wyck.registry.bootstrap.UnsafePaperBootstrapBiomeRegistry");
+        }
+        return Holder.WIRE.getNew();
     }
 
     /**
@@ -66,7 +64,10 @@ public interface BootstrapBiomeRegistry {
      */
     @AsOf("2.3.0")
     static BootstrapBiomeRegistry datapack() {
-        return DATAPACK.getNew();
+        record Holder() {
+            static final WireProvider<BootstrapBiomeRegistry> WIRE = WireProvider.create("dev.wyck.registry.bootstrap.DatapackBootstrapBiomeRegistry");
+        }
+        return Holder.WIRE.getNew();
     }
 
     /**
@@ -93,7 +94,6 @@ public interface BootstrapBiomeRegistry {
      */
     @AsOf("2.3.0")
     BootstrapBiomeRegistry deferring(ThrowingRunnable runnable);
-
 
     /**
      * Adds a biome to a dimension's biome distribution.

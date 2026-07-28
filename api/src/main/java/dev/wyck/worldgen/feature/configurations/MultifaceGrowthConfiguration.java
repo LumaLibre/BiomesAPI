@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.HashSet;
@@ -21,9 +20,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.0")
 public interface MultifaceGrowthConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MultifaceGrowthConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.MultifaceGrowthConfigurationImpl");
 
     /**
      * The block to place.
@@ -106,7 +102,10 @@ public interface MultifaceGrowthConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static MultifaceGrowthConfiguration of(Material placeBlock, int searchRange, boolean canPlaceOnFloor, boolean canPlaceOnCeiling, boolean canPlaceOnWall, float chanceOfSpreading, Set<Material> canBePlacedOn) {
-        return WIRE.construct(placeBlock, searchRange, canPlaceOnFloor, canPlaceOnCeiling, canPlaceOnWall, chanceOfSpreading, canBePlacedOn);
+        record Holder() {
+            static final ConstructWireProvider<MultifaceGrowthConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.MultifaceGrowthConfigurationImpl");
+        }
+        return Holder.WIRE.construct(placeBlock, searchRange, canPlaceOnFloor, canPlaceOnCeiling, canPlaceOnWall, chanceOfSpreading, canBePlacedOn);
     }
 
     /**

@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.featuresize;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import java.util.OptionalInt;
 @NullMarked
 @AsOf("3.0.0")
 public interface TwoLayersFeatureSize extends FeatureSize {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<TwoLayersFeatureSize> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.featuresize.TwoLayersFeatureSizeImpl");
 
     /**
      * The limit between the lower and upper layer, between 0 and 81 (inclusive). Defaults to 1.
@@ -72,7 +68,10 @@ public interface TwoLayersFeatureSize extends FeatureSize {
     @AsOf("3.0.0")
     static TwoLayersFeatureSize of(@Nullable Integer minClippedHeight, int limit, int lowerSize, int upperSize) {
         OptionalInt optionalInt = minClippedHeight == null ? OptionalInt.empty() : OptionalInt.of(minClippedHeight);
-        return WIRE.construct(optionalInt, limit, lowerSize, upperSize);
+        record Holder() {
+            static final ConstructWireProvider<TwoLayersFeatureSize> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.featuresize.TwoLayersFeatureSizeImpl");
+        }
+        return Holder.WIRE.construct(optionalInt, limit, lowerSize, upperSize);
     }
 
     /**

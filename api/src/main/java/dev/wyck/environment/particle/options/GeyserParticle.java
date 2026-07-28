@@ -20,7 +20,7 @@ import org.jspecify.annotations.NullMarked;
 public record GeyserParticle(int waterBlocks) implements ParticleData {
     @Override
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().geyser(particleType, waterBlocks);
+        return ParticleOptionsFactory.instance().geyser(particleType, waterBlocks);
     }
 
     /**

@@ -2,7 +2,6 @@ package dev.wyck.worldgen.feature.configurations;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,14 +15,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface NoneFeatureConfiguration extends FeatureConfiguration {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<NoneFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.NoneFeatureConfigurationImpl");
-
     /** The singleton instance of {@link NoneFeatureConfiguration}. */
     @AsOf("3.0.0")
     NoneFeatureConfiguration INSTANCE = of();
 
     private static NoneFeatureConfiguration of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<NoneFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.NoneFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

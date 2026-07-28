@@ -12,7 +12,6 @@ import dev.wyck.level.dimension.clock.WorldClock;
 import dev.wyck.level.dimension.timeline.AttributeTrack;
 import dev.wyck.level.dimension.timeline.Timeline;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +23,6 @@ import java.util.function.Consumer;
 @NullMarked
 @AsOf("3.2.0")
 public interface ComposedTimeline extends Timeline, Registerable<ComposedTimeline> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ComposedTimeline> WIRE = WireProvider.construct("dev.wyck.*?.level.dimension.timeline.types.ComposedTimelineImpl");
 
     /**
      * The world clock this timeline is based on.
@@ -82,7 +78,10 @@ public interface ComposedTimeline extends Timeline, Registerable<ComposedTimelin
      */
     @AsOf("3.2.0")
     static ComposedTimeline of(ResourceKey key, WorldClock clock, @Nullable Integer periodTicks, List<AttributeTrack<?>> tracks, List<TimeMarker> timeMarkers) {
-        return WIRE.construct(key, clock, Optional.ofNullable(periodTicks), List.copyOf(tracks), List.copyOf(timeMarkers));
+        record Holder() {
+            static final ConstructWireProvider<ComposedTimeline> WIRE = WireProvider.construct("dev.wyck.*?.level.dimension.timeline.types.ComposedTimelineImpl");
+        }
+        return Holder.WIRE.construct(key, clock, Optional.ofNullable(periodTicks), List.copyOf(tracks), List.copyOf(timeMarkers));
     }
 
     /**

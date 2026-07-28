@@ -3,7 +3,6 @@ package dev.wyck.worldgen.ruletest;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface RandomBlockMatchTest extends RuleTest {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RandomBlockMatchTest> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.ruletest.RandomBlockMatchTestImpl");
 
     /**
      * The block to match.
@@ -47,6 +43,9 @@ public interface RandomBlockMatchTest extends RuleTest {
     @AsOf("3.0.0")
     static RandomBlockMatchTest of(Material block, float probability) {
         // No preconditions; minecraft just clamps values
-        return WIRE.construct(block, probability);
+        record Holder() {
+            static final ConstructWireProvider<RandomBlockMatchTest> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.ruletest.RandomBlockMatchTestImpl");
+        }
+        return Holder.WIRE.construct(block, probability);
     }
 }

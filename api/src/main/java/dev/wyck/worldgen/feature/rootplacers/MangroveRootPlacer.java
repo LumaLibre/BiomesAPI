@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface MangroveRootPlacer extends RootPlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MangroveRootPlacer> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.rootplacers.MangroveRootPlacerImpl");
 
     /**
      * The mangrove root placement parameters.
@@ -55,7 +51,10 @@ public interface MangroveRootPlacer extends RootPlacer {
      */
     @AsOf("3.0.0")
     static MangroveRootPlacer of(IntProvider trunkOffsetY, BlockStateProvider rootProvider, @Nullable AboveRootPlacement aboveRootPlacement, MangroveRootPlacement mangroveRootPlacement) {
-        return WIRE.construct(trunkOffsetY, rootProvider, Optional.ofNullable(aboveRootPlacement), mangroveRootPlacement);
+        record Holder() {
+            static final ConstructWireProvider<MangroveRootPlacer> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.rootplacers.MangroveRootPlacerImpl");
+        }
+        return Holder.WIRE.construct(trunkOffsetY, rootProvider, Optional.ofNullable(aboveRootPlacement), mangroveRootPlacement);
     }
 
     /**

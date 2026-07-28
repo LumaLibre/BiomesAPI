@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-
 /**
  * Wraps a minecraft dimension type.
  *
@@ -38,9 +37,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("2.4.0")
 public interface Dimension extends Keyed, Wrapper {
-
-    @ApiStatus.Internal
-    Decoder<Dimension> DECODER = Decoder.create("dev.wyck.decode.dimension.DimensionDecoder");
 
     /**
      * The key of this dimension type.
@@ -239,7 +235,6 @@ public interface Dimension extends Keyed, Wrapper {
         return new Builder().resourceKey(resourceKey);
     }
 
-
     /**
      * Simply holds a reference to a dimension.
      * @param resourceKey the resource key of the dimension
@@ -274,7 +269,10 @@ public interface Dimension extends Keyed, Wrapper {
      */
     @AsOf("3.3.0")
     static Dimension decode(Object minecraftDimension) {
-        return DECODER.decode(minecraftDimension);
+        record Holder() {
+            static final Decoder<Dimension> DECODER = Decoder.create("dev.wyck.decode.dimension.DimensionDecoder");
+        }
+        return Holder.DECODER.decode(minecraftDimension);
     }
     
     

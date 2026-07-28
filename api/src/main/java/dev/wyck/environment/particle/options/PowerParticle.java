@@ -22,7 +22,7 @@ public record PowerParticle(float power) implements ParticleData {
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().power(particleType, power);
+        return ParticleOptionsFactory.instance().power(particleType, power);
     }
 
     @AsOf("2.0.0")

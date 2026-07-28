@@ -30,10 +30,6 @@ import org.jspecify.annotations.Nullable;
 @AsOf("2.1.0")
 public interface PacketHandler extends AbstractBiomeRenderer {
 
-    /**
-     * The wire-resolved factory that constructs concrete PacketHandler instances.
-     * The implementation lives in the commons module; this points to its canonical class name.
-     */
     @ApiStatus.Internal
     WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.renderer.packet.PacketHandlerFactoryImpl");
 

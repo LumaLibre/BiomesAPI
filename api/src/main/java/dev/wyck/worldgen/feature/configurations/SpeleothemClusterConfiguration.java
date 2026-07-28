@@ -7,7 +7,6 @@ import dev.wyck.worldgen.valueproviders.FloatProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +23,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.0")
 public interface SpeleothemClusterConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SpeleothemClusterConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.SpeleothemClusterConfigurationImpl");
 
     /**
      * The block that the base of the cluster is made of.
@@ -407,7 +403,10 @@ public interface SpeleothemClusterConfiguration extends FeatureConfiguration {
             Preconditions.checkArgument(maxDistanceFromEdgeAffectingChanceOfSpeleothem >= 1 && maxDistanceFromEdgeAffectingChanceOfSpeleothem <= 64, "maxDistanceFromEdgeAffectingChanceOfSpeleothem must be between 1 and 64");
             Preconditions.checkArgument(maxDistanceFromCenterAffectingHeightBias >= 1 && maxDistanceFromCenterAffectingHeightBias <= 64, "maxDistanceFromCenterAffectingHeightBias must be between 1 and 64");
 
-            return WIRE.construct(
+            record Holder() {
+                static final ConstructWireProvider<SpeleothemClusterConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.SpeleothemClusterConfigurationImpl");
+            }
+            return Holder.WIRE.construct(
                 baseBlock,
                 pointedBlock,
                 replaceableBlocks,

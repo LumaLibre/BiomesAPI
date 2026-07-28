@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface NoiseThresholdConditionSource extends ConditionSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NoiseThresholdConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.surface.condition.NoiseThresholdConditionSourceImpl");
 
     /**
      * The key of the noise to sample.
@@ -90,7 +86,10 @@ public interface NoiseThresholdConditionSource extends ConditionSource {
      */
     @AsOf("3.3.0")
     static NoiseThresholdConditionSource of(ResourceKey noise, double minThreshold, double maxThreshold, boolean is3d) {
-        return WIRE.construct(noise, minThreshold, maxThreshold, is3d);
+        record Holder() {
+            static final ConstructWireProvider<NoiseThresholdConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.surface.condition.NoiseThresholdConditionSourceImpl");
+        }
+        return Holder.WIRE.construct(noise, minThreshold, maxThreshold, is3d);
     }
 
     /**

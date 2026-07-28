@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +23,6 @@ import java.util.Optional;
 @AsOf("3.0.0")
 public interface EndIslands extends DensityFunction, Registerable<EndIslands> {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<EndIslands> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.EndIslandsImpl");
-
     /**
      * The seed used to generate the end islands noise.
      * @return the seed
@@ -44,7 +40,10 @@ public interface EndIslands extends DensityFunction, Registerable<EndIslands> {
      */
     @AsOf("3.0.0")
     static EndIslands of(@Nullable ResourceKey resourceKey, long seed) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), seed);
+        record Holder() {
+            static final ConstructWireProvider<EndIslands> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.EndIslandsImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), seed);
     }
 
     /**

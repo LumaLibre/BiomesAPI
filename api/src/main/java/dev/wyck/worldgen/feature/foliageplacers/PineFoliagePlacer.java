@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface PineFoliagePlacer extends FoliagePlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<PineFoliagePlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.foliageplacers.PineFoliagePlacerImpl");
 
     /**
      * The foliage's height, between 0 and 24 (inclusive).
@@ -50,7 +46,10 @@ public interface PineFoliagePlacer extends FoliagePlacer {
      */
     @AsOf("3.0.0")
     static PineFoliagePlacer of(IntProvider radius, IntProvider offset, IntProvider height) {
-        return WIRE.construct(radius, offset, height);
+        record Holder() {
+            static final ConstructWireProvider<PineFoliagePlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.foliageplacers.PineFoliagePlacerImpl");
+        }
+        return Holder.WIRE.construct(radius, offset, height);
     }
 
     /**

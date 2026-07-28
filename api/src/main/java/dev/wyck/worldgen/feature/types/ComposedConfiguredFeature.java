@@ -8,7 +8,6 @@ import dev.wyck.worldgen.feature.ConfiguredFeature;
 import dev.wyck.worldgen.feature.FeatureType;
 import dev.wyck.worldgen.feature.configurations.FeatureConfiguration;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -26,9 +25,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface ComposedConfiguredFeature extends ConfiguredFeature, Registerable<ComposedConfiguredFeature> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ComposedConfiguredFeature> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.types.ComposedConfiguredFeatureImpl");
 
     /**
      * The built-in feature type algorithm this configured feature composes.
@@ -66,7 +62,10 @@ public interface ComposedConfiguredFeature extends ConfiguredFeature, Registerab
      */
     @AsOf("3.0.0")
     static ComposedConfiguredFeature of(@Nullable ResourceKey key, FeatureType type, FeatureConfiguration config) {
-        return WIRE.construct(Optional.ofNullable(key), type, config);
+        record Holder() {
+            static final ConstructWireProvider<ComposedConfiguredFeature> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.types.ComposedConfiguredFeatureImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(key), type, config);
     }
 
     /**

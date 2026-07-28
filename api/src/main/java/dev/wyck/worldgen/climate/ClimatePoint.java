@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
 import dev.wyck.wrapper.decode.Decoder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,12 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface ClimatePoint extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ClimatePoint> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.climate.ClimatePointImpl");
-
-    @ApiStatus.Internal
-    Decoder<ClimatePoint> DECODER = Decoder.create("dev.wyck.decode.worldgen.climate.ClimatePointDecoder");
 
     /**
      * The temperature axis span.
@@ -115,7 +108,10 @@ public interface ClimatePoint extends Wrapper {
     @AsOf("2.4.1")
     static ClimatePoint of(ClimateParameter temperature, ClimateParameter humidity, ClimateParameter continentalness, ClimateParameter erosion, ClimateParameter depth, ClimateParameter weirdness, float offset) {
         Preconditions.checkArgument(offset >= 0.0f && offset <= 1.0f, "offset must be within [0.0, 1.0]: %s", offset);
-        return WIRE.construct(temperature, humidity, continentalness, erosion, depth, weirdness, offset);
+        record Holder() {
+            static final ConstructWireProvider<ClimatePoint> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.climate.ClimatePointImpl");
+        }
+        return Holder.WIRE.construct(temperature, humidity, continentalness, erosion, depth, weirdness, offset);
     }
 
     /**
@@ -154,7 +150,10 @@ public interface ClimatePoint extends Wrapper {
      */
     @AsOf("3.3.0")
     static ClimatePoint decode(Object minecraftPoint) {
-        return DECODER.decode(minecraftPoint);
+        record Holder() {
+            static final Decoder<ClimatePoint> DECODER = Decoder.create("dev.wyck.decode.worldgen.climate.ClimatePointDecoder");
+        }
+        return Holder.DECODER.decode(minecraftPoint);
     }
 
     /**

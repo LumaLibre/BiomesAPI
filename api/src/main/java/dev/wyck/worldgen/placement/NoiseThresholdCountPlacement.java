@@ -2,7 +2,6 @@ package dev.wyck.worldgen.placement;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface NoiseThresholdCountPlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NoiseThresholdCountPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.NoiseThresholdCountPlacementImpl");
 
     /**
      * The threshold within the noise for when to use the below or above count.
@@ -66,7 +62,10 @@ public interface NoiseThresholdCountPlacement extends PlacementModifier {
      */
     @AsOf("3.0.0")
     static NoiseThresholdCountPlacement of(double noiseLevel, int belowNoise, int aboveNoise) {
-        return WIRE.construct(noiseLevel, belowNoise, aboveNoise);
+        record Holder() {
+            static final ConstructWireProvider<NoiseThresholdCountPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.NoiseThresholdCountPlacementImpl");
+        }
+        return Holder.WIRE.construct(noiseLevel, belowNoise, aboveNoise);
     }
 
     /**

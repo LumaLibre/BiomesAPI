@@ -7,7 +7,6 @@ import dev.wyck.util.BukkitBootstrapUtil;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface ReplaceSphereConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ReplaceSphereConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.ReplaceSphereConfigurationImpl");
 
     /**
      * The block state that is replaced within the sphere.
@@ -69,7 +65,10 @@ public interface ReplaceSphereConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static ReplaceSphereConfiguration of(BlockData targetState, BlockData replaceState, IntProvider radius) {
-        return WIRE.construct(targetState, replaceState, radius);
+        record Holder() {
+            static final ConstructWireProvider<ReplaceSphereConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.ReplaceSphereConfigurationImpl");
+        }
+        return Holder.WIRE.construct(targetState, replaceState, radius);
     }
 
     /**

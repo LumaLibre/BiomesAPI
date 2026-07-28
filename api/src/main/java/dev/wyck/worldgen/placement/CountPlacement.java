@@ -3,7 +3,6 @@ package dev.wyck.worldgen.placement;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface CountPlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CountPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.CountPlacementImpl");
 
     /**
      * The number of placements to attempt, between 0 and 4096 (inclusive).
@@ -38,6 +34,9 @@ public interface CountPlacement extends PlacementModifier {
      */
     @AsOf("3.0.0")
     static CountPlacement of(IntProvider count) {
-        return WIRE.construct(count);
+        record Holder() {
+            static final ConstructWireProvider<CountPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.CountPlacementImpl");
+        }
+        return Holder.WIRE.construct(count);
     }
 }

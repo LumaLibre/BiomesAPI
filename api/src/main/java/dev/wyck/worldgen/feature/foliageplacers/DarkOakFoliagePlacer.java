@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.foliageplacers;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface DarkOakFoliagePlacer extends FoliagePlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<DarkOakFoliagePlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.foliageplacers.DarkOakFoliagePlacerImpl");
 
     /**
      * Converts this object back to a builder.
@@ -40,7 +36,10 @@ public interface DarkOakFoliagePlacer extends FoliagePlacer {
      */
     @AsOf("3.0.0")
     static DarkOakFoliagePlacer of(IntProvider radius, IntProvider offset) {
-        return WIRE.construct(radius, offset);
+        record Holder() {
+            static final ConstructWireProvider<DarkOakFoliagePlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.foliageplacers.DarkOakFoliagePlacerImpl");
+        }
+        return Holder.WIRE.construct(radius, offset);
     }
 
     /**

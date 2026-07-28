@@ -36,12 +36,6 @@ import java.util.List;
 public sealed interface PlacedFeature extends Wrapper, Keyed permits PlacedFeature.Reference, PlacedFeature.Composed {
 
     @ApiStatus.Internal
-    WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.worldgen.placement.PlacedFeatureFactoryImpl");
-
-    @ApiStatus.Internal
-    Decoder<PlacedFeature> DECODER = Decoder.create("dev.wyck.decode.worldgen.placement.PlacedFeatureDecoder");
-
-    @ApiStatus.Internal
     interface Factory extends ContextWrapper<PlacedFeature> {
         Object toMinecraft(PlacedFeature feature);
     }
@@ -54,7 +48,10 @@ public sealed interface PlacedFeature extends Wrapper, Keyed permits PlacedFeatu
     @Override
     @AsOf("2.3.0")
     default Object toMinecraft() {
-        return WIRE.get().toMinecraft(this);
+        record Holder() {
+            static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.worldgen.placement.PlacedFeatureFactoryImpl");
+        }
+        return Holder.WIRE.get().toMinecraft(this);
     }
 
     /**
@@ -132,7 +129,10 @@ public sealed interface PlacedFeature extends Wrapper, Keyed permits PlacedFeatu
      */
     @AsOf("3.3.0")
     static PlacedFeature decode(Object minecraftPlacedFeature) {
-        return DECODER.decode(minecraftPlacedFeature);
+        record Holder() {
+            static final Decoder<PlacedFeature> DECODER = Decoder.create("dev.wyck.decode.worldgen.placement.PlacedFeatureDecoder");
+        }
+        return Holder.DECODER.decode(minecraftPlacedFeature);
     }
 
     /**

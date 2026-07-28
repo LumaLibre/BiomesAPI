@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.wrapper.Registerable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -26,9 +25,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface ComposedNoiseParameters extends NoiseParameters, Registerable<ComposedNoiseParameters> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ComposedNoiseParameters> WIRE = WireProvider.construct("dev.wyck.worldgen.synth.ComposedNoiseParametersImpl");
 
     /**
      * The first octave of the noise parameters.
@@ -65,7 +61,10 @@ public interface ComposedNoiseParameters extends NoiseParameters, Registerable<C
      */
     @AsOf("3.0.0")
     static ComposedNoiseParameters of(@Nullable ResourceKey resourceKey, int firstOctave, List<Double> amplitudes) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), firstOctave, amplitudes);
+        record Holder() {
+            static final ConstructWireProvider<ComposedNoiseParameters> WIRE = WireProvider.construct("dev.wyck.worldgen.synth.ComposedNoiseParametersImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), firstOctave, amplitudes);
     }
 
     /**
@@ -114,7 +113,6 @@ public interface ComposedNoiseParameters extends NoiseParameters, Registerable<C
         private @Nullable ResourceKey resourceKey;
         private int firstOctave;
         private List<Double> amplitudes = new ArrayList<>();
-
 
         private Builder() {}
 

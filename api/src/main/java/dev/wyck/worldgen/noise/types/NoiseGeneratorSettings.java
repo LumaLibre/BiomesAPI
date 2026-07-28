@@ -15,7 +15,6 @@ import dev.wyck.worldgen.surface.SurfaceRule;
 import dev.wyck.wrapper.Registerable;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -35,9 +34,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("2.4.0")
 public interface NoiseGeneratorSettings extends Noise, Registerable<NoiseGeneratorSettings> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NoiseGeneratorSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.noise.types.NoiseGeneratorSettingsImpl");
 
     /**
      * Fields for world generation.
@@ -152,7 +148,10 @@ public interface NoiseGeneratorSettings extends Noise, Registerable<NoiseGenerat
      */
     @AsOf("3.0.0")
     static NoiseGeneratorSettings of(@Nullable ResourceKey resourceKey, NoiseSettings noiseSettings, BlockData defaultBlock, BlockData defaultFluid, NoiseRouter noiseRouter, SurfaceRule surfaceRule, List<ClimatePoint> spawnTarget, int seaLevel, boolean disableMobGeneration, boolean aquifersEnabled, boolean oreVeinsEnabled, boolean useLegacyRandomSource) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), noiseSettings, defaultBlock, defaultFluid, noiseRouter, surfaceRule, spawnTarget, seaLevel, disableMobGeneration, aquifersEnabled, oreVeinsEnabled, useLegacyRandomSource);
+        record Holder() {
+            static final ConstructWireProvider<NoiseGeneratorSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.noise.types.NoiseGeneratorSettingsImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), noiseSettings, defaultBlock, defaultFluid, noiseRouter, surfaceRule, spawnTarget, seaLevel, disableMobGeneration, aquifersEnabled, oreVeinsEnabled, useLegacyRandomSource);
     }
 
     /**
@@ -164,7 +163,6 @@ public interface NoiseGeneratorSettings extends Noise, Registerable<NoiseGenerat
     static Builder builder() {
         return new Builder();
     }
-
 
     /**
      * Builder for {@link NoiseGeneratorSettings}.

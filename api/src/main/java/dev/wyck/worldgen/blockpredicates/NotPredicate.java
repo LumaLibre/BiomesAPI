@@ -2,7 +2,6 @@ package dev.wyck.worldgen.blockpredicates;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface NotPredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NotPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.NotPredicateImpl");
 
     /**
      * The predicate to invert.
@@ -37,6 +33,9 @@ public interface NotPredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static NotPredicate of(BlockPredicate predicate) {
-        return WIRE.construct(predicate);
+        record Holder() {
+            static final ConstructWireProvider<NotPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.NotPredicateImpl");
+        }
+        return Holder.WIRE.construct(predicate);
     }
 }

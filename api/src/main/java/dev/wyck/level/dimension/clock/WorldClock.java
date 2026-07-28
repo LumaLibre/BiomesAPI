@@ -6,7 +6,6 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.wrapper.Registerable;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Keyed;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.4.0")
 public interface WorldClock extends Wrapper, Keyed, Registerable<WorldClock> {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<WorldClock> WIRE = ConstructWireProvider.create("dev.wyck.level.dimension.clock.WorldClockImpl");
 
     WorldClock OVERWORLD = of(ResourceKey.minecraft("overworld"));
     WorldClock THE_END = of(ResourceKey.minecraft("the_end"));
@@ -43,7 +39,10 @@ public interface WorldClock extends Wrapper, Keyed, Registerable<WorldClock> {
      */
     @AsOf("2.4.0")
     static WorldClock of(ResourceKey key) {
-        return WIRE.construct(key);
+        record Holder() {
+            static final ConstructWireProvider<WorldClock> WIRE = ConstructWireProvider.create("dev.wyck.level.dimension.clock.WorldClockImpl");
+        }
+        return Holder.WIRE.construct(key);
     }
 
     /**

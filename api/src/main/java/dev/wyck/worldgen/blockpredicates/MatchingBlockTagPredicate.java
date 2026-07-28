@@ -7,7 +7,6 @@ import dev.wyck.keys.ResourceKey;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface MatchingBlockTagPredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MatchingBlockTagPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.MatchingBlockTagPredicateImpl");
 
     /**
      * The offset from the block to check.
@@ -61,7 +57,11 @@ public interface MatchingBlockTagPredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static MatchingBlockTagPredicate of(BlockVector offset, ResourceKey tag) {
-        return WIRE.construct(offset, tag);
+        record Holder() {
+            static final ConstructWireProvider<MatchingBlockTagPredicate> WIRE =
+                ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.MatchingBlockTagPredicateImpl");
+        }
+        return Holder.WIRE.construct(offset, tag);
     }
 
     /**
@@ -72,7 +72,7 @@ public interface MatchingBlockTagPredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static MatchingBlockTagPredicate of(ResourceKey tag) {
-        return WIRE.construct(new BlockVector(), tag);
+        return of(new BlockVector(), tag);
     }
 
     /**

@@ -2,7 +2,6 @@ package dev.wyck.worldgen.blockpredicates;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
@@ -18,9 +17,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface AnyOfPredicate extends CombiningPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AnyOfPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.AnyOfPredicateImpl");
 
     /**
      * Converts this object to a builder.
@@ -40,7 +36,10 @@ public interface AnyOfPredicate extends CombiningPredicate {
      */
     @AsOf("3.0.0")
     static AnyOfPredicate of(List<BlockPredicate> predicates) {
-        return WIRE.construct(predicates);
+        record Holder() {
+            static final ConstructWireProvider<AnyOfPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.AnyOfPredicateImpl");
+        }
+        return Holder.WIRE.construct(predicates);
     }
 
     /**

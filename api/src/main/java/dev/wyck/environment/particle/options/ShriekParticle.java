@@ -21,7 +21,7 @@ public record ShriekParticle(int delay) implements ParticleData {
 
     @Override
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().shriek(delay);
+        return ParticleOptionsFactory.instance().shriek(delay);
     }
 
     /**

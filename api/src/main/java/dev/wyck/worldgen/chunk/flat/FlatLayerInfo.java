@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,11 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface FlatLayerInfo extends Wrapper {
-    @ApiStatus.Internal
-    ConstructWireProvider<FlatLayerInfo> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.flat.FlatLayerInfoImpl");
-
-    @ApiStatus.Internal
-    Decoder<FlatLayerInfo> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.FlatLayerInfoDecoder");
 
     /** The maximum height of a flat layer. */
     @AsOf("3.0.0")
@@ -66,7 +60,10 @@ public interface FlatLayerInfo extends Wrapper {
     @AsOf("3.0.0")
     static FlatLayerInfo of(Material block, int height) {
         Preconditions.checkArgument(height >= 0 && height <= Y_MAX, "height must be between 0 and 4064");
-        return WIRE.construct(block, height);
+        record Holder() {
+            static final ConstructWireProvider<FlatLayerInfo> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.flat.FlatLayerInfoImpl");
+        }
+        return Holder.WIRE.construct(block, height);
     }
 
     /**
@@ -77,7 +74,10 @@ public interface FlatLayerInfo extends Wrapper {
      */
     @AsOf("3.3.0")
     static FlatLayerInfo decode(Object minecraftLayer) {
-        return DECODER.decode(minecraftLayer);
+        record Holder() {
+            static final Decoder<FlatLayerInfo> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.FlatLayerInfoDecoder");
+        }
+        return Holder.DECODER.decode(minecraftLayer);
     }
 
     /**

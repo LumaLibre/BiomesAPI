@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 @NullMarked
 @ApiStatus.Internal
-public final class EnvironmentAttributeDecoders extends DecoderRegistry<EnvironmentAttribute<?>, net.minecraft.world.attribute.EnvironmentAttribute<?>> {
+public final class EnvironmentAttributeDecoders extends DecoderRegistry<EnvironmentAttribute<?>, Object> {
 
     public EnvironmentAttributeDecoders() {
         identity("boolean");
@@ -47,8 +47,8 @@ public final class EnvironmentAttributeDecoders extends DecoderRegistry<Environm
     }
 
     @Override
-    protected ResourceKey discriminate(net.minecraft.world.attribute.EnvironmentAttribute<?> minecraftObject) {
-        return Decoders.registryKey(BuiltInRegistries.ATTRIBUTE_TYPE, minecraftObject.type());
+    protected ResourceKey discriminate(Object minecraftObject) {
+        return Decoders.registryKey(BuiltInRegistries.ATTRIBUTE_TYPE, attribute(pair(minecraftObject)).type());
     }
 
     private void identity(String attributeType) {
@@ -58,14 +58,22 @@ public final class EnvironmentAttributeDecoders extends DecoderRegistry<Environm
     @SuppressWarnings("unchecked")
     private <V, U> void attribute(String attributeType, Function<U, V> reader, EnvironmentAttribute.Converter<V, U> converter) {
         register(attributeType, minecraftObject -> {
+            Map.Entry<?, ?> pair = pair(minecraftObject);
             ResourceKey key = Decoders.registryKey(
-                BuiltInRegistries.ENVIRONMENT_ATTRIBUTE, minecraftObject);
+                BuiltInRegistries.ENVIRONMENT_ATTRIBUTE, attribute(pair));
 
-            U value = (U) pair(minecraftObject).getValue();
+            U value = (U) pair.getValue();
             return EnvironmentAttribute.of(key, converter, reader.apply(value));
         });
     }
 
+    private static net.minecraft.world.attribute.EnvironmentAttribute<?> attribute(Map.Entry<?, ?> pair) {
+        if (!(pair.getKey() instanceof net.minecraft.world.attribute.EnvironmentAttribute<?> attribute)) {
+            throw new IllegalArgumentException("An environment attribute definition must be a Minecraft environment attribute, not "
+                + pair.getKey().getClass().getName());
+        }
+        return attribute;
+    }
 
     private static Map.Entry<?, ?> pair(Object minecraftObject) {
         if (!(minecraftObject instanceof Map.Entry<?, ?> pair)) {

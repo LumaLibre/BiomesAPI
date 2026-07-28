@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.2.0")
 public interface GrayBlend extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<GrayBlend> WIRE = ConstructWireProvider.create("dev.wyck.environment.attribute.modifier.GrayBlendImpl");
 
     /**
      * The brightness of the gray color.
@@ -48,7 +44,10 @@ public interface GrayBlend extends Wrapper {
     static GrayBlend of(float brightness, float factor) {
         Preconditions.checkArgument(brightness >= 0.0f && brightness <= 1.0f, "brightness must be between 0.0 and 1.0");
         Preconditions.checkArgument(factor >= 0.0f && factor <= 1.0f, "factor must be between 0.0 and 1.0");
-        return WIRE.construct(brightness, factor);
+        record Holder() {
+            static final ConstructWireProvider<GrayBlend> WIRE = ConstructWireProvider.create("dev.wyck.environment.attribute.modifier.GrayBlendImpl");
+        }
+        return Holder.WIRE.construct(brightness, factor);
     }
 
     /**

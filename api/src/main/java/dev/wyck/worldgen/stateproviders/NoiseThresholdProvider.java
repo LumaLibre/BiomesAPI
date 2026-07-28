@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.synth.NoiseParameters;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,9 +22,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface NoiseThresholdProvider extends NoiseBasedProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NoiseThresholdProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.NoiseThresholdProviderImpl");
 
     /**
      * The threshold of the noise value between -1.0 and 1.0.
@@ -97,7 +93,10 @@ public interface NoiseThresholdProvider extends NoiseBasedProvider {
      */
     @AsOf("3.0.0")
     static NoiseThresholdProvider of(long seed, NoiseParameters parameters, float scale, float threshold, float highChance, BlockData defaultState, List<BlockData> lowStates, List<BlockData> highStates) {
-        return WIRE.construct(seed, parameters, scale, threshold, highChance, defaultState, lowStates, highStates);
+        record Holder() {
+            static final ConstructWireProvider<NoiseThresholdProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.NoiseThresholdProviderImpl");
+        }
+        return Holder.WIRE.construct(seed, parameters, scale, threshold, highChance, defaultState, lowStates, highStates);
     }
 
     /**

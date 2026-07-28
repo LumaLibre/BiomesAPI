@@ -19,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface TreeDecorator extends Wrapper {
 
-    @ApiStatus.Internal
-    Decoder<TreeDecorator> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.TreeDecoratorDecoders");
-
     /**
      * Replaces blocks in the <code>#minecraft:dirt</code> tag around the tree with different blocks.
      * @param provider The block state provider to use.
@@ -133,6 +130,9 @@ public interface TreeDecorator extends Wrapper {
 
     @ApiStatus.Internal
     static TreeDecorator decode(Object minecraftDecorator) {
-        return DECODER.decode(minecraftDecorator);
+        record Holder() {
+            static final Decoder<TreeDecorator> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.TreeDecoratorDecoders");
+        }
+        return Holder.DECODER.decode(minecraftDecorator);
     }
 }

@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.BukkitBootstrapUtil;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -20,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface SimpleStateProvider extends BlockStateProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SimpleStateProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.SimpleStateProviderImpl");
 
     /**
      * The block attached to this provider.
@@ -39,7 +35,10 @@ public interface SimpleStateProvider extends BlockStateProvider {
      */
     @AsOf("3.0.0")
     static SimpleStateProvider of(BlockData state) {
-        return WIRE.construct(state);
+        record Holder() {
+            static final ConstructWireProvider<SimpleStateProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.SimpleStateProviderImpl");
+        }
+        return Holder.WIRE.construct(state);
     }
 
     /**

@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.synth.NoiseParameters;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface MappedNoiseFunction extends NoiseFunction {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MappedNoiseFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.noise.MappedNoiseFunctionImpl");
 
     /**
      * The minimum target.
@@ -65,7 +61,10 @@ public interface MappedNoiseFunction extends NoiseFunction {
      */
     @AsOf("3.0.0")
     static MappedNoiseFunction of(@Nullable ResourceKey resourceKey, NoiseParameters noiseParameters, double xzScale, double yScale, double minTarget, double maxTarget) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), noiseParameters, xzScale, yScale, minTarget, maxTarget);
+        record Holder() {
+            static final ConstructWireProvider<MappedNoiseFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.noise.MappedNoiseFunctionImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), noiseParameters, xzScale, yScale, minTarget, maxTarget);
     }
 
     /**

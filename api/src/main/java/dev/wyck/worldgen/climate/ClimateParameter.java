@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
 import dev.wyck.wrapper.decode.Decoder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,12 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface ClimateParameter extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ClimateParameter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.climate.ClimateParameterImpl");
-
-    @ApiStatus.Internal
-    Decoder<ClimateParameter> DECODER = Decoder.create("dev.wyck.decode.worldgen.climate.ClimateParameterDecoder");
 
     float MAX_BOUNDARY = 2.0f;
     float MIN_BOUNDARY = -2.0f;
@@ -55,7 +48,10 @@ public interface ClimateParameter extends Wrapper {
     static ClimateParameter span(float min, float max) {
         Preconditions.checkArgument(min <= max, "min > max: %s %s", min, max);
         Preconditions.checkArgument(min >= MIN_BOUNDARY && max <= MAX_BOUNDARY, "climate values must be within [-2.0, 2.0]: %s %s", min, max);
-        return WIRE.construct(min, max);
+        record Holder() {
+            static final ConstructWireProvider<ClimateParameter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.climate.ClimateParameterImpl");
+        }
+        return Holder.WIRE.construct(min, max);
     }
 
     /**
@@ -98,6 +94,9 @@ public interface ClimateParameter extends Wrapper {
      */
     @AsOf("3.3.0")
     static ClimateParameter decode(Object minecraftParameter) {
-        return DECODER.decode(minecraftParameter);
+        record Holder() {
+            static final Decoder<ClimateParameter> DECODER = Decoder.create("dev.wyck.decode.worldgen.climate.ClimateParameterDecoder");
+        }
+        return Holder.DECODER.decode(minecraftParameter);
     }
 }

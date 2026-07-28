@@ -3,7 +3,6 @@ package dev.wyck.worldgen.chunk;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.biome.Biome;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,8 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface DebugLevelSource extends ChunkGenerator {
-    @ApiStatus.Internal
-    ConstructWireProvider<DebugLevelSource> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.DebugLevelSourceImpl");
 
     /**
      * Holder biome.
@@ -35,6 +32,9 @@ public interface DebugLevelSource extends ChunkGenerator {
      */
     @AsOf("3.0.0")
     static DebugLevelSource of(Biome biome) {
-        return WIRE.construct(biome);
+        record Holder() {
+            static final ConstructWireProvider<DebugLevelSource> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.DebugLevelSourceImpl");
+        }
+        return Holder.WIRE.construct(biome);
     }
 }

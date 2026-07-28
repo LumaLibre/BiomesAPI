@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.placement.PlacedFeature;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,9 +18,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface RandomBooleanFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RandomBooleanFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.RandomBooleanFeatureConfigurationImpl");
 
     /**
      * Gets the placed feature to use when the random boolean is true.
@@ -58,7 +54,10 @@ public interface RandomBooleanFeatureConfiguration extends FeatureConfiguration 
      */
     @AsOf("3.0.0")
     static RandomBooleanFeatureConfiguration of(PlacedFeature featureTrue, PlacedFeature featureFalse) {
-        return WIRE.construct(featureTrue, featureFalse);
+        record Holder() {
+            static final ConstructWireProvider<RandomBooleanFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.RandomBooleanFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(featureTrue, featureFalse);
     }
 
     /**

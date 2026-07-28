@@ -3,6 +3,7 @@ package dev.wyck.worldgen.surface.condition;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.heightproviders.VerticalAnchor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -21,16 +22,13 @@ import org.jspecify.annotations.Nullable;
 @ApiStatus.Experimental
 public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<OptionallyFlatBedrockConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.OptionallyFlatBedrockConditionSourceImpl");
-
     /**
      * Gets the seed name used to randomize the non-flat gradient.
      * @return the random name
      * @since 3.3.0
      */
     @AsOf("3.3.0")
-    String randomName();
+    ResourceKey randomName();
 
     /**
      * Gets the anchor at and below which the condition passes.
@@ -76,8 +74,11 @@ public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
      * @since 3.3.0
      */
     @AsOf("3.3.0")
-    static OptionallyFlatBedrockConditionSource of(String randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
-        return WIRE.construct(randomName, trueAtAndBelow, falseAtAndAbove, roof);
+    static OptionallyFlatBedrockConditionSource of(ResourceKey randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
+        record Holder() {
+            static final ConstructWireProvider<OptionallyFlatBedrockConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.OptionallyFlatBedrockConditionSourceImpl");
+        }
+        return Holder.WIRE.construct(randomName, trueAtAndBelow, falseAtAndAbove, roof);
     }
 
     /**
@@ -99,7 +100,7 @@ public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
      */
     @AsOf("3.3.0")
     final class Builder {
-        private @Nullable String randomName;
+        private @Nullable ResourceKey randomName;
         private @Nullable VerticalAnchor trueAtAndBelow;
         private @Nullable VerticalAnchor falseAtAndAbove;
         private boolean roof;
@@ -120,7 +121,7 @@ public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
          * @since 3.3.0
          */
         @AsOf("3.3.0")
-        public Builder randomName(String randomName) {
+        public Builder randomName(ResourceKey randomName) {
             this.randomName = randomName;
             return this;
         }

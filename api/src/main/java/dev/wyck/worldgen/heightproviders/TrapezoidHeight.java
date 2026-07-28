@@ -2,7 +2,6 @@ package dev.wyck.worldgen.heightproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface TrapezoidHeight extends HeightProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<TrapezoidHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.TrapezoidHeightImpl");
 
     /**
      * The length of the range in the middle that has a uniform distribution.
@@ -49,7 +45,10 @@ public interface TrapezoidHeight extends HeightProvider {
      */
     @AsOf("3.0.0")
     static TrapezoidHeight of(VerticalAnchor minInclusive, VerticalAnchor maxInclusive, int plateau) {
-        return WIRE.construct(minInclusive, maxInclusive, plateau);
+        record Holder() {
+            static final ConstructWireProvider<TrapezoidHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.TrapezoidHeightImpl");
+        }
+        return Holder.WIRE.construct(minInclusive, maxInclusive, plateau);
     }
 
     /**

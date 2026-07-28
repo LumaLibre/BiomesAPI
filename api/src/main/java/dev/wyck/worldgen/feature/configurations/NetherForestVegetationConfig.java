@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,9 +18,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface NetherForestVegetationConfig extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NetherForestVegetationConfig> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.NetherForestVegetationConfigImpl");
 
     /**
      * The block to use.
@@ -71,7 +67,10 @@ public interface NetherForestVegetationConfig extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static NetherForestVegetationConfig of(BlockStateProvider stateProvider, int spreadWidth, int spreadHeight) {
-        return WIRE.construct(stateProvider, spreadWidth, spreadHeight);
+        record Holder() {
+            static final ConstructWireProvider<NetherForestVegetationConfig> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.NetherForestVegetationConfigImpl");
+        }
+        return Holder.WIRE.construct(stateProvider, spreadWidth, spreadHeight);
     }
 
     /**

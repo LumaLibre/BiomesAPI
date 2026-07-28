@@ -3,7 +3,6 @@ package dev.wyck.worldgen.placement;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.feature.FeatureType;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -23,14 +22,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface BiomeFilter extends PlacementFilter {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<BiomeFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.BiomeFilterImpl");
-
     /** The singleton instance of {@link BiomeFilter}. */
     @AsOf("3.0.0")
     BiomeFilter INSTANCE = of();
 
     private static BiomeFilter of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<BiomeFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.BiomeFilterImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

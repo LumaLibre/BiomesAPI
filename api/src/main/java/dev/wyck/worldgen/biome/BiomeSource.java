@@ -5,7 +5,6 @@ import dev.wyck.biome.Biome;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.wrapper.Wrapper;
 import dev.wyck.wrapper.decode.Decoder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.4.0")
 public interface BiomeSource extends Wrapper {
-
-    @ApiStatus.Internal
-    Decoder<BiomeSource> DECODER = Decoder.create("dev.wyck.decode.worldgen.biome.BiomeSourceDecoders");
 
     /**
      * Creates a biome source that always returns the specified biome.
@@ -103,6 +99,9 @@ public interface BiomeSource extends Wrapper {
      */
     @AsOf("3.3.0")
     static BiomeSource decode(Object minecraftSource) {
-        return DECODER.decode(minecraftSource);
+        record Holder() {
+            static final Decoder<BiomeSource> DECODER = Decoder.create("dev.wyck.decode.worldgen.biome.BiomeSourceDecoders");
+        }
+        return Holder.DECODER.decode(minecraftSource);
     }
 }

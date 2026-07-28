@@ -21,8 +21,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface BendingTrunkPlacer extends TrunkPlacer {
 
-    ConstructWireProvider<BendingTrunkPlacer> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.trunkplacers.BendingTrunkPlacerImpl");
-
     /**
      * The minimum height for leaves.
      * Must be a positive integer.
@@ -62,7 +60,10 @@ public interface BendingTrunkPlacer extends TrunkPlacer {
      */
     @AsOf("3.0.0")
     static BendingTrunkPlacer of(int minHeight, int maxHeight, int bendLength, int minHeightForLeaves, IntProvider bendLengthProvider) {
-        return WIRE.construct(minHeight, maxHeight, bendLength, minHeightForLeaves, bendLengthProvider);
+        record Holder() {
+            static final ConstructWireProvider<BendingTrunkPlacer> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.trunkplacers.BendingTrunkPlacerImpl");
+        }
+        return Holder.WIRE.construct(minHeight, maxHeight, bendLength, minHeightForLeaves, bendLengthProvider);
     }
 
     /**

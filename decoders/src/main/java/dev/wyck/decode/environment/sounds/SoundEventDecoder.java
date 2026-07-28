@@ -9,10 +9,11 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @ApiStatus.Internal
-public final class SoundEventDecoder implements Decodable<SoundEvent, net.minecraft.sounds.SoundEvent> {
+public final class SoundEventDecoder implements Decodable<SoundEvent, Object> {
 
     @Override
-    public SoundEvent decode(net.minecraft.sounds.SoundEvent event) {
+    public SoundEvent decode(Object minecraftObject) {
+        net.minecraft.sounds.SoundEvent event = Decoders.value(minecraftObject);
         ResourceKey location = Decoders.key(event.location());
         return event.fixedRange()
             .map(range -> SoundEvent.fixedRange(location, range))

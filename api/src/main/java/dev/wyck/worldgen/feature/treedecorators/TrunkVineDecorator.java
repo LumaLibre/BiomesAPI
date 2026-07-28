@@ -2,7 +2,6 @@ package dev.wyck.worldgen.feature.treedecorators;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface TrunkVineDecorator extends TreeDecorator {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<TrunkVineDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.TrunkVineDecoratorImpl");
-
     /**
      * Creates a new trunk vine decorator.
      * @return a new trunk vine decorator
@@ -27,6 +23,9 @@ public interface TrunkVineDecorator extends TreeDecorator {
      */
     @AsOf("3.0.0")
     static TrunkVineDecorator of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<TrunkVineDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.TrunkVineDecoratorImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

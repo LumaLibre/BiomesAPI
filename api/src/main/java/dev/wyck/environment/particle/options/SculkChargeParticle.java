@@ -22,7 +22,7 @@ public record SculkChargeParticle(float roll) implements ParticleData {
     @Override
     @AsOf("2.0.0")
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().sculkCharge(roll);
+        return ParticleOptionsFactory.instance().sculkCharge(roll);
     }
 
     @AsOf("2.0.0")

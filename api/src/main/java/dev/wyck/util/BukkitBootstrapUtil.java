@@ -20,9 +20,6 @@ import org.jspecify.annotations.NullMarked;
 @ApiStatus.Experimental
 public interface BukkitBootstrapUtil {
 
-    @ApiStatus.Internal
-    WireProvider<BukkitBootstrapUtil> WIRE = WireProvider.create("dev.wyck.util.BukkitBootstrapUtilImpl");
-
     /**
      * Creates a new BlockData instance for the given material.
      * @param material the material to create a BlockData for
@@ -39,6 +36,9 @@ public interface BukkitBootstrapUtil {
      */
     @AsOf("3.0.0")
     static BukkitBootstrapUtil util() {
-        return WIRE.get();
+        record Holder() {
+            static final WireProvider<BukkitBootstrapUtil> WIRE = WireProvider.create("dev.wyck.util.BukkitBootstrapUtilImpl");
+        }
+        return Holder.WIRE.get();
     }
 }

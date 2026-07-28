@@ -2,7 +2,6 @@ package dev.wyck.worldgen.valueproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface UniformInt extends IntProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<UniformInt> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.UniformIntImpl");
 
     /**
      * Creates a new builder from this provider.
@@ -40,7 +36,10 @@ public interface UniformInt extends IntProvider {
      */
     @AsOf("3.0.0")
     static UniformInt of(int min, int max) {
-        return WIRE.construct(min, max);
+        record Holder() {
+            static final ConstructWireProvider<UniformInt> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.UniformIntImpl");
+        }
+        return Holder.WIRE.construct(min, max);
     }
 
     /**

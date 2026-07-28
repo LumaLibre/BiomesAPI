@@ -8,7 +8,6 @@ import dev.wyck.util.InclusiveRange;
 import dev.wyck.worldgen.synth.NoiseParameters;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -26,9 +25,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface DualNoiseProvider extends NoiseBasedProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<DualNoiseProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.DualNoiseProviderImpl");
 
     /**
      * The number of block states that selected out by slow noise.
@@ -88,7 +84,10 @@ public interface DualNoiseProvider extends NoiseBasedProvider {
      */
     @AsOf("3.0.0")
     static DualNoiseProvider of(long seed, NoiseParameters parameters, float scale, InclusiveRange<Integer> variety, NoiseParameters slowNoiseParameters, float slowScale, List<BlockData> states) {
-        return WIRE.construct(seed, parameters, scale, variety, slowNoiseParameters, slowScale, states);
+        record Holder() {
+            static final ConstructWireProvider<DualNoiseProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.DualNoiseProviderImpl");
+        }
+        return Holder.WIRE.construct(seed, parameters, scale, variety, slowNoiseParameters, slowScale, states);
     }
 
     /**

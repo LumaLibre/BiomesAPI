@@ -43,9 +43,6 @@ import java.util.Optional;
 @AsOf("2.4.0")
 public interface DensityFunction extends Wrapper, Keyed {
 
-    @ApiStatus.Internal
-    Decoder<DensityFunction> DECODER = Decoder.create("dev.wyck.decode.worldgen.function.DensityFunctionDecoders");
-
     /**
      * The resource key of the density function, if present.
      * @return the resource key of the density function, if present
@@ -545,6 +542,9 @@ public interface DensityFunction extends Wrapper, Keyed {
      */
     @AsOf("3.3.0")
     static DensityFunction decode(Object minecraftDensityFunction) {
-        return DECODER.decode(minecraftDensityFunction);
+        record Holder() {
+            static final Decoder<DensityFunction> DECODER = Decoder.create("dev.wyck.decode.worldgen.function.DensityFunctionDecoders");
+        }
+        return Holder.DECODER.decode(minecraftDensityFunction);
     }
 }

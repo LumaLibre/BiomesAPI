@@ -10,7 +10,6 @@ import dev.wyck.worldgen.valueproviders.FloatProvider;
 import org.bukkit.Material;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,10 +26,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("2.3.0")
 public interface CarverConfiguration extends ProbabilityFeatureConfiguration {
-
-    @ApiStatus.Internal
-    Decoder<CarverConfiguration> DECODER =
-        Decoder.create("dev.wyck.decode.worldgen.carver.CarverConfigurationDecoders");
 
     /**
      * @return the y-level of the carver
@@ -75,7 +70,10 @@ public interface CarverConfiguration extends ProbabilityFeatureConfiguration {
      */
     @AsOf("3.3.0")
     static CarverConfiguration decode(Object minecraftConfiguredCarver) {
-        return DECODER.decode(minecraftConfiguredCarver);
+        record Holder() {
+            static final Decoder<CarverConfiguration> DECODER = Decoder.create("dev.wyck.decode.worldgen.carver.CarverConfigurationDecoders");
+        }
+        return Holder.DECODER.decode(minecraftConfiguredCarver);
     }
 
     @AsOf("3.0.0")

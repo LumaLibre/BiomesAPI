@@ -19,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 public interface LevelSpawner extends ContextWrapper<Object> {
 
     @ApiStatus.Internal
-    WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.level.entity.LevelSpawnerFactoryImpl");
-
-    @ApiStatus.Internal
     interface Factory {
         LevelSpawner vanilla(Kind kind);
         LevelSpawner custom(SpawnTick tick);
@@ -35,7 +32,7 @@ public interface LevelSpawner extends ContextWrapper<Object> {
      */
     @AsOf("3.0.0")
     static LevelSpawner vanilla(Kind kind) {
-        return WIRE.get().vanilla(kind);
+        return create(kind);
     }
 
     /**
@@ -46,7 +43,18 @@ public interface LevelSpawner extends ContextWrapper<Object> {
      */
     @AsOf("2.4.0")
     static LevelSpawner custom(SpawnTick tick) {
-        return WIRE.get().custom(tick);
+        return create(tick);
+    }
+
+    private static LevelSpawner create(Object source) {
+        record Holder() {
+            static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.level.entity.LevelSpawnerFactoryImpl");
+        }
+        return switch (source) {
+            case Kind kind -> Holder.WIRE.get().vanilla(kind);
+            case SpawnTick tick -> Holder.WIRE.get().custom(tick);
+            default -> throw new IllegalArgumentException("Unsupported level spawner source: " + source);
+        };
     }
 
     /**

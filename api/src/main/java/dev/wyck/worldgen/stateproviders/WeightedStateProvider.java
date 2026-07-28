@@ -6,7 +6,6 @@ import dev.wyck.util.BukkitBootstrapUtil;
 import dev.wyck.util.WeightedList;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
@@ -22,9 +21,6 @@ import java.util.Map;
 @NullMarked
 @AsOf("3.0.0")
 public interface WeightedStateProvider extends BlockStateProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<WeightedStateProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.WeightedStateProviderImpl");
 
     /**
      * A weighted list entry of each block state.
@@ -52,7 +48,10 @@ public interface WeightedStateProvider extends BlockStateProvider {
      */
     @AsOf("3.0.0")
     static WeightedStateProvider of(WeightedList<BlockData> entries) {
-        return WIRE.construct(entries);
+        record Holder() {
+            static final ConstructWireProvider<WeightedStateProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.WeightedStateProviderImpl");
+        }
+        return Holder.WIRE.construct(entries);
     }
 
     /**

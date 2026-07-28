@@ -5,7 +5,6 @@ import dev.wyck.biome.Biome;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.climate.ClimatePoint;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -14,9 +13,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface MultiNoiseBiomeSource extends BiomeSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MultiNoiseBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.MultiNoiseBiomeSourceImpl");
 
     /**
      * The biomes and their climate points.
@@ -44,7 +40,10 @@ public interface MultiNoiseBiomeSource extends BiomeSource {
      */
     @AsOf("3.0.0")
     static MultiNoiseBiomeSource of(List<Entry> biomes) {
-        return WIRE.construct(biomes);
+        record Holder() {
+            static final ConstructWireProvider<MultiNoiseBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.MultiNoiseBiomeSourceImpl");
+        }
+        return Holder.WIRE.construct(biomes);
     }
 
     /**

@@ -22,11 +22,6 @@ import org.jspecify.annotations.NullMarked;
 @SuppressWarnings("UnstableApiUsage")
 public interface BootstrapDimensionRegistry {
 
-    @ApiStatus.Internal
-    WireProvider<BootstrapDimensionRegistry> DATAPACK = WireProvider.create("dev.wyck.registry.bootstrap.DatapackBootstrapDimensionRegistry");
-    @ApiStatus.Internal
-    WireProvider<BootstrapDimensionRegistry> UNSAFE = WireProvider.create("dev.wyck.registry.bootstrap.UnsafePaperBootstrapDimensionRegistry");
-
     /**
      * Composes a new datapack-backed BootstrapDimensionRegistry and installs it into the context.
      * @param context the bootstrap context
@@ -48,7 +43,10 @@ public interface BootstrapDimensionRegistry {
      */
     @AsOf("3.0.0")
     static BootstrapDimensionRegistry datapack() {
-        return DATAPACK.getNew();
+        record Holder() {
+            static final WireProvider<BootstrapDimensionRegistry> WIRE = WireProvider.create("dev.wyck.registry.bootstrap.DatapackBootstrapDimensionRegistry");
+        }
+        return Holder.WIRE.getNew();
     }
 
     /**
@@ -59,7 +57,10 @@ public interface BootstrapDimensionRegistry {
      */
     @AsOf("3.0.0")
     static BootstrapDimensionRegistry unsafe() {
-        return UNSAFE.getNew();
+        record Holder() {
+            static final WireProvider<BootstrapDimensionRegistry> WIRE = WireProvider.create("dev.wyck.registry.bootstrap.UnsafePaperBootstrapDimensionRegistry");
+        }
+        return Holder.WIRE.getNew();
     }
 
     /**

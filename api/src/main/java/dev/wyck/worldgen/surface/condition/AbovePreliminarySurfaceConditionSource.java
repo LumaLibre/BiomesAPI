@@ -2,7 +2,6 @@ package dev.wyck.worldgen.surface.condition;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,14 +18,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface AbovePreliminarySurfaceConditionSource extends ConditionSource {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<AbovePreliminarySurfaceConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.AbovePreliminarySurfaceConditionSourceImpl");
-
     /** The above-preliminary-surface condition source. */
     @AsOf("3.0.0")
     AbovePreliminarySurfaceConditionSource INSTANCE = of();
 
     private static AbovePreliminarySurfaceConditionSource of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<AbovePreliminarySurfaceConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.AbovePreliminarySurfaceConditionSourceImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

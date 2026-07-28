@@ -12,7 +12,6 @@ import dev.wyck.worldgen.placement.PlacedFeature;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -30,9 +29,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.0")
 public interface RootSystemConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RootSystemConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.RootSystemConfigurationImpl");
 
     /**
      * The placed feature to place on top of the root system.
@@ -202,7 +198,10 @@ public interface RootSystemConfiguration extends FeatureConfiguration {
         int allowedVerticalWaterForTree,
         BlockPredicate allowedTreePosition
     ) {
-        return WIRE.construct(treeFeature, requiredVerticalSpaceForTree, levelTestDistance, maxLevelDeviation, rootRadius, rootReplaceable, rootStateProvider, rootPlacementAttempts, rootColumnMaxHeight, hangingRootRadius, hangingRootsVerticalSpan, hangingRootStateProvider, hangingRootPlacementAttempts, allowedVerticalWaterForTree, allowedTreePosition);
+        record Holder() {
+            static final ConstructWireProvider<RootSystemConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.RootSystemConfigurationImpl");
+        }
+        return Holder.WIRE.construct(treeFeature, requiredVerticalSpaceForTree, levelTestDistance, maxLevelDeviation, rootRadius, rootReplaceable, rootStateProvider, rootPlacementAttempts, rootColumnMaxHeight, hangingRootRadius, hangingRootsVerticalSpan, hangingRootStateProvider, hangingRootPlacementAttempts, allowedVerticalWaterForTree, allowedTreePosition);
     }
 
     /**

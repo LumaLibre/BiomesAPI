@@ -2,7 +2,6 @@ package dev.wyck.worldgen.placement;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,14 +17,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface InSquarePlacement extends PlacementModifier {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<InSquarePlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.InSquarePlacementImpl");
-
     /** The singleton instance of {@link InSquarePlacement}. */
     @AsOf("3.0.0")
     InSquarePlacement INSTANCE = of();
 
     private static InSquarePlacement of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<InSquarePlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.InSquarePlacementImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

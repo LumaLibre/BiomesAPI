@@ -3,7 +3,6 @@ package dev.wyck.worldgen.stateproviders;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.blockpredicates.BlockPredicate;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,9 +22,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface RuleBasedStateProvider extends BlockStateProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RuleBasedStateProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.RuleBasedStateProviderImpl");
 
     /**
      * The block to use when no rules' predicates match.
@@ -63,7 +59,10 @@ public interface RuleBasedStateProvider extends BlockStateProvider {
      */
     @AsOf("3.0.0")
     static RuleBasedStateProvider of(@Nullable BlockStateProvider fallback, List<Rule> rules) {
-        return WIRE.construct(Optional.ofNullable(fallback), rules);
+        record Holder() {
+            static final ConstructWireProvider<RuleBasedStateProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.RuleBasedStateProviderImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(fallback), rules);
     }
 
     /**

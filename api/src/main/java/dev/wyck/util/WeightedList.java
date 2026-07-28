@@ -51,7 +51,6 @@ public final class WeightedList<E> {
         return (int) sum;
     }
 
-
     public static <E> WeightedList<E> of() {
         return new WeightedList<>(List.of());
     }

@@ -9,7 +9,6 @@ import dev.wyck.worldgen.valueproviders.FloatProvider;
 import dev.wyck.wrapper.Wrapper;
 import dev.wyck.wrapper.decode.Decoder;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -26,9 +25,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("2.3.0")
 public interface CanyonCarverConfiguration extends CarverConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CanyonCarverConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.carver.CanyonCarverConfigurationImpl");
 
     /**
      * The vertical rotation of the canyon.
@@ -71,7 +67,13 @@ public interface CanyonCarverConfiguration extends CarverConfiguration {
      */
     @AsOf("3.0.0")
     static CanyonCarverConfiguration of(float probability, HeightProvider y, FloatProvider yScale, VerticalAnchor lavaLevel, CarverDebugSettings debugSettings, Set<Material> replaceable, FloatProvider verticalRotation, CanyonShapeConfiguration shape) {
-        return WIRE.construct(probability, y, yScale, lavaLevel, debugSettings, replaceable, verticalRotation, shape);
+        record Holder() {
+            static final ConstructWireProvider<CanyonCarverConfiguration> WIRE =
+                ConstructWireProvider.create("dev.wyck.worldgen.carver.CanyonCarverConfigurationImpl");
+        }
+        return Holder.WIRE.construct(
+            probability, y, yScale, lavaLevel, debugSettings, replaceable, verticalRotation, shape
+        );
     }
 
     /**
@@ -144,13 +146,6 @@ public interface CanyonCarverConfiguration extends CarverConfiguration {
     @AsOf("3.0.0")
     interface CanyonShapeConfiguration extends Wrapper {
 
-        @ApiStatus.Internal
-        ConstructWireProvider<CanyonShapeConfiguration> INNER_WIRE = WIRE.resolve("CanyonShapeConfigurationImpl");
-
-        @ApiStatus.Internal
-        Decoder<CanyonShapeConfiguration> DECODER =
-            Decoder.create("dev.wyck.decode.worldgen.carver.CanyonShapeConfigurationDecoder");
-
         /**
          * Gets the distance factor for the canyon shape.
          * @return the distance factor for the canyon shape
@@ -222,7 +217,15 @@ public interface CanyonCarverConfiguration extends CarverConfiguration {
          */
         @AsOf("3.0.0")
         static CanyonShapeConfiguration of(FloatProvider distanceFactor, FloatProvider thickness, int widthSmoothness, FloatProvider horizontalRadiusFactor, float verticalRadiusDefaultFactor, float verticalRadiusCenterFactor) {
-            return INNER_WIRE.construct(distanceFactor, thickness, widthSmoothness, horizontalRadiusFactor, verticalRadiusDefaultFactor, verticalRadiusCenterFactor);
+            record Holder() {
+                static final ConstructWireProvider<CanyonShapeConfiguration> WIRE = ConstructWireProvider.create(
+                    "dev.wyck.worldgen.carver.CanyonCarverConfigurationImpl$CanyonShapeConfigurationImpl"
+                );
+            }
+            return Holder.WIRE.construct(
+                distanceFactor, thickness, widthSmoothness, horizontalRadiusFactor,
+                verticalRadiusDefaultFactor, verticalRadiusCenterFactor
+            );
         }
 
         /**
@@ -243,7 +246,10 @@ public interface CanyonCarverConfiguration extends CarverConfiguration {
          */
         @AsOf("3.3.0")
         static CanyonShapeConfiguration decode(Object minecraftShape) {
-            return DECODER.decode(minecraftShape);
+            record Holder() {
+                static final Decoder<CanyonShapeConfiguration> DECODER = Decoder.create("dev.wyck.decode.worldgen.carver.CanyonShapeConfigurationDecoder");
+            }
+            return Holder.DECODER.decode(minecraftShape);
         }
 
         /**

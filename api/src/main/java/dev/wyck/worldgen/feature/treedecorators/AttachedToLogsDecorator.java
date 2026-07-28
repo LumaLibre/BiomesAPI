@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import org.bukkit.block.BlockFace;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,9 +23,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface AttachedToLogsDecorator extends TreeDecorator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AttachedToLogsDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.AttachedToLogsDecoratorImpl");
 
     /**
      * The probability of attaching a block, between 0.0F and 1.0F (inclusive).
@@ -72,7 +68,10 @@ public interface AttachedToLogsDecorator extends TreeDecorator {
      */
     @AsOf("3.0.0")
     static AttachedToLogsDecorator of(float probability, BlockStateProvider blockProvider, List<BlockFace> directions) {
-        return WIRE.construct(probability, blockProvider, directions);
+        record Holder() {
+            static final ConstructWireProvider<AttachedToLogsDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.AttachedToLogsDecoratorImpl");
+        }
+        return Holder.WIRE.construct(probability, blockProvider, directions);
     }
 
     /**

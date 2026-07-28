@@ -2,7 +2,6 @@ package dev.wyck.worldgen.valueproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.wrapper.decode.Decoder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,9 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface FloatProvider extends ValueProvider {
-
-    @ApiStatus.Internal
-    Decoder<FloatProvider> DECODER = Decoder.create("dev.wyck.decode.worldgen.valueproviders.FloatProviderDecoders");
 
     /**
      * The smallest value this provider can yield.
@@ -209,6 +205,9 @@ public interface FloatProvider extends ValueProvider {
      */
     @AsOf("3.3.0")
     static FloatProvider decode(Object minecraftFloatProvider) {
-        return DECODER.decode(minecraftFloatProvider);
+        record Holder() {
+            static final Decoder<FloatProvider> DECODER = Decoder.create("dev.wyck.decode.worldgen.valueproviders.FloatProviderDecoders");
+        }
+        return Holder.DECODER.decode(minecraftFloatProvider);
     }
 }

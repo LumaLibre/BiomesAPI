@@ -3,7 +3,6 @@ package dev.wyck.worldgen.placement;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.blockpredicates.BlockPredicate;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BlockPredicateFilter extends PlacementFilter {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BlockPredicateFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.BlockPredicateFilterImpl");
 
     /**
      * The block predicate to test.
@@ -37,6 +33,9 @@ public interface BlockPredicateFilter extends PlacementFilter {
      */
     @AsOf("3.0.0")
     static BlockPredicateFilter of(BlockPredicate predicate) {
-        return WIRE.construct(predicate);
+        record Holder() {
+            static final ConstructWireProvider<BlockPredicateFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.BlockPredicateFilterImpl");
+        }
+        return Holder.WIRE.construct(predicate);
     }
 }

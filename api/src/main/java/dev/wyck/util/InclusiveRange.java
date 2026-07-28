@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.annotations.MinecraftUtil;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.function.Function;
@@ -21,9 +20,6 @@ import java.util.function.Function;
 @AsOf("3.0.0")
 @MinecraftUtil
 public interface InclusiveRange<T extends Comparable<T>> extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<InclusiveRange<?>> WIRE = ConstructWireProvider.construct("dev.wyck.util.InclusiveRangeImpl");
 
     /**
      * The minimum value in the range.
@@ -86,7 +82,10 @@ public interface InclusiveRange<T extends Comparable<T>> extends Wrapper {
     @AsOf("3.0.0")
     @SuppressWarnings("unchecked")
     static <T extends Comparable<T>> InclusiveRange<T> of(T minInclusive, T maxInclusive) {
-        return (InclusiveRange<T>) WIRE.construct(minInclusive, maxInclusive);
+        record Holder() {
+            static final ConstructWireProvider<InclusiveRange<?>> WIRE = ConstructWireProvider.construct("dev.wyck.util.InclusiveRangeImpl");
+        }
+        return (InclusiveRange<T>) Holder.WIRE.construct(minInclusive, maxInclusive);
     }
 
     /**

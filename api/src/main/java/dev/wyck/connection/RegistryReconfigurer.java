@@ -23,9 +23,6 @@ import java.util.function.Consumer;
 @AsOf("2.2.0")
 public interface RegistryReconfigurer {
 
-    @ApiStatus.Internal
-    WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.connection.RegistryReconfigurerFactoryImpl");
-
     @AsOf("2.2.0")
     @ApiStatus.Internal
     interface Factory {
@@ -38,8 +35,7 @@ public interface RegistryReconfigurer {
      */
     @AsOf("2.2.0")
     static RegistryReconfigurer newReconfigurer() {
-        Plugin plugin = Wyck.wyck().plugin();
-        return WIRE.get().create(plugin);
+        return newReconfigurer(Wyck.wyck().plugin());
     }
 
     /**
@@ -49,7 +45,10 @@ public interface RegistryReconfigurer {
      */
     @AsOf("2.2.0")
     static RegistryReconfigurer newReconfigurer(Plugin provider) {
-        return WIRE.get().create(provider);
+        record Holder() {
+            static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.connection.RegistryReconfigurerFactoryImpl");
+        }
+        return Holder.WIRE.get().create(provider);
     }
 
     /**

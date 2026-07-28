@@ -7,7 +7,6 @@ import dev.wyck.worldgen.feature.configurations.geode.GeodeBlockSettings;
 import dev.wyck.worldgen.feature.configurations.geode.GeodeCrackSettings;
 import dev.wyck.worldgen.feature.configurations.geode.GeodeLayerSettings;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,9 +22,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface GeodeConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<GeodeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.GeodeConfigurationImpl");
 
     /**
      * The block state providers used for each of the geode's layers and its inner placements.
@@ -176,7 +172,10 @@ public interface GeodeConfiguration extends FeatureConfiguration {
         double noiseMultiplier,
         int invalidBlocksThreshold
     ) {
-        return WIRE.construct(geodeBlockSettings, geodeLayerSettings, geodeCrackSettings, usePotentialPlacementsChance, useAlternateLayer0Chance, placementsRequireLayer0Alternate, outerWallDistance, distributionPoints, pointOffset, minGenOffset, maxGenOffset, noiseMultiplier, invalidBlocksThreshold);
+        record Holder() {
+            static final ConstructWireProvider<GeodeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.GeodeConfigurationImpl");
+        }
+        return Holder.WIRE.construct(geodeBlockSettings, geodeLayerSettings, geodeCrackSettings, usePotentialPlacementsChance, useAlternateLayer0Chance, placementsRequireLayer0Alternate, outerWallDistance, distributionPoints, pointOffset, minGenOffset, maxGenOffset, noiseMultiplier, invalidBlocksThreshold);
     }
 
     /**

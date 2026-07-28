@@ -344,7 +344,7 @@ public final class FeatureConfigurationDecoders extends DecoderRegistry<FeatureC
             return RootSystemConfiguration.of(
                 PlacedFeature.decode(config.treeFeature()), config.requiredVerticalSpaceForTree(),
                 config.levelTestDistance(), config.maxLevelDeviation(), config.rootRadius(),
-                TagSet.blocksFromMinecraft(config.rootReplaceable()),
+                TagSet.decodeBlocks(config.rootReplaceable()),
                 BlockStateProvider.decode(config.rootStateProvider()), config.rootPlacementAttempts(),
                 config.rootColumnMaxHeight(), config.hangingRootRadius(), config.hangingRootsVerticalSpan(),
                 BlockStateProvider.decode(config.hangingRootStateProvider()),

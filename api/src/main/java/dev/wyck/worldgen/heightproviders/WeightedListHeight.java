@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.WeightedList;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,10 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface WeightedListHeight extends HeightProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<WeightedListHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.WeightedListHeightImpl");
-
 
     @Override
     default VerticalAnchor minInclusive() {
@@ -52,7 +47,10 @@ public interface WeightedListHeight extends HeightProvider {
     static WeightedListHeight of(WeightedList<HeightProvider> distribution) {
         Preconditions.checkNotNull(distribution, "distribution");
         Preconditions.checkArgument(!distribution.unwrap().isEmpty(), "distribution must not be empty");
-        return WIRE.construct(distribution);
+        record Holder() {
+            static final ConstructWireProvider<WeightedListHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.WeightedListHeightImpl");
+        }
+        return Holder.WIRE.construct(distribution);
     }
 
     /**

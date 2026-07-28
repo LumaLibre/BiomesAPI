@@ -7,7 +7,6 @@ import dev.wyck.util.BukkitBootstrapUtil;
 import dev.wyck.worldgen.blockpredicates.BlockPredicate;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface SpikeConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SpikeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.SpikeConfigurationImpl");
 
     /**
      * The block to use.
@@ -70,7 +66,10 @@ public interface SpikeConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static SpikeConfiguration of(BlockData state, BlockPredicate canPlaceOn, BlockPredicate canReplace) {
-        return WIRE.construct(state, canPlaceOn, canReplace);
+        record Holder() {
+            static final ConstructWireProvider<SpikeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.SpikeConfigurationImpl");
+        }
+        return Holder.WIRE.construct(state, canPlaceOn, canReplace);
     }
 
     /**

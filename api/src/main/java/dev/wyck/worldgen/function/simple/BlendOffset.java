@@ -2,7 +2,6 @@ package dev.wyck.worldgen.function.simple;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,14 +15,15 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BlendOffset extends SimpleFunction {
-    @ApiStatus.Internal
-    ConstructWireProvider<BlendOffset> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.simple.BlendOffsetImpl");
 
     /** The blend offset density function. */
     @AsOf("3.0.0")
     BlendOffset INSTANCE = of();
 
     private static BlendOffset of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<BlendOffset> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.simple.BlendOffsetImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

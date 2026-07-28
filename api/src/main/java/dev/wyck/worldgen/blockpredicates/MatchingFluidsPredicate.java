@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.material.FluidType;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -22,9 +21,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface MatchingFluidsPredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MatchingFluidsPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.MatchingFluidsPredicateImpl");
 
     /**
      * The offset from the block to check.
@@ -61,7 +57,10 @@ public interface MatchingFluidsPredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static MatchingFluidsPredicate of(BlockVector offset, List<FluidType> fluids) {
-        return WIRE.construct(offset, fluids);
+        record Holder() {
+            static final ConstructWireProvider<MatchingFluidsPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.MatchingFluidsPredicateImpl");
+        }
+        return Holder.WIRE.construct(offset, fluids);
     }
 
     /**

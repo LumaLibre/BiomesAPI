@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.BukkitBootstrapUtil;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface LayerConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<LayerConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.LayerConfigurationImpl");
 
     /**
      * The layer to fill, starting at the bottom of the world between 0 and 4064.
@@ -61,7 +57,10 @@ public interface LayerConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static LayerConfiguration of(int height, BlockData state) {
-        return WIRE.construct(height, state);
+        record Holder() {
+            static final ConstructWireProvider<LayerConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.LayerConfigurationImpl");
+        }
+        return Holder.WIRE.construct(height, state);
     }
 
     /**

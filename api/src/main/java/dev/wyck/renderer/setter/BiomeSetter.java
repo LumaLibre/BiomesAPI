@@ -66,8 +66,6 @@ public interface BiomeSetter extends AbstractBiomeRenderer {
         return new GlobalBiomeSetter(updater);
     }
 
-
-
     /**
      * Returns the RegionAccessor for the given location.
      *

@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import net.kyori.adventure.key.Keyed;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface MultiNoisePresetBiomeSource extends BiomeSource, Keyed {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MultiNoisePresetBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.MultiNoisePresetBiomeSourceImpl");
 
     MultiNoisePresetBiomeSource OVERWORLD = MultiNoisePresetBiomeSource.of(ResourceKey.minecraft("overworld"));
     MultiNoisePresetBiomeSource NETHER = MultiNoisePresetBiomeSource.of(ResourceKey.minecraft("nether"));
@@ -41,6 +37,9 @@ public interface MultiNoisePresetBiomeSource extends BiomeSource, Keyed {
      */
     @AsOf("3.0.0")
     static MultiNoisePresetBiomeSource of(ResourceKey preset) {
-        return WIRE.construct(preset);
+        record Holder() {
+            static final ConstructWireProvider<MultiNoisePresetBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.MultiNoisePresetBiomeSourceImpl");
+        }
+        return Holder.WIRE.construct(preset);
     }
 }

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,9 +18,6 @@ import org.jspecify.annotations.Nullable;
 @AsOf("2.3.0")
 public interface ParticleOptions extends Wrapper {
 
-    @ApiStatus.Internal
-    Decoder<ParticleOptions> DECODER = Decoder.create("dev.wyck.decode.environment.particle.ParticleOptionsDecoder");
-
     /**
      * Creates a new ParticleOptions instance.
      * @param type the particle type
@@ -31,7 +27,7 @@ public interface ParticleOptions extends Wrapper {
      */
     @AsOf("3.0.0")
     static ParticleOptions of(ParticleTypes type, @Nullable ParticleData data) {
-        ParticleOptionsFactory factory = ParticleOptionsFactory.WIRE.get();
+        ParticleOptionsFactory factory = ParticleOptionsFactory.instance();
         ParticleType particleType = type.particleType();
         if (type.isSimple()) {
             return factory.simple(particleType);
@@ -59,6 +55,9 @@ public interface ParticleOptions extends Wrapper {
      */
     @AsOf("3.3.0")
     static ParticleOptions decode(Object minecraftParticleOptions) {
-        return DECODER.decode(minecraftParticleOptions);
+        record Holder() {
+            static final Decoder<ParticleOptions> DECODER = Decoder.create("dev.wyck.decode.environment.particle.ParticleOptionsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftParticleOptions);
     }
 }

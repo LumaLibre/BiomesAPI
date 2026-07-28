@@ -11,7 +11,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.util.internal.FriendlyColorUtil;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -29,9 +28,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.2.0")
 public interface AttributeTrack<V> extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AttributeTrack<?>> WIRE = WireProvider.construct("dev.wyck.level.dimension.timeline.AttributeTrackImpl");
 
     /**
      * The attribute this track modifies.
@@ -88,7 +84,10 @@ public interface AttributeTrack<V> extends Wrapper {
     @AsOf("3.2.0")
     @SuppressWarnings("unchecked")
     static <V> AttributeTrack<V> of(EnvironmentAttribute<V> attribute, AttributeOperation operation, Easing easing, List<Keyframe<?>> keyframes) {
-        return (AttributeTrack<V>) WIRE.construct(attribute, operation, easing, List.copyOf(keyframes));
+        record Holder() {
+            static final ConstructWireProvider<AttributeTrack<?>> WIRE = WireProvider.construct("dev.wyck.level.dimension.timeline.AttributeTrackImpl");
+        }
+        return (AttributeTrack<V>) Holder.WIRE.construct(attribute, operation, easing, List.copyOf(keyframes));
     }
 
     /**

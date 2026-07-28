@@ -30,9 +30,6 @@ import java.util.Optional;
 @AsOf("2.3.0")
 public interface ConfiguredFeature extends Wrapper, Keyed {
 
-    @ApiStatus.Internal
-    Decoder<ConfiguredFeature> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.ConfiguredFeatureDecoder");
-
     /**
      * The resource key of the configured feature, if present.
      * @return the resource key of the configured feature, if present
@@ -135,7 +132,10 @@ public interface ConfiguredFeature extends Wrapper, Keyed {
      */
     @AsOf("3.3.0")
     static ConfiguredFeature decode(Object minecraftFeature) {
-        return DECODER.decode(minecraftFeature);
+        record Holder() {
+            static final Decoder<ConfiguredFeature> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.ConfiguredFeatureDecoder");
+        }
+        return Holder.DECODER.decode(minecraftFeature);
     }
 
 }

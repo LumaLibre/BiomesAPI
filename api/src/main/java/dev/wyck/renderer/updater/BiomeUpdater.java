@@ -34,9 +34,6 @@ import java.util.concurrent.CompletableFuture;
 public interface BiomeUpdater extends AbstractBiomeRenderer {
 
     @ApiStatus.Internal
-    WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.renderer.updater.BiomeUpdaterFactoryImpl");
-
-    @ApiStatus.Internal
     interface Factory {
         BiomeUpdater create(Plugin plugin);
     }
@@ -61,7 +58,10 @@ public interface BiomeUpdater extends AbstractBiomeRenderer {
      */
     @AsOf("1.2.0")
     static BiomeUpdater of(Plugin plugin) {
-        return WIRE.get().create(plugin);
+        record Holder() {
+            static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.renderer.updater.BiomeUpdaterFactoryImpl");
+        }
+        return Holder.WIRE.get().create(plugin);
     }
 
     /**
@@ -138,7 +138,6 @@ public interface BiomeUpdater extends AbstractBiomeRenderer {
     @AsOf("2.2.0")
     void updateChunksAsync(Collection<CompletableFuture<Chunk>> chunks);
 
-
     /**
      * Updates the biomes of a list of chunks within a certain distance.
      * This method sends an update packet to all players within the specified distance of each chunk in the list.
@@ -162,7 +161,6 @@ public interface BiomeUpdater extends AbstractBiomeRenderer {
     @AsOf("0.0.15")
     void updateChunkRadius(Chunk chunk, int radius);
 
-
     /**
      * Updates the biomes of all chunks within the player's view distance.
      * This method calculates all chunks within the player's view distance and sends an update packet to them.
@@ -170,7 +168,6 @@ public interface BiomeUpdater extends AbstractBiomeRenderer {
      */
     @AsOf("0.0.15")
     void updateChunksForPlayer(Player player);
-
 
     /**
      * Checks if a player is within the view distance of a chunk.

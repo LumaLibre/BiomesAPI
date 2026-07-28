@@ -23,9 +23,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.1.0")
 public interface TagKey extends Wrapper {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<TagKey> WIRE = ConstructWireProvider.create("dev.wyck.tags.TagKeyImpl");
-
     /**
      * The identifier of this tag.
      * @return the tag identifier
@@ -98,6 +95,9 @@ public interface TagKey extends Wrapper {
     @AsOf("3.1.0")
     @ApiStatus.Internal
     static TagKey of(RegistryId registry, ResourceKey key) {
-        return WIRE.construct(key, registry);
+        record Holder() {
+            static final ConstructWireProvider<TagKey> WIRE = ConstructWireProvider.create("dev.wyck.tags.TagKeyImpl");
+        }
+        return Holder.WIRE.construct(key, registry);
     }
 }

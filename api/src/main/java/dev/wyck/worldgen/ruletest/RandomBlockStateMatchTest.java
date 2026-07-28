@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.BukkitBootstrapUtil;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface RandomBlockStateMatchTest extends RuleTest {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RandomBlockStateMatchTest> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.ruletest.RandomBlockStateMatchTestImpl");
 
     /**
      * The block state to match.
@@ -48,7 +44,10 @@ public interface RandomBlockStateMatchTest extends RuleTest {
      */
     @AsOf("3.0.0")
     static RandomBlockStateMatchTest of(BlockData blockState, float probability) {
-        return WIRE.construct(blockState, probability);
+        record Holder() {
+            static final ConstructWireProvider<RandomBlockStateMatchTest> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.ruletest.RandomBlockStateMatchTestImpl");
+        }
+        return Holder.WIRE.construct(blockState, probability);
     }
 
     /**

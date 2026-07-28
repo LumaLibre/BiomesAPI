@@ -2,7 +2,6 @@ package dev.wyck.worldgen.heightproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,9 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface Absolute extends VerticalAnchor {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<Absolute> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.AbsoluteImpl");
 
     /**
      * The Y level.
@@ -36,6 +32,9 @@ public interface Absolute extends VerticalAnchor {
      */
     @AsOf("3.0.0")
     static Absolute of(int y) {
-        return WIRE.construct(y);
+        record Holder() {
+            static final ConstructWireProvider<Absolute> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.AbsoluteImpl");
+        }
+        return Holder.WIRE.construct(y);
     }
 }

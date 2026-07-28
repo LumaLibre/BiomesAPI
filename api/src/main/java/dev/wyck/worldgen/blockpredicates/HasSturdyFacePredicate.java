@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface HasSturdyFacePredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<HasSturdyFacePredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.HasSturdyFacePredicateImpl");
 
     /**
      * The offset from the block to check.
@@ -59,7 +55,10 @@ public interface HasSturdyFacePredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static HasSturdyFacePredicate of(BlockVector offset, BlockFace direction) {
-        return WIRE.construct(offset, direction);
+        record Holder() {
+            static final ConstructWireProvider<HasSturdyFacePredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.HasSturdyFacePredicateImpl");
+        }
+        return Holder.WIRE.construct(offset, direction);
     }
 
     /**

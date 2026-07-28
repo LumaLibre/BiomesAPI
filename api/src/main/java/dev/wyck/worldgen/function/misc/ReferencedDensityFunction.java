@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface ReferencedDensityFunction extends DensityFunction {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<ReferencedDensityFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.ReferencedDensityFunctionImpl");
-
     /**
      * Creates a new {@link ReferencedDensityFunction} from the given key.
      * @param key the key of the density function
@@ -29,6 +25,9 @@ public interface ReferencedDensityFunction extends DensityFunction {
      */
     @AsOf("3.0.0")
     static ReferencedDensityFunction of(ResourceKey key) {
-        return WIRE.construct(key);
+        record Holder() {
+            static final ConstructWireProvider<ReferencedDensityFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.misc.ReferencedDensityFunctionImpl");
+        }
+        return Holder.WIRE.construct(key);
     }
 }

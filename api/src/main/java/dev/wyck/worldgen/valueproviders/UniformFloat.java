@@ -2,7 +2,6 @@ package dev.wyck.worldgen.valueproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface UniformFloat extends FloatProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<UniformFloat> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.UniformFloatImpl");
 
     /**
      * The exclusive upper bound of the range.
@@ -55,7 +51,10 @@ public interface UniformFloat extends FloatProvider {
      */
     @AsOf("3.0.0")
     static UniformFloat of(float min, float max) {
-        return WIRE.construct(min, max);
+        record Holder() {
+            static final ConstructWireProvider<UniformFloat> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.UniformFloatImpl");
+        }
+        return Holder.WIRE.construct(min, max);
     }
 
     /**

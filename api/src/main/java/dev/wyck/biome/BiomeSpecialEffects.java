@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.internal.FriendlyColorUtil;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
@@ -24,12 +23,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface BiomeSpecialEffects extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BiomeSpecialEffects> WIRE = ConstructWireProvider.create("dev.wyck.biome.BiomeSpecialEffectsImpl");
-
-    @ApiStatus.Internal
-    Decoder<BiomeSpecialEffects> DECODER = Decoder.create("dev.wyck.decode.biome.BiomeSpecialEffectsDecoder");
 
     BiomeSpecialEffects DEFAULT = of(0x3F75C4, null, null, null, GrassColorModifier.NONE);
 
@@ -96,7 +89,10 @@ public interface BiomeSpecialEffects extends Wrapper {
     @AsOf("3.0.0")
     @NullUnmarked
     static BiomeSpecialEffects of(int waterColor, Integer foliageColorOverride, Integer dryFoliageColorOverride, Integer grassColorOverride, @NonNull GrassColorModifier grassColorModifier) {
-        return WIRE.construct(waterColor, Optional.ofNullable(foliageColorOverride), Optional.ofNullable(dryFoliageColorOverride), Optional.ofNullable(grassColorOverride), grassColorModifier);
+        record Holder() {
+            static final ConstructWireProvider<BiomeSpecialEffects> WIRE = ConstructWireProvider.create("dev.wyck.biome.BiomeSpecialEffectsImpl");
+        }
+        return Holder.WIRE.construct(waterColor, Optional.ofNullable(foliageColorOverride), Optional.ofNullable(dryFoliageColorOverride), Optional.ofNullable(grassColorOverride), grassColorModifier);
     }
 
     /**
@@ -132,7 +128,10 @@ public interface BiomeSpecialEffects extends Wrapper {
      */
     @AsOf("3.3.0")
     static BiomeSpecialEffects decode(Object minecraftSpecialEffects) {
-        return DECODER.decode(minecraftSpecialEffects);
+        record Holder() {
+            static final Decoder<BiomeSpecialEffects> DECODER = Decoder.create("dev.wyck.decode.biome.BiomeSpecialEffectsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftSpecialEffects);
     }
 
     /**

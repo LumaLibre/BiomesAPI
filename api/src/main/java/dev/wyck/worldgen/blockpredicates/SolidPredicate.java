@@ -3,7 +3,6 @@ package dev.wyck.worldgen.blockpredicates;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface SolidPredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SolidPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.SolidPredicateImpl");
 
     /**
      * The offset from the block to check.
@@ -51,7 +47,10 @@ public interface SolidPredicate extends BlockPredicate {
     @Deprecated
     @AsOf("3.0.0")
     static SolidPredicate of(BlockVector offset) {
-        return WIRE.construct(offset);
+        record Holder() {
+            static final ConstructWireProvider<SolidPredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.SolidPredicateImpl");
+        }
+        return Holder.WIRE.construct(offset);
     }
 
     /**

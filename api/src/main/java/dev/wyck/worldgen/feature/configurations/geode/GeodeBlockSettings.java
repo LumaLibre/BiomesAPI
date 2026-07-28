@@ -35,12 +35,6 @@ import java.util.Set;
 @AsOf("3.0.0")
 public interface GeodeBlockSettings extends Wrapper {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<GeodeBlockSettings> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.geode.GeodeBlockSettingsImpl");
-
-    @ApiStatus.Internal
-    Decoder<GeodeBlockSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeBlockSettingsDecoder");
-
     /**
      * The block state provider used for the filling layer. This is air in vanilla geodes.
      * @return the filling provider
@@ -141,7 +135,10 @@ public interface GeodeBlockSettings extends Wrapper {
         TagSet<Material> cannotReplace,
         TagSet<Material> invalidBlocks
     ) {
-        return WIRE.construct(
+        record Holder() {
+            static final ConstructWireProvider<GeodeBlockSettings> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.geode.GeodeBlockSettingsImpl");
+        }
+        return Holder.WIRE.construct(
             fillingProvider,
             innerLayerProvider,
             alternateInnerLayerProvider,
@@ -165,7 +162,10 @@ public interface GeodeBlockSettings extends Wrapper {
 
     @ApiStatus.Internal
     static GeodeBlockSettings decode(Object minecraftSettings) {
-        return DECODER.decode(minecraftSettings);
+        record Holder() {
+            static final Decoder<GeodeBlockSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeBlockSettingsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftSettings);
     }
 
     /**

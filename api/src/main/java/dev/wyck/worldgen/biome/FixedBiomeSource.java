@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.biome.Biome;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface FixedBiomeSource extends BiomeSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<FixedBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.FixedBiomeSourceImpl");
 
     /**
      * The single biome to use.
@@ -38,7 +34,10 @@ public interface FixedBiomeSource extends BiomeSource {
      */
     @AsOf("3.0.0")
     static FixedBiomeSource of(Biome biome) {
-        return WIRE.construct(biome);
+        record Holder() {
+            static final ConstructWireProvider<FixedBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.FixedBiomeSourceImpl");
+        }
+        return Holder.WIRE.construct(biome);
     }
 
     /**

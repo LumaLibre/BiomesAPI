@@ -20,8 +20,12 @@ import org.jspecify.annotations.NullMarked;
 @ApiStatus.Internal
 public interface ParticleOptionsFactory {
 
-    @ApiStatus.Internal
-    WireProvider<ParticleOptionsFactory> WIRE = WireProvider.create("dev.wyck.*.environment.particle.ParticleOptionsFactoryImpl");
+    static ParticleOptionsFactory instance() {
+        record Holder() {
+            static final WireProvider<ParticleOptionsFactory> WIRE = WireProvider.create("dev.wyck.*.environment.particle.ParticleOptionsFactoryImpl");
+        }
+        return Holder.WIRE.get();
+    }
 
     /**
      * Creates a particle options handle for a block particle with the specified material.

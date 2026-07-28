@@ -2,7 +2,6 @@ package dev.wyck.worldgen.surface.condition;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,14 +16,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface SteepConditionSource extends ConditionSource {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<SteepConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.SteepConditionSourceImpl");
-
     /** The steep condition source. */
     @AsOf("3.0.0")
     SteepConditionSource INSTANCE = of();
 
     private static SteepConditionSource of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<SteepConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.SteepConditionSourceImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

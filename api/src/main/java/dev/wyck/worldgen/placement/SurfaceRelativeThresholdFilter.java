@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.HeightmapType;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface SurfaceRelativeThresholdFilter extends PlacementFilter {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SurfaceRelativeThresholdFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.SurfaceRelativeThresholdFilterImpl");
 
     /**
      * The heightmap to measure the surface against.
@@ -68,7 +64,10 @@ public interface SurfaceRelativeThresholdFilter extends PlacementFilter {
      */
     @AsOf("3.0.0")
     static SurfaceRelativeThresholdFilter of(HeightmapType heightmap, int minInclusive, int maxInclusive) {
-        return WIRE.construct(heightmap, minInclusive, maxInclusive);
+        record Holder() {
+            static final ConstructWireProvider<SurfaceRelativeThresholdFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.SurfaceRelativeThresholdFilterImpl");
+        }
+        return Holder.WIRE.construct(heightmap, minInclusive, maxInclusive);
     }
 
     /**

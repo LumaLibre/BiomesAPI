@@ -2,7 +2,6 @@ package dev.wyck.worldgen.heightproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,9 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BelowTop extends VerticalAnchor {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BelowTop> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.BelowTopImpl");
 
     /** The top of the world. */
     @AsOf("3.0.0")
@@ -40,6 +36,9 @@ public interface BelowTop extends VerticalAnchor {
      */
     @AsOf("3.0.0")
     static BelowTop of(int offset) {
-        return WIRE.construct(offset);
+        record Holder() {
+            static final ConstructWireProvider<BelowTop> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.BelowTopImpl");
+        }
+        return Holder.WIRE.construct(offset);
     }
 }

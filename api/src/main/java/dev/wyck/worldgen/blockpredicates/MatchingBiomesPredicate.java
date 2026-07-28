@@ -3,7 +3,6 @@ package dev.wyck.worldgen.blockpredicates;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.biome.Biome;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -21,9 +20,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface MatchingBiomesPredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MatchingBiomesPredicate> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.blockpredicates.MatchingBiomesPredicateImpl");
 
     /**
      * The biomes to match against.
@@ -51,7 +47,10 @@ public interface MatchingBiomesPredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static MatchingBiomesPredicate of(List<Biome> biomes) {
-        return WIRE.construct(biomes);
+        record Holder() {
+            static final ConstructWireProvider<MatchingBiomesPredicate> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.blockpredicates.MatchingBiomesPredicateImpl");
+        }
+        return Holder.WIRE.construct(biomes);
     }
 
     /**

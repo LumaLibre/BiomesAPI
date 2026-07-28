@@ -2,7 +2,6 @@ package dev.wyck.worldgen.feature.trunkplacers;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface DarkOakTrunkPlacer extends TrunkPlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<DarkOakTrunkPlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.trunkplacers.DarkOakTrunkPlacerImpl");
 
     /**
      * Converts this object back to a builder.
@@ -42,7 +38,10 @@ public interface DarkOakTrunkPlacer extends TrunkPlacer {
      */
     @AsOf("3.0.0")
     static DarkOakTrunkPlacer of(int baseHeight, int heightRandA, int heightRandB) {
-        return WIRE.construct(baseHeight, heightRandA, heightRandB);
+        record Holder() {
+            static final ConstructWireProvider<DarkOakTrunkPlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.trunkplacers.DarkOakTrunkPlacerImpl");
+        }
+        return Holder.WIRE.construct(baseHeight, heightRandA, heightRandB);
     }
 
     /**

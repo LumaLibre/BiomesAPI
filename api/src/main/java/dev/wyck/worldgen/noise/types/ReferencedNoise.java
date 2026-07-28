@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.noise.Noise;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,8 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.4.0")
 public interface ReferencedNoise extends Noise {
-    @ApiStatus.Internal
-    ConstructWireProvider<ReferencedNoise> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.noise.types.ReferencedNoiseImpl");
 
     /**
      * The resource key of the noise function.
@@ -28,6 +25,9 @@ public interface ReferencedNoise extends Noise {
      */
     @AsOf("3.0.0")
     static ReferencedNoise of(ResourceKey resourceKey) {
-        return WIRE.construct(resourceKey);
+        record Holder() {
+            static final ConstructWireProvider<ReferencedNoise> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.noise.types.ReferencedNoiseImpl");
+        }
+        return Holder.WIRE.construct(resourceKey);
     }
 }

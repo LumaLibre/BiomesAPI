@@ -2,7 +2,6 @@ package dev.wyck.worldgen.heightproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,9 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface AboveBottom extends VerticalAnchor {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AboveBottom> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.AboveBottomImpl");
 
     /** The bottom of the world. */
     @AsOf("3.0.0")
@@ -40,6 +36,9 @@ public interface AboveBottom extends VerticalAnchor {
      */
     @AsOf("3.0.0")
     static AboveBottom of(int offset) {
-        return WIRE.construct(offset);
+        record Holder() {
+            static final ConstructWireProvider<AboveBottom> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.AboveBottomImpl");
+        }
+        return Holder.WIRE.construct(offset);
     }
 }

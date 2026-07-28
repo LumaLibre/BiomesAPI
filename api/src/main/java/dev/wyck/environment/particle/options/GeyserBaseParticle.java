@@ -20,7 +20,7 @@ public record GeyserBaseParticle(int waterBlocks, float burstImpulseBase) implem
 
     @Override
     public ParticleOptions apply(ParticleType particleType) {
-        return ParticleOptionsFactory.WIRE.get().geyserBase(particleType, waterBlocks, burstImpulseBase);
+        return ParticleOptionsFactory.instance().geyserBase(particleType, waterBlocks, burstImpulseBase);
     }
 
     /**

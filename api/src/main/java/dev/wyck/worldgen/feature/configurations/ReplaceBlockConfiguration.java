@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.ruletest.RuleTest;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -24,9 +23,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface ReplaceBlockConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ReplaceBlockConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.ReplaceBlockConfigurationImpl");
 
     /**
      * A list of targets. This can be empty.
@@ -53,7 +49,10 @@ public interface ReplaceBlockConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static ReplaceBlockConfiguration of(List<OreConfiguration.TargetBlockState> targetStates) {
-        return WIRE.construct(targetStates);
+        record Holder() {
+            static final ConstructWireProvider<ReplaceBlockConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.ReplaceBlockConfigurationImpl");
+        }
+        return Holder.WIRE.construct(targetStates);
     }
 
     /**

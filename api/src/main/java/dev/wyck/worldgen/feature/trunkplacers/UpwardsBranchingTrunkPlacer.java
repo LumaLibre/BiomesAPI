@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collections;
@@ -23,9 +22,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.0")
 public interface UpwardsBranchingTrunkPlacer extends TrunkPlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<UpwardsBranchingTrunkPlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.trunkplacers.UpwardsBranchingTrunkPlacerImpl");
 
     /**
      * The number of steps to generate extra branches.
@@ -85,7 +81,10 @@ public interface UpwardsBranchingTrunkPlacer extends TrunkPlacer {
      */
     @AsOf("3.0.0")
     static UpwardsBranchingTrunkPlacer of(int baseHeight, int heightRandA, int heightRandB, IntProvider extraBranchSteps, float placeBranchPerLogProbability, IntProvider extraBranchLength, Set<Material> canGrowThrough) {
-        return WIRE.construct(baseHeight, heightRandA, heightRandB, extraBranchSteps, placeBranchPerLogProbability, extraBranchLength, canGrowThrough);
+        record Holder() {
+            static final ConstructWireProvider<UpwardsBranchingTrunkPlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.trunkplacers.UpwardsBranchingTrunkPlacerImpl");
+        }
+        return Holder.WIRE.construct(baseHeight, heightRandA, heightRandB, extraBranchSteps, placeBranchPerLogProbability, extraBranchLength, canGrowThrough);
     }
 
     /**

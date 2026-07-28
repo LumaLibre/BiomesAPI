@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.biome.BiomeSource;
 import dev.wyck.worldgen.chunk.flat.FlatLevelGeneratorSettings;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,9 +18,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface FlatLevelSource extends ChunkGenerator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<FlatLevelSource> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.FlatLevelSourceImpl");
 
     /**
      * The settings.
@@ -50,7 +46,10 @@ public interface FlatLevelSource extends ChunkGenerator {
      */
     @AsOf("3.0.0")
     static FlatLevelSource of(BiomeSource biomeSource, FlatLevelGeneratorSettings settings) {
-        return WIRE.construct(biomeSource, settings);
+        record Holder() {
+            static final ConstructWireProvider<FlatLevelSource> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.FlatLevelSourceImpl");
+        }
+        return Holder.WIRE.construct(biomeSource, settings);
     }
 
     /**

@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.biome.Biome;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.HashSet;
@@ -22,9 +21,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.0")
 public interface CheckeredColumnBiomeSource extends BiomeSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CheckeredColumnBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.CheckerboardColumnBiomeSourceImpl");
 
     /**
      * Any number of biomes.
@@ -64,7 +60,10 @@ public interface CheckeredColumnBiomeSource extends BiomeSource {
      */
     static CheckeredColumnBiomeSource of(Set<Biome> biomes, int size) {
         Preconditions.checkArgument(size >= 0 && size <= 62, "size must be between 0 and 62");
-        return WIRE.construct(biomes, size);
+        record Holder() {
+            static final ConstructWireProvider<CheckeredColumnBiomeSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.biome.CheckerboardColumnBiomeSourceImpl");
+        }
+        return Holder.WIRE.construct(biomes, size);
     }
 
     /**

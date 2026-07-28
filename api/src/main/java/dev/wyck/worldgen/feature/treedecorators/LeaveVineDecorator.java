@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.treedecorators;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface LeaveVineDecorator extends TreeDecorator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<LeaveVineDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.LeaveVineDecoratorImpl");
 
     /**
      * The probability of placing a vine at any given position, between 0.0F and 1.0F (inclusive).
@@ -48,7 +44,10 @@ public interface LeaveVineDecorator extends TreeDecorator {
      */
     @AsOf("3.0.0")
     static LeaveVineDecorator of(float probability) {
-        return WIRE.construct(probability);
+        record Holder() {
+            static final ConstructWireProvider<LeaveVineDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.LeaveVineDecoratorImpl");
+        }
+        return Holder.WIRE.construct(probability);
     }
 
     /**

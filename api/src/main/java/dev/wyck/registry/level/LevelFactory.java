@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.level.LevelCreator;
 import org.bukkit.World;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -21,12 +20,12 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("2.4.0")
 public interface LevelFactory {
 
-    @ApiStatus.Internal
-    WireProvider<LevelFactory> WIRE = WireProvider.create("dev.wyck.*?.registry.level.SimpleLevelFactory");
-
     @AsOf("2.4.0")
     static LevelFactory factory() {
-        return WIRE.get();
+        record Holder() {
+            static final WireProvider<LevelFactory> WIRE = WireProvider.create("dev.wyck.*?.registry.level.SimpleLevelFactory");
+        }
+        return Holder.WIRE.get();
     }
 
     /**

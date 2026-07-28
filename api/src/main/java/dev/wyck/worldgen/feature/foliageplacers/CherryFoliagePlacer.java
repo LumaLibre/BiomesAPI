@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface CherryFoliagePlacer extends FoliagePlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CherryFoliagePlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.foliageplacers.CherryFoliagePlacerImpl");
 
     /**
      * The foliage's height, between 4 and 16 (inclusive).
@@ -94,7 +90,10 @@ public interface CherryFoliagePlacer extends FoliagePlacer {
         float hangingLeavesChance,
         float hangingLeavesExtensionChance
     ) {
-        return WIRE.construct(radius, offset, height, wideBottomLayerHoleChance, cornerHoleChance, hangingLeavesChance, hangingLeavesExtensionChance);
+        record Holder() {
+            static final ConstructWireProvider<CherryFoliagePlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.foliageplacers.CherryFoliagePlacerImpl");
+        }
+        return Holder.WIRE.construct(radius, offset, height, wideBottomLayerHoleChance, cornerHoleChance, hangingLeavesChance, hangingLeavesExtensionChance);
     }
 
     /**

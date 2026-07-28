@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.2.0")
 public interface AlphaValue extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AlphaValue> WIRE = ConstructWireProvider.create("dev.wyck.environment.attribute.modifier.AlphaValueImpl");
 
     /**
      * The value
@@ -57,7 +53,10 @@ public interface AlphaValue extends Wrapper {
     @AsOf("3.2.0")
     static AlphaValue of(float value, float alpha) {
         Preconditions.checkArgument(alpha >= 0.0f && alpha <= 1.0f, "alpha must be between 0.0 and 1.0");
-        return WIRE.construct(value, alpha);
+        record Holder() {
+            static final ConstructWireProvider<AlphaValue> WIRE = ConstructWireProvider.create("dev.wyck.environment.attribute.modifier.AlphaValueImpl");
+        }
+        return Holder.WIRE.construct(value, alpha);
     }
 
     /**

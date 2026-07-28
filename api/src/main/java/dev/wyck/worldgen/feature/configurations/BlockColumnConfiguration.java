@@ -26,9 +26,6 @@ import java.util.List;
 @AsOf("3.0.0")
 public interface BlockColumnConfiguration extends FeatureConfiguration {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<BlockColumnConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.BlockColumnConfigurationImpl");
-
     @ApiStatus.Experimental // may be moved in the future
     BlockPredicate ONLY_IN_AIR_PREDICATE = BlockPredicate.matchingBlockTag(ResourceKey.minecraft("air"));
 
@@ -86,7 +83,10 @@ public interface BlockColumnConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static BlockColumnConfiguration of(List<Layer> layers, BlockFace direction, BlockPredicate allowedPlacement, boolean prioritizeTip) {
-        return WIRE.construct(layers, direction, allowedPlacement, prioritizeTip);
+        record Holder() {
+            static final ConstructWireProvider<BlockColumnConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.BlockColumnConfigurationImpl");
+        }
+        return Holder.WIRE.construct(layers, direction, allowedPlacement, prioritizeTip);
     }
 
     /**

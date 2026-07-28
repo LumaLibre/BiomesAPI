@@ -13,7 +13,6 @@ import dev.wyck.worldgen.surface.condition.CaveSurface;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -32,9 +31,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.1")
 public interface VegetationPatchConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<VegetationPatchConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.VegetationPatchConfigurationImpl");
 
     /**
      * The blocks that the patch is allowed to replace.
@@ -154,7 +150,10 @@ public interface VegetationPatchConfiguration extends FeatureConfiguration {
         IntProvider xzRadius,
         float extraEdgeColumnChance
     ) {
-        return WIRE.construct(replaceable, groundState, vegetationFeature, surface, depth, extraBottomBlockChance, verticalRange, vegetationChance, xzRadius, extraEdgeColumnChance);
+        record Holder() {
+            static final ConstructWireProvider<VegetationPatchConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.VegetationPatchConfigurationImpl");
+        }
+        return Holder.WIRE.construct(replaceable, groundState, vegetationFeature, surface, depth, extraBottomBlockChance, verticalRange, vegetationChance, xzRadius, extraEdgeColumnChance);
     }
 
     /**

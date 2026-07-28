@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -20,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface SpruceFoliagePlacer extends FoliagePlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SpruceFoliagePlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.foliageplacers.SpruceFoliagePlacerImpl");
 
     /**
      * The trunk height, between 0 and 24 (inclusive).
@@ -52,7 +48,10 @@ public interface SpruceFoliagePlacer extends FoliagePlacer {
      */
     @AsOf("3.0.0")
     static SpruceFoliagePlacer of(IntProvider radius, IntProvider offset, IntProvider trunkHeight) {
-        return WIRE.construct(radius, offset, trunkHeight);
+        record Holder() {
+            static final ConstructWireProvider<SpruceFoliagePlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.foliageplacers.SpruceFoliagePlacerImpl");
+        }
+        return Holder.WIRE.construct(radius, offset, trunkHeight);
     }
 
     /**

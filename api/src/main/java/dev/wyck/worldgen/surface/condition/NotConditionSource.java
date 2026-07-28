@@ -2,7 +2,6 @@ package dev.wyck.worldgen.surface.condition;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,9 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface NotConditionSource extends ConditionSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NotConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.NotConditionSourceImpl");
 
     /**
      * The condition to invert.
@@ -36,6 +32,9 @@ public interface NotConditionSource extends ConditionSource {
      */
     @AsOf("3.0.0")
     static NotConditionSource of(ConditionSource target) {
-        return WIRE.construct(target);
+        record Holder() {
+            static final ConstructWireProvider<NotConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.NotConditionSourceImpl");
+        }
+        return Holder.WIRE.construct(target);
     }
 }

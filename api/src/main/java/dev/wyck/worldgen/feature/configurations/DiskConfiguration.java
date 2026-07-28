@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.blockpredicates.BlockPredicate;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface DiskConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<DiskConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.DiskConfigurationImpl");
 
     /**
      * The block state provider used for the blocks that make up the disk.
@@ -78,7 +74,10 @@ public interface DiskConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static DiskConfiguration of(BlockStateProvider stateProvider, BlockPredicate target, IntProvider radius, int halfHeight) {
-        return WIRE.construct(stateProvider, target, radius, halfHeight);
+        record Holder() {
+            static final ConstructWireProvider<DiskConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.DiskConfigurationImpl");
+        }
+        return Holder.WIRE.construct(stateProvider, target, radius, halfHeight);
     }
 
     /**

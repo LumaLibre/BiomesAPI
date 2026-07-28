@@ -30,12 +30,6 @@ import java.util.Set;
 @AsOf("3.0.0")
 public interface FlatLevelGeneratorSettings extends Wrapper {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<FlatLevelGeneratorSettings> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.flat.FlatLevelGeneratorSettingsImpl");
-
-    @ApiStatus.Internal
-    Decoder<FlatLevelGeneratorSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.FlatLevelGeneratorSettingsDecoder");
-
     @AsOf("3.0.0")
     FlatLevelGeneratorSettings CLASSIC_FLAT = builder()
         .layer(Material.GRASS_BLOCK, 1)
@@ -210,7 +204,10 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
      */
     @AsOf("3.0.0")
     static FlatLevelGeneratorSettings of(List<FlatLayerInfo> layers, boolean decoration, boolean addLakes, Biome biome, Biome fallbackBiome, List<PlacedFeature> lakes, Set<ResourceKey> structures) {
-        return WIRE.construct(layers, decoration, addLakes, biome, fallbackBiome, lakes, structures);
+        record Holder() {
+            static final ConstructWireProvider<FlatLevelGeneratorSettings> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.flat.FlatLevelGeneratorSettingsImpl");
+        }
+        return Holder.WIRE.construct(layers, decoration, addLakes, biome, fallbackBiome, lakes, structures);
     }
 
     /**
@@ -221,7 +218,10 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
      */
     @AsOf("3.3.0")
     static FlatLevelGeneratorSettings decode(Object minecraftSettings) {
-        return DECODER.decode(minecraftSettings);
+        record Holder() {
+            static final Decoder<FlatLevelGeneratorSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.FlatLevelGeneratorSettingsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftSettings);
     }
 
     /**

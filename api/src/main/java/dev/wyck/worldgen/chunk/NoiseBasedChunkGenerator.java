@@ -7,7 +7,6 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.LevelCreator;
 import dev.wyck.worldgen.biome.BiomeSource;
 import dev.wyck.worldgen.noise.Noise;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("2.4.0")
 public interface NoiseBasedChunkGenerator extends ChunkGenerator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<NoiseBasedChunkGenerator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.chunk.NoiseBasedChunkGeneratorImpl");
 
     /**
      * The noise generator.
@@ -52,7 +48,10 @@ public interface NoiseBasedChunkGenerator extends ChunkGenerator {
      */
     @AsOf("3.0.0")
     static NoiseBasedChunkGenerator of(BiomeSource biomeSource, Noise abstractNoise) {
-        return WIRE.construct(biomeSource, abstractNoise);
+        record Holder() {
+            static final ConstructWireProvider<NoiseBasedChunkGenerator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.chunk.NoiseBasedChunkGeneratorImpl");
+        }
+        return Holder.WIRE.construct(biomeSource, abstractNoise);
     }
 
     /**

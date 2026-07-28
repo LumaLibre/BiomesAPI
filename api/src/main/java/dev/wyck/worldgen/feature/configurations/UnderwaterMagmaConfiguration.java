@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.configurations;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.1")
 public interface UnderwaterMagmaConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<UnderwaterMagmaConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.UnderwaterMagmaConfigurationImpl");
 
     /**
      * How far down the feature searches for a floor, between 0 and 512.
@@ -68,7 +64,10 @@ public interface UnderwaterMagmaConfiguration extends FeatureConfiguration {
         Preconditions.checkArgument(floorSearchRange >= 0 && floorSearchRange <= 512, "floorSearchRange must be between 0 and 512");
         Preconditions.checkArgument(placementRadiusAroundFloor >= 0 && placementRadiusAroundFloor <= 64, "placementRadiusAroundFloor must be between 0 and 64");
         Preconditions.checkArgument(placementProbabilityPerValidPosition >= 0.0F && placementProbabilityPerValidPosition <= 1.0F, "placementProbabilityPerValidPosition must be between 0.0 and 1.0");
-        return WIRE.construct(floorSearchRange, placementRadiusAroundFloor, placementProbabilityPerValidPosition);
+        record Holder() {
+            static final ConstructWireProvider<UnderwaterMagmaConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.UnderwaterMagmaConfigurationImpl");
+        }
+        return Holder.WIRE.construct(floorSearchRange, placementRadiusAroundFloor, placementProbabilityPerValidPosition);
     }
 
     /**

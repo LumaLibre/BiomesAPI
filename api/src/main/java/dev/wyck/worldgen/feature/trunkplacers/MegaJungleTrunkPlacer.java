@@ -2,7 +2,6 @@ package dev.wyck.worldgen.feature.trunkplacers;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface MegaJungleTrunkPlacer extends TrunkPlacer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<MegaJungleTrunkPlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.trunkplacers.MegaJungleTrunkPlacerImpl");
 
     /**
      * Converts this object back to a builder.
@@ -41,7 +37,10 @@ public interface MegaJungleTrunkPlacer extends TrunkPlacer {
      */
     @AsOf("3.0.0")
     static MegaJungleTrunkPlacer of(int baseHeight, int heightRandA, int heightRandB) {
-        return WIRE.construct(baseHeight, heightRandA, heightRandB);
+        record Holder() {
+            static final ConstructWireProvider<MegaJungleTrunkPlacer> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.feature.trunkplacers.MegaJungleTrunkPlacerImpl");
+        }
+        return Holder.WIRE.construct(baseHeight, heightRandA, heightRandB);
     }
 
     /**

@@ -3,7 +3,6 @@ package dev.wyck.worldgen.surface.condition;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface StoneDepthConditionSource extends ConditionSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<StoneDepthConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.StoneDepthConditionSourceImpl");
 
     /**
      * The vertical offset.
@@ -77,7 +73,10 @@ public interface StoneDepthConditionSource extends ConditionSource {
      */
     @AsOf("3.0.0")
     static StoneDepthConditionSource of(int offset, boolean addSurfaceDepth, int secondaryDepthRange, CaveSurface surfaceType) {
-        return WIRE.construct(offset, addSurfaceDepth, secondaryDepthRange, surfaceType);
+        record Holder() {
+            static final ConstructWireProvider<StoneDepthConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.StoneDepthConditionSourceImpl");
+        }
+        return Holder.WIRE.construct(offset, addSurfaceDepth, secondaryDepthRange, surfaceType);
     }
 
     /**

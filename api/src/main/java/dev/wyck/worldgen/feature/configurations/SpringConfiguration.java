@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.material.FluidState;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,9 +22,6 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.0.0")
 public interface SpringConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SpringConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.SpringConfigurationImpl");
 
     /**
      * Which fluid to use.
@@ -92,7 +88,10 @@ public interface SpringConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static SpringConfiguration of(FluidState state, boolean requiresBlockBelow, int rockCount, int holeCount, Set<Material> validBlocks) {
-        return WIRE.construct(state, requiresBlockBelow, rockCount, holeCount, validBlocks);
+        record Holder() {
+            static final ConstructWireProvider<SpringConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.SpringConfigurationImpl");
+        }
+        return Holder.WIRE.construct(state, requiresBlockBelow, rockCount, holeCount, validBlocks);
     }
 
     /**

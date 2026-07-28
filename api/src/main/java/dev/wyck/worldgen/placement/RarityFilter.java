@@ -3,7 +3,6 @@ package dev.wyck.worldgen.placement;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface RarityFilter extends PlacementFilter {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RarityFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.RarityFilterImpl");
 
     /**
      * The average chance denominator; the position is kept once on average every this many attempts.
@@ -39,6 +35,9 @@ public interface RarityFilter extends PlacementFilter {
     @AsOf("3.0.0")
     static RarityFilter of(int chance) {
         Preconditions.checkArgument(chance > 0, "chance must be greater than 0");
-        return WIRE.construct(chance);
+        record Holder() {
+            static final ConstructWireProvider<RarityFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.RarityFilterImpl");
+        }
+        return Holder.WIRE.construct(chance);
     }
 }

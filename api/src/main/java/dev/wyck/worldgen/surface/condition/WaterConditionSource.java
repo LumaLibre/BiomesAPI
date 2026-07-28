@@ -2,7 +2,6 @@ package dev.wyck.worldgen.surface.condition;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface WaterConditionSource extends ConditionSource {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<WaterConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.WaterConditionSourceImpl");
 
     /**
      * The value added to the water depth before the comparison. May be negative to match blocks at a
@@ -67,7 +63,10 @@ public interface WaterConditionSource extends ConditionSource {
      */
     @AsOf("3.0.0")
     static WaterConditionSource of(int offset, int surfaceDepthMultiplier, boolean addStoneDepth) {
-        return WIRE.construct(offset, surfaceDepthMultiplier, addStoneDepth);
+        record Holder() {
+            static final ConstructWireProvider<WaterConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.WaterConditionSourceImpl");
+        }
+        return Holder.WIRE.construct(offset, surfaceDepthMultiplier, addStoneDepth);
     }
 
     /**

@@ -9,7 +9,6 @@ import dev.wyck.worldgen.carver.custom.CustomCarver;
 import dev.wyck.worldgen.placement.PlacedFeature;
 import dev.wyck.wrapper.Wrapper;
 import dev.wyck.wrapper.decode.Decoder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -28,13 +27,6 @@ import java.util.Map;
 @NullMarked
 @AsOf("2.3.0")
 public interface BiomeGenerationSettings extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BiomeGenerationSettings> WIRE = ConstructWireProvider.create("dev.wyck.biome.BiomeGenerationSettingsImpl");
-
-    @ApiStatus.Internal
-    Decoder<BiomeGenerationSettings> DECODER =
-        Decoder.create("dev.wyck.decode.biome.BiomeGenerationSettingsDecoder");
 
     /**
      * The configured carvers applied to this biome's generation.
@@ -71,7 +63,10 @@ public interface BiomeGenerationSettings extends Wrapper {
      */
     @AsOf("3.0.0")
     static BiomeGenerationSettings of(List<ConfiguredWorldCarver> carvers, Map<Decoration, List<PlacedFeature>> features) {
-        return WIRE.construct(carvers, features);
+        record Holder() {
+            static final ConstructWireProvider<BiomeGenerationSettings> WIRE = ConstructWireProvider.create("dev.wyck.biome.BiomeGenerationSettingsImpl");
+        }
+        return Holder.WIRE.construct(carvers, features);
     }
 
     /**
@@ -102,7 +97,10 @@ public interface BiomeGenerationSettings extends Wrapper {
      */
     @AsOf("3.3.0")
     static BiomeGenerationSettings decode(Object minecraftGenerationSettings) {
-        return DECODER.decode(minecraftGenerationSettings);
+        record Holder() {
+            static final Decoder<BiomeGenerationSettings> DECODER = Decoder.create("dev.wyck.decode.biome.BiomeGenerationSettingsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftGenerationSettings);
     }
 
     /**

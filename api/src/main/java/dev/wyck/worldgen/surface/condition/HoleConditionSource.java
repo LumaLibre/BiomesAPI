@@ -2,7 +2,6 @@ package dev.wyck.worldgen.surface.condition;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,14 +16,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface HoleConditionSource extends ConditionSource {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<HoleConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.HoleConditionSourceImpl");
-
     /** The hole condition source. */
     @AsOf("3.0.0")
     HoleConditionSource INSTANCE = of();
 
     private static HoleConditionSource of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<HoleConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.HoleConditionSourceImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

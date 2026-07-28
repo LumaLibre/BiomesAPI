@@ -10,7 +10,6 @@ import dev.wyck.util.Either;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.HashSet;
@@ -25,9 +24,6 @@ import java.util.Set;
  */
 @NullMarked
 public interface Infiniburn extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<Infiniburn> WIRE = ConstructWireProvider.create("dev.wyck.level.dimension.InfiniburnImpl");
 
     Infiniburn OVERWORLD = of(ResourceKey.minecraft("infiniburn_overworld"));
     Infiniburn NETHER = of(ResourceKey.minecraft("infiniburn_nether"));
@@ -61,7 +57,10 @@ public interface Infiniburn extends Wrapper {
      */
     @AsOf("2.4.0")
     static Infiniburn of(TagSet<Material> blocks) {
-        return WIRE.construct(blocks);
+        record Holder() {
+            static final ConstructWireProvider<Infiniburn> WIRE = ConstructWireProvider.create("dev.wyck.level.dimension.InfiniburnImpl");
+        }
+        return Holder.WIRE.construct(blocks);
     }
 
     /**

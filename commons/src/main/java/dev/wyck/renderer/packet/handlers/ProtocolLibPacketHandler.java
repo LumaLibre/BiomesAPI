@@ -139,7 +139,7 @@ public class ProtocolLibPacketHandler implements PacketHandler {
             DimensionSectionCount dimensionSectionCount = DimensionSectionCount.fromBukkitEnvironment(player.getWorld().getEnvironment());
             ClientboundLevelChunkPacketData chunkData = packet.getSpecificModifier(ClientboundLevelChunkPacketData.class).read(0);
 
-            NativeChunkPacketHandler.WIRE.get().modifyChunkBiomes(chunkData, chunkLocation, resolver, dimensionSectionCount);
+            NativeChunkPacketHandler.instance().modifyChunkBiomes(chunkData, chunkLocation, resolver, dimensionSectionCount);
         }
     }
 

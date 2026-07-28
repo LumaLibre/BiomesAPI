@@ -27,9 +27,6 @@ import org.jspecify.annotations.NullMarked;
 @ApiStatus.Experimental
 public interface LevelStemEditor {
 
-    @ApiStatus.Internal
-    WireProvider<LevelStemEditor> RUNTIME = WireProvider.create("dev.wyck.registry.level.RuntimeLevelStemEditor");
-
     /**
      * Creates a new editor backed by the runtime reference-swap implementation.
      * @return a new editor instance
@@ -37,7 +34,10 @@ public interface LevelStemEditor {
      */
     @AsOf("2.3.0")
     static LevelStemEditor create() {
-        return RUNTIME.getNew();
+        record Holder() {
+            static final WireProvider<LevelStemEditor> WIRE = WireProvider.create("dev.wyck.registry.level.RuntimeLevelStemEditor");
+        }
+        return Holder.WIRE.getNew();
     }
 
     /**

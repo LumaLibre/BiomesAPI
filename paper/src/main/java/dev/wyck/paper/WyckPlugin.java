@@ -5,7 +5,6 @@ import dev.faststats.data.Metric;
 import dev.wyck.Wyck;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.annotations.WireFactory;
-import dev.wyck.factory.BuildInfo;
 import dev.wyck.keys.KeyChains;
 import dev.wyck.paper.configs.WyckPluginConfig;
 import dev.wyck.paper.renderer.packet.PacketHandlerFactoryPluginImpl;

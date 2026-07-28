@@ -2,7 +2,6 @@ package dev.wyck.worldgen.placement;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface SurfaceWaterDepthFilter extends PlacementFilter {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SurfaceWaterDepthFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.SurfaceWaterDepthFilterImpl");
 
     /**
      * The maximum allowed water depth.
@@ -37,6 +33,9 @@ public interface SurfaceWaterDepthFilter extends PlacementFilter {
      */
     @AsOf("3.0.0")
     static SurfaceWaterDepthFilter of(int maxWaterDepth) {
-        return WIRE.construct(maxWaterDepth);
+        record Holder() {
+            static final ConstructWireProvider<SurfaceWaterDepthFilter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.SurfaceWaterDepthFilterImpl");
+        }
+        return Holder.WIRE.construct(maxWaterDepth);
     }
 }

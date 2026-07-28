@@ -210,7 +210,7 @@ public class NettyPacketHandler implements PacketHandler {
 
             PacketHandler.DimensionSectionCount sectionCount = PacketHandler.DimensionSectionCount.fromBukkitEnvironment(player.getWorld().getEnvironment());
 
-            NativeChunkPacketHandler.WIRE.get().modifyChunkBiomes(packet.getChunkData(), loc, resolver, sectionCount);
+            NativeChunkPacketHandler.instance().modifyChunkBiomes(packet.getChunkData(), loc, resolver, sectionCount);
         }
 
         private void handleBlockUpdate(Player player, ClientboundBlockUpdatePacket packet) {

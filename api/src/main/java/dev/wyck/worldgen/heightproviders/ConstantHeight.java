@@ -2,7 +2,6 @@ package dev.wyck.worldgen.heightproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,9 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface ConstantHeight extends HeightProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ConstantHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.ConstantHeightImpl");
 
     /** A constant height provider which always resolves to 0. */
     @AsOf("3.0.0")
@@ -40,6 +36,9 @@ public interface ConstantHeight extends HeightProvider {
      */
     @AsOf("3.0.0")
     static ConstantHeight of(VerticalAnchor value) {
-        return WIRE.construct(value);
+        record Holder() {
+            static final ConstructWireProvider<ConstantHeight> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.heightproviders.ConstantHeightImpl");
+        }
+        return Holder.WIRE.construct(value);
     }
 }

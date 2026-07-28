@@ -25,9 +25,6 @@ import java.util.Optional;
 @AsOf("2.3.0")
 public interface NoiseParameters extends Wrapper, Keyed {
 
-    @ApiStatus.Internal
-    Decoder<NoiseParameters> DECODER = Decoder.create("dev.wyck.decode.worldgen.synth.NoiseParametersDecoders");
-
     /**
      * The resource key of the noise parameters.
      * @return the resource key of the noise parameters
@@ -70,7 +67,6 @@ public interface NoiseParameters extends Wrapper, Keyed {
     static ComposedNoiseParameters.Builder composed() {
         return ComposedNoiseParameters.builder();
     }
-
 
     // Friendly
 
@@ -141,6 +137,9 @@ public interface NoiseParameters extends Wrapper, Keyed {
      */
     @AsOf("3.3.0")
     static NoiseParameters decode(Object minecraftNoiseParameters) {
-        return DECODER.decode(minecraftNoiseParameters);
+        record Holder() {
+            static final Decoder<NoiseParameters> DECODER = Decoder.create("dev.wyck.decode.worldgen.synth.NoiseParametersDecoders");
+        }
+        return Holder.DECODER.decode(minecraftNoiseParameters);
     }
 }

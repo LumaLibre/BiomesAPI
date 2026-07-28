@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,9 +18,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface RandomizedIntStateProvider extends BlockStateProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RandomizedIntStateProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.RandomizedIntStateProviderImpl");
 
     /**
      * Another block state provider that specifies the source of the block state.
@@ -68,7 +64,10 @@ public interface RandomizedIntStateProvider extends BlockStateProvider {
      */
     @AsOf("3.0.0")
     static RandomizedIntStateProvider of(BlockStateProvider source, String property, IntProvider values) {
-        return WIRE.construct(source, property, values);
+        record Holder() {
+            static final ConstructWireProvider<RandomizedIntStateProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.RandomizedIntStateProviderImpl");
+        }
+        return Holder.WIRE.construct(source, property, values);
     }
 
     /**

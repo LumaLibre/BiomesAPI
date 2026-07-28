@@ -259,7 +259,7 @@ public interface SurfaceRule extends Wrapper {
      * @since 3.3.0
      */
     @AsOf("3.3.0")
-    static OptionallyFlatBedrockConditionSource optionallyFlatBedrock(String randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
+    static OptionallyFlatBedrockConditionSource optionallyFlatBedrock(ResourceKey randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
         return OptionallyFlatBedrockConditionSource.of(randomName, trueAtAndBelow, falseAtAndAbove, roof);
     }
 

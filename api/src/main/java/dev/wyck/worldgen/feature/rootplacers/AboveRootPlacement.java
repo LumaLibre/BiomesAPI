@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface AboveRootPlacement extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AboveRootPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.rootplacers.AboveRootPlacementImpl");
 
     /**
      * The block above the root.
@@ -59,7 +55,10 @@ public interface AboveRootPlacement extends Wrapper {
      */
     @AsOf("3.0.0")
     static AboveRootPlacement of(BlockStateProvider aboveRootProvider, float aboveRootPlacementChance) {
-        return WIRE.construct(aboveRootProvider, aboveRootPlacementChance);
+        record Holder() {
+            static final ConstructWireProvider<AboveRootPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.rootplacers.AboveRootPlacementImpl");
+        }
+        return Holder.WIRE.construct(aboveRootProvider, aboveRootPlacementChance);
     }
 
     /**

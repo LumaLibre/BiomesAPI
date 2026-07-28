@@ -3,7 +3,6 @@ package dev.wyck.worldgen.placement;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.heightproviders.HeightProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface HeightRangePlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<HeightRangePlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.HeightRangePlacementImpl");
 
     /**
      * The new Y coordinate.
@@ -37,6 +33,9 @@ public interface HeightRangePlacement extends PlacementModifier {
      */
     @AsOf("3.0.0")
     static HeightRangePlacement of(HeightProvider height) {
-        return WIRE.construct(height);
+        record Holder() {
+            static final ConstructWireProvider<HeightRangePlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.HeightRangePlacementImpl");
+        }
+        return Holder.WIRE.construct(height);
     }
 }

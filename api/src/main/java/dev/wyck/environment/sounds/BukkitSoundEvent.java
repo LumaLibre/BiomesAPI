@@ -3,7 +3,6 @@ package dev.wyck.environment.sounds;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.Sound;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -18,9 +17,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.1")
 public interface BukkitSoundEvent extends SoundEvent {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BukkitSoundEvent> WIRE = ConstructWireProvider.create("dev.wyck.environment.sounds.BukkitSoundEventImpl");
 
     /**
      * The {@link Sound} of the sound event.
@@ -38,7 +34,7 @@ public interface BukkitSoundEvent extends SoundEvent {
      */
     @AsOf("3.0.1")
     static BukkitSoundEvent variableRange(Sound sound) {
-        return WIRE.construct(sound, Optional.empty());
+        return create(sound, Optional.empty());
     }
 
     /**
@@ -50,6 +46,14 @@ public interface BukkitSoundEvent extends SoundEvent {
      */
     @AsOf("3.0.1")
     static BukkitSoundEvent fixedRange(Sound sound, float range) {
-        return WIRE.construct(sound, Optional.of(range));
+        return create(sound, Optional.of(range));
+    }
+
+    private static BukkitSoundEvent create(Sound sound, Optional<Float> range) {
+        record Holder() {
+            static final ConstructWireProvider<BukkitSoundEvent> WIRE =
+                ConstructWireProvider.create("dev.wyck.environment.sounds.BukkitSoundEventImpl");
+        }
+        return Holder.WIRE.construct(sound, range);
     }
 }

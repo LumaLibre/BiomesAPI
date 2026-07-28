@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface ClampedTransformer extends PureTransformer {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ClampedTransformer> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.transformer.ClampedTransformerImpl");
 
     /**
      * The minimum value.
@@ -52,7 +48,10 @@ public interface ClampedTransformer extends PureTransformer {
      */
     @AsOf("3.0.0")
     static ClampedTransformer of(@Nullable ResourceKey resourceKey, DensityFunction input, double min, double max) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), input, min, max);
+        record Holder() {
+            static final ConstructWireProvider<ClampedTransformer> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.transformer.ClampedTransformerImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), input, min, max);
     }
 
     /**

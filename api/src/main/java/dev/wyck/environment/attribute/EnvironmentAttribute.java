@@ -9,7 +9,6 @@ import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Keyed;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -27,12 +26,6 @@ import java.util.Map;
 @NullMarked
 @AsOf("1.1.0")
 public interface EnvironmentAttribute<V> extends Wrapper, Keyed {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<EnvironmentAttribute<?>> WIRE = ConstructWireProvider.create("dev.wyck.environment.attribute.EnvironmentAttributeImpl");
-
-    @ApiStatus.Internal
-    Decoder<EnvironmentAttribute<?>> DECODER = Decoder.create("dev.wyck.decode.environment.attribute.EnvironmentAttributeDecoders");
 
     /**
      * Gets the key of the environment attribute.
@@ -123,7 +116,11 @@ public interface EnvironmentAttribute<V> extends Wrapper, Keyed {
     @AsOf("3.0.0")
     @SuppressWarnings("unchecked")
     static <V, U> EnvironmentAttribute<V> of(ResourceKey key, @Nullable Converter<V, U> converter, @Nullable V defaultValue) {
-        EnvironmentAttribute<V> attribute = (EnvironmentAttribute<V>) WIRE.construct(key, converter);
+        record Holder() {
+            static final ConstructWireProvider<EnvironmentAttribute<?>> WIRE =
+                ConstructWireProvider.create("dev.wyck.environment.attribute.EnvironmentAttributeImpl");
+        }
+        EnvironmentAttribute<V> attribute = (EnvironmentAttribute<V>) Holder.WIRE.construct(key, converter);
         if (defaultValue != null) {
             attribute.value(defaultValue);
         }
@@ -142,7 +139,7 @@ public interface EnvironmentAttribute<V> extends Wrapper, Keyed {
     @AsOf("3.0.0")
     @SuppressWarnings("unchecked")
     static <V, U> EnvironmentAttribute<V> of(ResourceKey key, @Nullable Converter<V, U> converter) {
-        return (EnvironmentAttribute<V>) WIRE.construct(key, converter);
+        return of(key, converter, null);
     }
 
     /**
@@ -209,9 +206,11 @@ public interface EnvironmentAttribute<V> extends Wrapper, Keyed {
     @AsOf("3.3.0")
     @SuppressWarnings("unchecked")
     static <V> EnvironmentAttribute<V> decode(Object minecraftAttribute, Object minecraftValue) {
-        return (EnvironmentAttribute<V>) DECODER.decode(Map.entry(minecraftAttribute, minecraftValue));
+        record Holder() {
+            static final Decoder<EnvironmentAttribute<?>> DECODER = Decoder.create("dev.wyck.decode.environment.attribute.EnvironmentAttributeDecoders");
+        }
+        return (EnvironmentAttribute<V>) Holder.DECODER.decode(Map.entry(minecraftAttribute, minecraftValue));
     }
-
 
     /**
      * Converts an API value to a Minecraft value.

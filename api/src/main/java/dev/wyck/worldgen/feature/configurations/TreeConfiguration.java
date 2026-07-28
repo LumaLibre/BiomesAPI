@@ -9,7 +9,6 @@ import dev.wyck.worldgen.feature.rootplacers.RootPlacer;
 import dev.wyck.worldgen.feature.treedecorators.TreeDecorator;
 import dev.wyck.worldgen.feature.trunkplacers.TrunkPlacer;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -28,9 +27,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface TreeConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<TreeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.TreeConfigurationImpl");
 
     /**
      * The block to use for the trunk.
@@ -130,7 +126,10 @@ public interface TreeConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static TreeConfiguration of(BlockStateProvider trunkProvider, TrunkPlacer trunkPlacer, BlockStateProvider foliageProvider, FoliagePlacer foliagePlacer, @Nullable RootPlacer rootPlacer, FeatureSize minimumSize, List<TreeDecorator> decorators, boolean ignoreVines, BlockStateProvider belowTrunkProvider) {
-        return WIRE.construct(trunkProvider, trunkPlacer, foliageProvider, foliagePlacer, Optional.ofNullable(rootPlacer), minimumSize, decorators, ignoreVines, belowTrunkProvider);
+        record Holder() {
+            static final ConstructWireProvider<TreeConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.TreeConfigurationImpl");
+        }
+        return Holder.WIRE.construct(trunkProvider, trunkPlacer, foliageProvider, foliagePlacer, Optional.ofNullable(rootPlacer), minimumSize, decorators, ignoreVines, belowTrunkProvider);
     }
 
     /**

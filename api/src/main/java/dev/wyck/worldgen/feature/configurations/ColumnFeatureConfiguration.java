@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -18,9 +17,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface ColumnFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ColumnFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.ColumnFeatureConfigurationImpl");
 
     /**
      * The reach of the column feature.
@@ -57,7 +53,10 @@ public interface ColumnFeatureConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static ColumnFeatureConfiguration of(IntProvider reach, IntProvider height) {
-        return WIRE.construct(reach, height);
+        record Holder() {
+            static final ConstructWireProvider<ColumnFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.ColumnFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(reach, height);
     }
 
     /**

@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.FloatProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface DripstoneClusterConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<DripstoneClusterConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.DripstoneClusterConfigurationImpl");
 
     /**
      * For how many blocks the feature searches for the floor or ceiling. Value between 1 and 512.
@@ -140,7 +136,10 @@ public interface DripstoneClusterConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static DripstoneClusterConfiguration of(int floorToCeilingSearchRange, IntProvider height, IntProvider radius, int maxStalagmiteStalactiteHeightDiff, int heightDeviation, IntProvider dripstoneBlockLayerThickness, FloatProvider density, FloatProvider wetness, float chanceOfDripstoneColumnAtMaxDistanceFromCenter, int maxDistanceFromEdgeAffectingChanceOfDripstoneColumn, int maxDistanceFromCenterAffectingHeightBias) {
-        return WIRE.construct(floorToCeilingSearchRange, height, radius, maxStalagmiteStalactiteHeightDiff, heightDeviation, dripstoneBlockLayerThickness, density, wetness, chanceOfDripstoneColumnAtMaxDistanceFromCenter, maxDistanceFromEdgeAffectingChanceOfDripstoneColumn, maxDistanceFromCenterAffectingHeightBias);
+        record Holder() {
+            static final ConstructWireProvider<DripstoneClusterConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.DripstoneClusterConfigurationImpl");
+        }
+        return Holder.WIRE.construct(floorToCeilingSearchRange, height, radius, maxStalagmiteStalactiteHeightDiff, heightDeviation, dripstoneBlockLayerThickness, density, wetness, chanceOfDripstoneColumnAtMaxDistanceFromCenter, maxDistanceFromEdgeAffectingChanceOfDripstoneColumn, maxDistanceFromCenterAffectingHeightBias);
     }
 
     /**

@@ -30,9 +30,6 @@ import org.jetbrains.annotations.ApiStatus;
 @AsOf("2.3.0")
 public interface Biome extends Keyed, Wrapper {
 
-    @ApiStatus.Internal
-    Decoder<Biome> DECODER = Decoder.create("dev.wyck.decode.biome.BiomeDecoder");
-
     /**
      * The key associated with this biome.
      * @return the key of this biome.
@@ -112,7 +109,6 @@ public interface Biome extends Keyed, Wrapper {
      */
     @AsOf("2.3.0")
     @Nullable BiomeGenerationSettings generationSettings();
-
 
     /**
      * Sets or removes the world generation settings for this biome.
@@ -227,7 +223,10 @@ public interface Biome extends Keyed, Wrapper {
      */
     @AsOf("3.3.0")
     static Biome decode(Object minecraftBiome) {
-        return DECODER.decode(minecraftBiome);
+        record Holder() {
+            static final Decoder<Biome> DECODER = Decoder.create("dev.wyck.decode.biome.BiomeDecoder");
+        }
+        return Holder.DECODER.decode(minecraftBiome);
     }
 
     /**
@@ -268,7 +267,6 @@ public interface Biome extends Keyed, Wrapper {
             this.resourceKey = resourceKey;
             return this;
         }
-
 
         /**
          * Sets the climate settings of the biome.
@@ -381,6 +379,5 @@ public interface Biome extends Keyed, Wrapper {
             return build().modify();
         }
     }
-
 
 }

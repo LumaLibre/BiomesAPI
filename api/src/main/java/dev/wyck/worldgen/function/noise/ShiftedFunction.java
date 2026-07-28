@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.synth.NoiseParameters;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface ShiftedFunction extends NoiseParameterFunction {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ShiftedFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.noise.ShiftedFunctionImpl");
 
     /**
      * The kind of shift.
@@ -42,7 +38,10 @@ public interface ShiftedFunction extends NoiseParameterFunction {
      */
     @AsOf("3.0.0")
     static ShiftedFunction of(@Nullable ResourceKey resourceKey, NoiseParameters noiseParameters, Kind kind) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), noiseParameters, kind);
+        record Holder() {
+            static final ConstructWireProvider<ShiftedFunction> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.noise.ShiftedFunctionImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), noiseParameters, kind);
     }
 
     /**

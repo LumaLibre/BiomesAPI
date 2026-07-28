@@ -253,7 +253,6 @@ public final class EnvironmentAttributes {
     @AsOf("1.1.0")
     public static final EnvironmentAttributeSupplier<TriState> EYEBLOSSOM_OPEN = supplierWith("gameplay/eyeblossom_open", it -> it.toNms("net.minecraft.util.TriState"));
 
-
     @ApiStatus.Internal
     private static @Nullable Map<String, EnvironmentAttributeSupplier<?>> BY_ID;
     @ApiStatus.Internal
@@ -301,7 +300,6 @@ public final class EnvironmentAttributes {
     public static Collection<String> ids() {
         return Collections.unmodifiableCollection(byIdMap().keySet());
     }
-
 
     private static <V> EnvironmentAttributeSupplier<V> supplier(String key) {
         EnvironmentAttributeSupplier<V> supplier = EnvironmentAttribute.ofSupplier(ResourceKey.minecraft(key));

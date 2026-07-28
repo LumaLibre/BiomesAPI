@@ -35,9 +35,6 @@ import java.util.Set;
 @AsOf("3.1.0")
 public interface TagSet<T extends Keyed> extends Wrapper, Keyed, Registerable<TagSet<T>> {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<TagSet<?>> WIRE = ConstructWireProvider.create("dev.wyck.tags.TagSetImpl");
-
     /**
      * The key of the tag set.
      * @return the tag set key
@@ -102,7 +99,6 @@ public interface TagSet<T extends Keyed> extends Wrapper, Keyed, Registerable<Ta
     default boolean isTag() {
         return value().right().isPresent();
     }
-
 
     /**
      * Creates a tag set of explicit block materials.
@@ -182,7 +178,7 @@ public interface TagSet<T extends Keyed> extends Wrapper, Keyed, Registerable<Ta
     @AsOf("3.1.0")
     @SuppressWarnings("unchecked")
     static <T extends Keyed> TagSet<T> ofTag(TagKey tag) {
-        return (TagSet<T>) WIRE.construct(null, tag.registryId(), Either.right(tag));
+        return of(null, tag.registryId(), Either.right(tag));
     }
 
     /**
@@ -210,13 +206,16 @@ public interface TagSet<T extends Keyed> extends Wrapper, Keyed, Registerable<Ta
     @ApiStatus.Internal
     @SuppressWarnings("unchecked")
     static <T extends Keyed> TagSet<T> of(@Nullable ResourceKey resourceKey, RegistryId registry, Set<T> elements) {
-        return (TagSet<T>) WIRE.construct(resourceKey, registry, Either.left(elements));
+        return of(resourceKey, registry, Either.left(elements));
     }
 
     @ApiStatus.Internal
     @SuppressWarnings("unchecked")
     static <T extends Keyed> TagSet<T> of(@Nullable ResourceKey resourceKey, RegistryId registry, Either<Set<T>, TagKey> value) {
-        return (TagSet<T>) WIRE.construct(resourceKey, registry, value);
+        record Holder() {
+            static final ConstructWireProvider<TagSet<?>> WIRE = ConstructWireProvider.create("dev.wyck.tags.TagSetImpl");
+        }
+        return (TagSet<T>) Holder.WIRE.construct(resourceKey, registry, value);
     }
 
     /**

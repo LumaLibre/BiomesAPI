@@ -6,7 +6,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.BukkitBootstrapUtil;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface BlockStateConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BlockStateConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.BlockStateConfigurationImpl");
 
     /**
      * The block state used by this configuration.
@@ -50,7 +46,10 @@ public interface BlockStateConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static BlockStateConfiguration of(BlockData state) {
-        return WIRE.construct(state);
+        record Holder() {
+            static final ConstructWireProvider<BlockStateConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.BlockStateConfigurationImpl");
+        }
+        return Holder.WIRE.construct(state);
     }
 
     /**

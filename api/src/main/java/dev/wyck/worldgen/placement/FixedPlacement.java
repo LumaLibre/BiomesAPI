@@ -3,7 +3,6 @@ package dev.wyck.worldgen.placement;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -20,9 +19,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface FixedPlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<FixedPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.FixedPlacementImpl");
 
     /**
      * A list of all placement positions.
@@ -51,7 +47,10 @@ public interface FixedPlacement extends PlacementModifier {
      */
     @AsOf("3.0.0")
     static FixedPlacement of(List<BlockVector> positions) {
-        return WIRE.construct(positions);
+        record Holder() {
+            static final ConstructWireProvider<FixedPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.FixedPlacementImpl");
+        }
+        return Holder.WIRE.construct(positions);
     }
 
     /**

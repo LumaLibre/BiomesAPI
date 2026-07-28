@@ -2,7 +2,6 @@ package dev.wyck.worldgen.valueproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,9 +18,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface ClampedNormalFloat extends FloatProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ClampedNormalFloat> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.ClampedNormalFloatImpl");
 
     /**
      * The mean of the normal distribution.
@@ -60,7 +56,10 @@ public interface ClampedNormalFloat extends FloatProvider {
      */
     @AsOf("3.0.0")
     static ClampedNormalFloat of(float min, float max, float mean, float deviation) {
-        return WIRE.construct(min, max, mean, deviation);
+        record Holder() {
+            static final ConstructWireProvider<ClampedNormalFloat> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.valueproviders.ClampedNormalFloatImpl");
+        }
+        return Holder.WIRE.construct(min, max, mean, deviation);
     }
 
     /**

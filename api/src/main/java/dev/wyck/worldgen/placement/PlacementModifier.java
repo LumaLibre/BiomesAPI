@@ -7,7 +7,6 @@ import dev.wyck.worldgen.heightproviders.HeightProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -21,9 +20,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface PlacementModifier extends Wrapper {
-
-    @ApiStatus.Internal
-    Decoder<PlacementModifier> DECODER = Decoder.create("dev.wyck.decode.worldgen.placement.PlacementModifierDecoders");
 
     /**
      * Reference to the biome filter placement modifier.
@@ -192,6 +188,9 @@ public interface PlacementModifier extends Wrapper {
      */
     @AsOf("3.3.0")
     static PlacementModifier decode(Object minecraftModifier) {
-        return DECODER.decode(minecraftModifier);
+        record Holder() {
+            static final Decoder<PlacementModifier> DECODER = Decoder.create("dev.wyck.decode.worldgen.placement.PlacementModifierDecoders");
+        }
+        return Holder.DECODER.decode(minecraftModifier);
     }
 }

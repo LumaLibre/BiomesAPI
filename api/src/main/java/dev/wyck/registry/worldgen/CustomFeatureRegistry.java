@@ -18,14 +18,14 @@ import org.jspecify.annotations.NullMarked;
 @ApiStatus.Internal
 public interface CustomFeatureRegistry {
 
-    @ApiStatus.Internal
-    WireProvider<CustomFeatureRegistry> WIRE = WireProvider.create("dev.wyck.registry.worldgen.CustomFeatureRegistryImpl");
-
     @AsOf("2.3.0")
     void register(ResourceKey key, CustomFeature<?> feature);
 
     @AsOf("2.4.0")
     static CustomFeatureRegistry registry() {
-        return WIRE.get();
+        record Holder() {
+            static final WireProvider<CustomFeatureRegistry> WIRE = WireProvider.create("dev.wyck.registry.worldgen.CustomFeatureRegistryImpl");
+        }
+        return Holder.WIRE.get();
     }
 }

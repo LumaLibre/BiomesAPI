@@ -3,7 +3,6 @@ package dev.wyck.worldgen.stateproviders;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.Material;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,9 +15,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface RotatedBlockProvider extends BlockStateProvider {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<RotatedBlockProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.RotatedBlockProviderImpl");
 
     /**
      * The block state.
@@ -36,7 +32,10 @@ public interface RotatedBlockProvider extends BlockStateProvider {
      */
     @AsOf("3.0.0")
     static RotatedBlockProvider of(Material state) {
-        return WIRE.construct(state);
+        record Holder() {
+            static final ConstructWireProvider<RotatedBlockProvider> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.stateproviders.RotatedBlockProviderImpl");
+        }
+        return Holder.WIRE.construct(state);
     }
 
 }

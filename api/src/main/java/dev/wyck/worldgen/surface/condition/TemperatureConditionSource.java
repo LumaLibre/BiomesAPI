@@ -2,7 +2,6 @@ package dev.wyck.worldgen.surface.condition;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,14 +16,14 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("3.0.0")
 public interface TemperatureConditionSource extends ConditionSource {
 
-    @ApiStatus.Internal
-    ConstructWireProvider<TemperatureConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.TemperatureConditionSourceImpl");
-
     /** The temperature condition source. */
     @AsOf("3.0.0")
     TemperatureConditionSource INSTANCE = of();
 
     private static TemperatureConditionSource of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<TemperatureConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.TemperatureConditionSourceImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

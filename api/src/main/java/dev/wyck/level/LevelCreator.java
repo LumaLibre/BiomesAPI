@@ -57,7 +57,6 @@ public interface LevelCreator {
         return levelStem().dimension();
     }
 
-
     /**
      * The chunk generator to use for the world.
      * @deprecated Use {@link #levelStem()} instead.

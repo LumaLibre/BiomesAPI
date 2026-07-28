@@ -56,7 +56,6 @@ public interface PlacementContext<C> {
     @AsOf("2.3.0")
     void setBlock(BlockVector position, BlockData data);
 
-
     /**
      * Gets the block data at the given absolute world position.
      * @param position the absolute world position

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -18,9 +17,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface CountConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CountConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.CountConfigurationImpl");
 
     /**
      * The count provider.
@@ -48,7 +44,10 @@ public interface CountConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static CountConfiguration of(IntProvider count) {
-        return WIRE.construct(count);
+        record Holder() {
+            static final ConstructWireProvider<CountConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.CountConfigurationImpl");
+        }
+        return Holder.WIRE.construct(count);
     }
 
     /**

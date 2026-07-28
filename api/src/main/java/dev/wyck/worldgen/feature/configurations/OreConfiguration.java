@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.ruletest.RuleTest;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -23,9 +22,6 @@ import java.util.List;
 @NullMarked
 @AsOf("3.0.0")
 public interface OreConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<OreConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.OreConfigurationImpl");
 
     /**
      * A list of targets.
@@ -73,7 +69,10 @@ public interface OreConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static OreConfiguration of(List<TargetBlockState> targetStates, int size, float discardChanceOnAirExposure) {
-        return WIRE.construct(targetStates, size, discardChanceOnAirExposure);
+        record Holder() {
+            static final ConstructWireProvider<OreConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.OreConfigurationImpl");
+        }
+        return Holder.WIRE.construct(targetStates, size, discardChanceOnAirExposure);
     }
 
     /**

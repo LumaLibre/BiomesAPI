@@ -7,7 +7,6 @@ import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -21,9 +20,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface RuleTest extends Wrapper {
-
-    @ApiStatus.Internal
-    Decoder<RuleTest> DECODER = Decoder.create("dev.wyck.decode.worldgen.ruletest.RuleTestDecoders");
 
     /**
      * Matches any block.
@@ -134,7 +130,10 @@ public interface RuleTest extends Wrapper {
      */
     @AsOf("3.3.0")
     static RuleTest decode(Object minecraftRuleTest) {
-        return DECODER.decode(minecraftRuleTest);
+        record Holder() {
+            static final Decoder<RuleTest> DECODER = Decoder.create("dev.wyck.decode.worldgen.ruletest.RuleTestDecoders");
+        }
+        return Holder.DECODER.decode(minecraftRuleTest);
     }
 
 }

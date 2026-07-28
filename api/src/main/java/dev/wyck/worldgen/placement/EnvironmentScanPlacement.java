@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.blockpredicates.BlockPredicate;
 import org.bukkit.block.BlockFace;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,9 +22,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface EnvironmentScanPlacement extends PlacementModifier {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<EnvironmentScanPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.EnvironmentScanPlacementImpl");
 
     /**
      * One of <code>up</code> or <code>down</code>.
@@ -81,7 +77,10 @@ public interface EnvironmentScanPlacement extends PlacementModifier {
      */
     @AsOf("3.0.0")
     static EnvironmentScanPlacement of(BlockFace directionOfSearch, BlockPredicate targetCondition, BlockPredicate allowedSearchCondition, int maxSteps) {
-        return WIRE.construct(directionOfSearch, targetCondition, allowedSearchCondition, maxSteps);
+        record Holder() {
+            static final ConstructWireProvider<EnvironmentScanPlacement> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.placement.EnvironmentScanPlacementImpl");
+        }
+        return Holder.WIRE.construct(directionOfSearch, targetCondition, allowedSearchCondition, maxSteps);
     }
 
     /**

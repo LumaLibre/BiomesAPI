@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface PlaceOnGroundDecorator extends TreeDecorator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<PlaceOnGroundDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.PlaceOnGroundDecoratorImpl");
 
     /**
      * The number of positions to try. Must be a positive integer. Defaults to 128.
@@ -78,7 +74,10 @@ public interface PlaceOnGroundDecorator extends TreeDecorator {
      */
     @AsOf("3.0.0")
     static PlaceOnGroundDecorator of(int tries, int radius, int height, BlockStateProvider blockStateProvider) {
-        return WIRE.construct(tries, radius, height, blockStateProvider);
+        record Holder() {
+            static final ConstructWireProvider<PlaceOnGroundDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.PlaceOnGroundDecoratorImpl");
+        }
+        return Holder.WIRE.construct(tries, radius, height, blockStateProvider);
     }
 
     /**

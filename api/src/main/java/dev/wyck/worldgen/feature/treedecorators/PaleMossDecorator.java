@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.treedecorators;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -20,9 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface PaleMossDecorator extends TreeDecorator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<PaleMossDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.PaleMossDecoratorImpl");
 
     /**
      * The probability of adding hanging moss to the bottom of foliage blocks, between 0.0F and 1.0F (inclusive).
@@ -69,7 +65,10 @@ public interface PaleMossDecorator extends TreeDecorator {
      */
     @AsOf("3.0.0")
     static PaleMossDecorator of(float leavesProbability, float trunkProbability, float groundProbability) {
-        return WIRE.construct(leavesProbability, trunkProbability, groundProbability);
+        record Holder() {
+            static final ConstructWireProvider<PaleMossDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.PaleMossDecoratorImpl");
+        }
+        return Holder.WIRE.construct(leavesProbability, trunkProbability, groundProbability);
     }
 
     /**

@@ -3,7 +3,6 @@ package dev.wyck.worldgen.blockpredicates;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import org.bukkit.util.BlockVector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface ReplaceablePredicate extends BlockPredicate {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<ReplaceablePredicate> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.ReplaceablePredicateImpl");
 
     /**
      * The offset from the block to check.
@@ -47,7 +43,11 @@ public interface ReplaceablePredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static ReplaceablePredicate of(BlockVector offset) {
-        return WIRE.construct(offset);
+        record Holder() {
+            static final ConstructWireProvider<ReplaceablePredicate> WIRE =
+                ConstructWireProvider.create("dev.wyck.worldgen.blockpredicates.ReplaceablePredicateImpl");
+        }
+        return Holder.WIRE.construct(offset);
     }
 
     /**
@@ -57,7 +57,7 @@ public interface ReplaceablePredicate extends BlockPredicate {
      */
     @AsOf("3.0.0")
     static ReplaceablePredicate of() {
-        return WIRE.construct(new BlockVector(0, 0, 0));
+        return of(new BlockVector(0, 0, 0));
     }
 
     /**

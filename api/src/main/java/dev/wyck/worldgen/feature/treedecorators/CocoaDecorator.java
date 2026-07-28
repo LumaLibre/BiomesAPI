@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.treedecorators;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface CocoaDecorator extends TreeDecorator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<CocoaDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.CocoaDecoratorImpl");
 
     /**
      * The probability that this decorator places any cocoa beans, between 0.0F and 1.0F (inclusive).
@@ -48,7 +44,10 @@ public interface CocoaDecorator extends TreeDecorator {
      */
     @AsOf("3.0.0")
     static CocoaDecorator of(float probability) {
-        return WIRE.construct(probability);
+        record Holder() {
+            static final ConstructWireProvider<CocoaDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.CocoaDecoratorImpl");
+        }
+        return Holder.WIRE.construct(probability);
     }
 
     /**

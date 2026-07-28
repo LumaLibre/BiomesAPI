@@ -29,7 +29,6 @@ public interface Decodable<T, U> {
     @AsOf("3.3.0")
     T decode(U minecraftObject);
 
-
     /**
      * The type keys this decoder claims within a {@link DecoderRegistry}, empty when its family has a
      * single implementation and is not dispatched.

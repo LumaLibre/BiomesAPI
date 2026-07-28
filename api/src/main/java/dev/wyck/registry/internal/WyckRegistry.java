@@ -25,9 +25,6 @@ import java.util.function.Consumer;
 public interface WyckRegistry extends Wrapper {
 
     @ApiStatus.Internal
-    WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.registry.internal.WyckRegistryFactoryImpl");
-
-    @ApiStatus.Internal
     interface Factory {
         WyckRegistry create(ResourceKey key);
 
@@ -88,7 +85,6 @@ public interface WyckRegistry extends Wrapper {
         whileUnfrozen(() -> consumer.accept(this));
     }
 
-
     /**
      * Retrieves an object from the registry.
      * @param key the key of the object to retrieve
@@ -136,7 +132,6 @@ public interface WyckRegistry extends Wrapper {
         register(key, wrappable.toMinecraft());
     }
 
-
     /**
      * Returns the registry itself.
      * @return the registry itself
@@ -156,7 +151,7 @@ public interface WyckRegistry extends Wrapper {
      */
     @AsOf("2.3.0")
     static WyckRegistry of(ResourceKey key) {
-        return WIRE.get().create(key);
+        return create(key);
     }
 
     /**
@@ -178,7 +173,20 @@ public interface WyckRegistry extends Wrapper {
      */
     @AsOf("2.4.0")
     static WyckRegistry of(RegistryId reference) {
-        return WIRE.get().create(reference.keys());
+        return create(reference.keys());
+    }
+
+    private static WyckRegistry create(Object reference) {
+        record Holder() {
+            static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.registry.internal.WyckRegistryFactoryImpl");
+        }
+        return switch (reference) {
+            case ResourceKey key -> Holder.WIRE.get().create(key);
+            case java.util.List<?> keys -> Holder.WIRE.get().create(
+                keys.stream().map(ResourceKey.class::cast).toList()
+            );
+            default -> throw new IllegalArgumentException("Unsupported registry reference: " + reference);
+        };
     }
 
     /**

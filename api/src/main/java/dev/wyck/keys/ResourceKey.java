@@ -27,9 +27,6 @@ public interface ResourceKey extends Key, Keyed, Wrapper {
     char NAMESPACE_SEPARATOR = ':';
 
     @ApiStatus.Internal
-    WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.keys.ResourceKeyFactoryImpl");
-
-    @ApiStatus.Internal
     interface Factory {
         ResourceKey create(String namespace, String path);
     }
@@ -96,7 +93,10 @@ public interface ResourceKey extends Key, Keyed, Wrapper {
     static ResourceKey of(String namespace, String path) {
         Preconditions.checkArgument(!namespace.isEmpty(), "namespace cannot be empty");
         Preconditions.checkArgument(!path.isEmpty(), "path cannot be empty");
-        return WIRE.get().create(namespace.toLowerCase(), path.toLowerCase());
+        record Holder() {
+            static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.keys.ResourceKeyFactoryImpl");
+        }
+        return Holder.WIRE.get().create(namespace.toLowerCase(), path.toLowerCase());
     }
 
     /**

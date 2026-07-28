@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Sound;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -24,12 +23,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("2.4.1")
 public interface AmbientSounds extends Wrapper {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AmbientSounds> WIRE = ConstructWireProvider.construct("dev.wyck.environment.sounds.AmbientSoundsImpl");
-
-    @ApiStatus.Internal
-    Decoder<AmbientSounds> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientSoundsDecoder");
 
     AmbientSounds EMPTY = AmbientSounds.of(null, null, Collections.emptyList());
 
@@ -67,7 +60,10 @@ public interface AmbientSounds extends Wrapper {
      */
     @AsOf("2.4.1")
     static AmbientSounds of(@Nullable SoundEvent loop, @Nullable AmbientMoodSettings mood, List<AmbientAdditionsSettings> additions) {
-        return WIRE.construct(Optional.ofNullable(loop), Optional.ofNullable(mood), additions);
+        record Holder() {
+            static final ConstructWireProvider<AmbientSounds> WIRE = ConstructWireProvider.construct("dev.wyck.environment.sounds.AmbientSoundsImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(loop), Optional.ofNullable(mood), additions);
     }
 
     /**
@@ -88,7 +84,10 @@ public interface AmbientSounds extends Wrapper {
      */
     @AsOf("3.3.0")
     static AmbientSounds decode(Object minecraftAmbientSounds) {
-        return DECODER.decode(minecraftAmbientSounds);
+        record Holder() {
+            static final Decoder<AmbientSounds> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientSoundsDecoder");
+        }
+        return Holder.DECODER.decode(minecraftAmbientSounds);
     }
 
     /**

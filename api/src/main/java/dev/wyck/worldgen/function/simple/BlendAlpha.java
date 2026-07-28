@@ -2,7 +2,6 @@ package dev.wyck.worldgen.function.simple;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,14 +15,15 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BlendAlpha extends SimpleFunction {
-    @ApiStatus.Internal
-    ConstructWireProvider<BlendAlpha> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.simple.BlendAlphaImpl");
 
     /** The blend alpha density function. */
     @AsOf("3.0.0")
     BlendAlpha INSTANCE = of();
 
     private static BlendAlpha of() {
-        return WIRE.construct();
+        record Holder() {
+            static final ConstructWireProvider<BlendAlpha> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.simple.BlendAlphaImpl");
+        }
+        return Holder.WIRE.construct();
     }
 }

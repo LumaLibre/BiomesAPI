@@ -5,7 +5,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,9 +19,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface DeltaFeatureConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<DeltaFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.DeltaFeatureConfigurationImpl");
 
     /**
      * The block to use on the inside of the delta.
@@ -77,7 +73,10 @@ public interface DeltaFeatureConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static DeltaFeatureConfiguration of(BlockData contents, BlockData rim, IntProvider size, IntProvider rimSize) {
-        return WIRE.construct(contents, rim, size, rimSize);
+        record Holder() {
+            static final ConstructWireProvider<DeltaFeatureConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.DeltaFeatureConfigurationImpl");
+        }
+        return Holder.WIRE.construct(contents, rim, size, rimSize);
     }
 
     /**

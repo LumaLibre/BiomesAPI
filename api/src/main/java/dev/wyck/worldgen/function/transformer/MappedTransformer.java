@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.function.DensityFunction;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -13,8 +12,6 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface MappedTransformer extends PureTransformer {
-    @ApiStatus.Internal
-    ConstructWireProvider<MappedTransformer> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.transformer.MappedTransformerImpl");
 
     /**
      * The transformation to apply to the input value.
@@ -34,7 +31,10 @@ public interface MappedTransformer extends PureTransformer {
      */
     @AsOf("3.0.0")
     static MappedTransformer of(@Nullable ResourceKey resourceKey, DensityFunction input, Transform transformation) {
-        return WIRE.construct(Optional.ofNullable(resourceKey), input, transformation);
+        record Holder() {
+            static final ConstructWireProvider<MappedTransformer> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.function.transformer.MappedTransformerImpl");
+        }
+        return Holder.WIRE.construct(Optional.ofNullable(resourceKey), input, transformation);
     }
 
     /**

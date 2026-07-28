@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,9 +18,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface SimpleBlockConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<SimpleBlockConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.SimpleBlockConfigurationImpl");
 
     /**
      * The block to use.
@@ -58,7 +54,10 @@ public interface SimpleBlockConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static SimpleBlockConfiguration of(BlockStateProvider toPlace, boolean scheduleTick) {
-        return WIRE.construct(toPlace, scheduleTick);
+        record Holder() {
+            static final ConstructWireProvider<SimpleBlockConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.SimpleBlockConfigurationImpl");
+        }
+        return Holder.WIRE.construct(toPlace, scheduleTick);
     }
 
     /**

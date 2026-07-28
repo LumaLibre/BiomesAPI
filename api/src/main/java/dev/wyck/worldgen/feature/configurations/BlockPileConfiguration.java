@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.configurations;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface BlockPileConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BlockPileConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.BlockPileConfigurationImpl");
 
     /**
      * The block state provider used for the blocks in the pile.
@@ -37,6 +33,9 @@ public interface BlockPileConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static BlockPileConfiguration of(BlockStateProvider stateProvider) {
-        return WIRE.construct(stateProvider);
+        record Holder() {
+            static final ConstructWireProvider<BlockPileConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.BlockPileConfigurationImpl");
+        }
+        return Holder.WIRE.construct(stateProvider);
     }
 }

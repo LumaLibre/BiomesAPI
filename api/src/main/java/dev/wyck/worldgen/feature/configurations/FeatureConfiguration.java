@@ -4,7 +4,6 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,8 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface FeatureConfiguration extends Wrapper {
-    @ApiStatus.Internal
-    Decoder<FeatureConfiguration> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.FeatureConfigurationDecoders");
 
     @AsOf("3.0.0")
     NoneFeatureConfiguration NONE = NoneFeatureConfiguration.INSTANCE; // vanilla
@@ -443,6 +440,9 @@ public interface FeatureConfiguration extends Wrapper {
      */
     @AsOf("3.3.0")
     static FeatureConfiguration decode(Object minecraftConfiguredFeature) {
-        return DECODER.decode(minecraftConfiguredFeature);
+        record Holder() {
+            static final Decoder<FeatureConfiguration> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.FeatureConfigurationDecoders");
+        }
+        return Holder.DECODER.decode(minecraftConfiguredFeature);
     }
 }

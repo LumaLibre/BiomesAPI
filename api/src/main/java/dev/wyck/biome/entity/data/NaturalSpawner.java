@@ -3,7 +3,6 @@ package dev.wyck.biome.entity.data;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.wrapper.decode.Decoder;
 import org.bukkit.entity.EntityType;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,9 +17,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("2.3.0")
 public record NaturalSpawner(EntityType type, int minCount, int maxCount) {
 
-    @ApiStatus.Internal
-    public static final Decoder<NaturalSpawner> DECODER = Decoder.create("dev.wyck.decode.biome.entity.NaturalSpawnerDecoder");
-
     @AsOf("2.3.0")
     public static NaturalSpawner of(EntityType type, int minCount, int maxCount) {
         return new NaturalSpawner(type, minCount, maxCount);
@@ -34,6 +30,9 @@ public record NaturalSpawner(EntityType type, int minCount, int maxCount) {
      */
     @AsOf("3.3.0")
     public static NaturalSpawner decode(Object minecraftNaturalSpawner) {
-        return DECODER.decode(minecraftNaturalSpawner);
+        record Holder() {
+            static final Decoder<NaturalSpawner> DECODER = Decoder.create("dev.wyck.decode.biome.entity.NaturalSpawnerDecoder");
+        }
+        return Holder.DECODER.decode(minecraftNaturalSpawner);
     }
 }

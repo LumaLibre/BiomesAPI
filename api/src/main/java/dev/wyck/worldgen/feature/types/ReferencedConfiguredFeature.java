@@ -5,7 +5,6 @@ import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.feature.ConfiguredFeature;
 import dev.wyck.worldgen.feature.ConfiguredFeatures;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -20,8 +19,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface ReferencedConfiguredFeature extends ConfiguredFeature {
-    @ApiStatus.Internal
-    ConstructWireProvider<ReferencedConfiguredFeature> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.types.ReferencedConfiguredFeatureImpl");
 
     /**
      * Creates a new reference to the configured feature with the given key.
@@ -31,6 +28,9 @@ public interface ReferencedConfiguredFeature extends ConfiguredFeature {
      */
     @AsOf("3.0.0")
     static ReferencedConfiguredFeature of(ResourceKey key) {
-        return WIRE.construct(key);
+        record Holder() {
+            static final ConstructWireProvider<ReferencedConfiguredFeature> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.types.ReferencedConfiguredFeatureImpl");
+        }
+        return Holder.WIRE.construct(key);
     }
 }

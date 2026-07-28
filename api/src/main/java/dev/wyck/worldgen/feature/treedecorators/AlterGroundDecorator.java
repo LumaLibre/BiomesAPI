@@ -3,7 +3,6 @@ package dev.wyck.worldgen.feature.treedecorators;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,9 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface AlterGroundDecorator extends TreeDecorator {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<AlterGroundDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.AlterGroundDecoratorImpl");
 
     /**
      * A rule-based block state provider defining how to replace the ground.
@@ -37,6 +33,9 @@ public interface AlterGroundDecorator extends TreeDecorator {
      */
     @AsOf("3.0.0")
     static AlterGroundDecorator of(BlockStateProvider provider) {
-        return WIRE.construct(provider);
+        record Holder() {
+            static final ConstructWireProvider<AlterGroundDecorator> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.treedecorators.AlterGroundDecoratorImpl");
+        }
+        return Holder.WIRE.construct(provider);
     }
 }

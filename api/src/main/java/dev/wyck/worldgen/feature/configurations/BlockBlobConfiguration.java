@@ -7,7 +7,6 @@ import dev.wyck.util.BukkitBootstrapUtil;
 import dev.wyck.worldgen.blockpredicates.BlockPredicate;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,9 +20,6 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.0.0")
 public interface BlockBlobConfiguration extends FeatureConfiguration {
-
-    @ApiStatus.Internal
-    ConstructWireProvider<BlockBlobConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.BlockBlobConfigurationImpl");
 
     /**
      * The block state that makes up the blob.
@@ -60,7 +56,10 @@ public interface BlockBlobConfiguration extends FeatureConfiguration {
      */
     @AsOf("3.0.0")
     static BlockBlobConfiguration of(BlockData state, BlockPredicate canPlaceOn) {
-        return WIRE.construct(state, canPlaceOn);
+        record Holder() {
+            static final ConstructWireProvider<BlockBlobConfiguration> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.BlockBlobConfigurationImpl");
+        }
+        return Holder.WIRE.construct(state, canPlaceOn);
     }
 
     /**
