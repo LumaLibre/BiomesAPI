@@ -49,6 +49,14 @@ public interface NoiseThresholdConditionSource extends ConditionSource {
     double maxThreshold();
 
     /**
+     * Whether this condition samples three-dimensional noise.
+     * @return whether three-dimensional noise is sampled
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    boolean is3d();
+
+    /**
      * Converts this object back to a builder.
      * @return a builder with the same values as this object
      * @since 3.0.0
@@ -68,7 +76,21 @@ public interface NoiseThresholdConditionSource extends ConditionSource {
      */
     @AsOf("3.0.0")
     static NoiseThresholdConditionSource of(ResourceKey noise, double minThreshold, double maxThreshold) {
-        return WIRE.construct(noise, minThreshold, maxThreshold);
+        return of(noise, minThreshold, maxThreshold, false);
+    }
+
+    /**
+     * Creates a noise threshold condition with an explicit sampling dimensionality.
+     * @param noise the noise parameters to sample
+     * @param minThreshold the inclusive minimum threshold
+     * @param maxThreshold the inclusive maximum threshold
+     * @param is3d whether to sample three-dimensional noise
+     * @return a new noise threshold condition
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static NoiseThresholdConditionSource of(ResourceKey noise, double minThreshold, double maxThreshold, boolean is3d) {
+        return WIRE.construct(noise, minThreshold, maxThreshold, is3d);
     }
 
     /**
@@ -104,6 +126,7 @@ public interface NoiseThresholdConditionSource extends ConditionSource {
         private @Nullable ResourceKey noise;
         private double minThreshold;
         private double maxThreshold = Double.MAX_VALUE;
+        private boolean is3d;
 
         private Builder() {}
 
@@ -111,6 +134,7 @@ public interface NoiseThresholdConditionSource extends ConditionSource {
             this.noise = source.noise();
             this.minThreshold = source.minThreshold();
             this.maxThreshold = source.maxThreshold();
+            this.is3d = source.is3d();
         }
 
         /**
@@ -150,6 +174,18 @@ public interface NoiseThresholdConditionSource extends ConditionSource {
         }
 
         /**
+         * Sets whether this condition samples three-dimensional noise.
+         * @param is3d whether to sample three-dimensional noise
+         * @return this builder
+         * @since 3.3.0
+         */
+        @AsOf("3.3.0")
+        public Builder is3d(boolean is3d) {
+            this.is3d = is3d;
+            return this;
+        }
+
+        /**
          * Builds the noise threshold condition source.
          * @return the noise threshold condition source
          * @since 3.0.0
@@ -157,7 +193,7 @@ public interface NoiseThresholdConditionSource extends ConditionSource {
         @AsOf("3.0.0")
         public NoiseThresholdConditionSource build() {
             Preconditions.checkNotNull(noise, "noise must be set");
-            return of(noise, minThreshold, maxThreshold);
+            return of(noise, minThreshold, maxThreshold, is3d);
         }
     }
 }
