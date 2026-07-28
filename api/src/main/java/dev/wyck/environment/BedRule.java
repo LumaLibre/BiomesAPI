@@ -2,6 +2,7 @@ package dev.wyck.environment;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.KeyedEnumTranslator;
 import dev.wyck.wrapper.WrappedEnumerator;
 import dev.wyck.wrapper.Wrapper;
@@ -25,6 +26,9 @@ public interface BedRule extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<BedRule> WIRE = ConstructWireProvider.construct("dev.wyck.environment.BedRuleImpl");
+
+    @ApiStatus.Internal
+    Decoder<BedRule> DECODER = Decoder.create("dev.wyck.decode.environment.BedRuleDecoder");
 
     /**
      * Gets the rule for sleeping in the bed.
@@ -90,6 +94,17 @@ public interface BedRule extends Wrapper {
     @AsOf("1.1.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads a Minecraft bed rule into a wrapper.
+     * @param minecraftBedRule the bed rule to read
+     * @return the wrapper for it
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static BedRule decode(Object minecraftBedRule) {
+        return DECODER.decode(minecraftBedRule);
     }
 
     /**

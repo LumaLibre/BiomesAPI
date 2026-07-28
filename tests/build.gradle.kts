@@ -7,6 +7,7 @@ group = "dev.wyck.tests"
 dependencies {
     val libs = rootProject.libs
     implementation(project(":commons")) // should be bundle
+    implementation(project(":decoders"))
     paperweight.paperDevBundle(libs.versions.minecraft.v26.m2)
 
     testImplementation(platform(libs.junit.bom))

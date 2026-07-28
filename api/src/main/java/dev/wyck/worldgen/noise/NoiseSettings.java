@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
@@ -20,6 +21,9 @@ public interface NoiseSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<NoiseSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.noise.NoiseSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<NoiseSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.noise.NoiseSettingsDecoder");
 
     NoiseSettings OVERWORLD = of(-64, 384, 1, 2);
     NoiseSettings NETHER = of(0, 128, 1, 2);
@@ -82,6 +86,17 @@ public interface NoiseSettings extends Wrapper {
         Preconditions.checkArgument(minY + height <= 2032, "minY + height must be <= 2032");
         Preconditions.checkArgument(minY % 16 == 0, "minY must be a multiple of 16");
         return WIRE.construct(minY, height, sizeHorizontal, sizeVertical);
+    }
+
+    /**
+     * Reads Minecraft noise settings.
+     * @param minecraftSettings the noise settings to read
+     * @return the decoded noise settings
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static NoiseSettings decode(Object minecraftSettings) {
+        return DECODER.decode(minecraftSettings);
     }
 
     final class Builder {

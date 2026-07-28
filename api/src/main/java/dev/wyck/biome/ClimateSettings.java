@@ -2,6 +2,7 @@ package dev.wyck.biome;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -19,6 +20,9 @@ public interface ClimateSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<ClimateSettings> WIRE = ConstructWireProvider.create("dev.wyck.biome.ClimateSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<ClimateSettings> DECODER = Decoder.create("dev.wyck.decode.biome.ClimateSettingsDecoder");
 
     ClimateSettings DEFAULT = of(true, 0.5F, TemperatureModifier.NONE, 0.5F);
 
@@ -87,6 +91,17 @@ public interface ClimateSettings extends Wrapper {
     @AsOf("3.0.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads Minecraft climate settings into a wrapper.
+     * @param minecraftClimateSettings the climate settings to read
+     * @return the wrapper for them
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ClimateSettings decode(Object minecraftClimateSettings) {
+        return DECODER.decode(minecraftClimateSettings);
     }
 
     /**

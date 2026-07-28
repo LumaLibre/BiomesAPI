@@ -5,6 +5,8 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,6 +23,9 @@ import java.util.Optional;
 @NullMarked
 @AsOf("3.0.0")
 public interface RootPlacer extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<RootPlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.RootPlacerDecoders");
 
     /**
      * The offset perpendicular to the trunk.
@@ -56,6 +61,11 @@ public interface RootPlacer extends Wrapper {
     @AsOf("3.0.0")
     static MangroveRootPlacer.Builder mangrove() {
         return MangroveRootPlacer.builder();
+    }
+
+    @ApiStatus.Internal
+    static RootPlacer decode(Object minecraftRootPlacer) {
+        return DECODER.decode(minecraftRootPlacer);
     }
 
     /**

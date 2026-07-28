@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.worldgen.valueproviders.IntProvider;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,6 +19,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface FoliagePlacer extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<FoliagePlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.FoliagePlacerDecoders");
 
     /**
      * The radius of the foliage.
@@ -144,6 +149,11 @@ public interface FoliagePlacer extends Wrapper {
     @AsOf("3.0.0")
     static CherryFoliagePlacer.Builder cherry() {
         return CherryFoliagePlacer.builder();
+    }
+
+    @ApiStatus.Internal
+    static FoliagePlacer decode(Object minecraftFoliagePlacer) {
+        return DECODER.decode(minecraftFoliagePlacer);
     }
 
     /**

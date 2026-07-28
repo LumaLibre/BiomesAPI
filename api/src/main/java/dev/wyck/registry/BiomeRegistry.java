@@ -96,11 +96,13 @@ public interface BiomeRegistry {
 
     /**
      * Gets an abstract biome from the registry.
+     * @deprecated Use {@link Biome#reference(ResourceKey)} and {@link Biome#wrap()} instead.
      * @param key the key of the biome to get
      * @return the abstract biome
      * @param <T> the type of the biome
      * @since 2.3.0
      */
+    @Deprecated
     @AsOf("2.3.0")
     <T extends Biome> T getBiome(ResourceKey key);
 

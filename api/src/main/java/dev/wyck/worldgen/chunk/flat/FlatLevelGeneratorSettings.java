@@ -9,6 +9,7 @@ import dev.wyck.worldgen.chunk.ChunkGenerator;
 import dev.wyck.worldgen.placement.PlacedFeature;
 import dev.wyck.worldgen.structure.StructureSets;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.bukkit.Material;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -31,6 +32,9 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<FlatLevelGeneratorSettings> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.flat.FlatLevelGeneratorSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<FlatLevelGeneratorSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.FlatLevelGeneratorSettingsDecoder");
 
     @AsOf("3.0.0")
     FlatLevelGeneratorSettings CLASSIC_FLAT = builder()
@@ -207,6 +211,17 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
     @AsOf("3.0.0")
     static FlatLevelGeneratorSettings of(List<FlatLayerInfo> layers, boolean decoration, boolean addLakes, Biome biome, Biome fallbackBiome, List<PlacedFeature> lakes, Set<ResourceKey> structures) {
         return WIRE.construct(layers, decoration, addLakes, biome, fallbackBiome, lakes, structures);
+    }
+
+    /**
+     * Reads Minecraft flat-generator settings.
+     * @param minecraftSettings the flat-generator settings to read
+     * @return the decoded flat-generator settings
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static FlatLevelGeneratorSettings decode(Object minecraftSettings) {
+        return DECODER.decode(minecraftSettings);
     }
 
     /**

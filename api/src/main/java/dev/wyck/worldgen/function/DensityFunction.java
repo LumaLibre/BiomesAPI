@@ -2,6 +2,8 @@ package dev.wyck.worldgen.function;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.keys.ResourceKey;
+import dev.wyck.registry.internal.RegistryId;
+import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.worldgen.function.misc.EndIslands;
 import dev.wyck.worldgen.function.misc.FindTopSurface;
 import dev.wyck.worldgen.function.misc.Marker;
@@ -20,8 +22,10 @@ import dev.wyck.worldgen.function.simple.ZeroSimpleFunction;
 import dev.wyck.worldgen.function.transformer.ClampedTransformer;
 import dev.wyck.worldgen.function.transformer.MappedTransformer;
 import dev.wyck.worldgen.synth.NoiseParameters;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -38,6 +42,9 @@ import java.util.Optional;
 @NullMarked
 @AsOf("2.4.0")
 public interface DensityFunction extends Wrapper, Keyed {
+
+    @ApiStatus.Internal
+    Decoder<DensityFunction> DECODER = Decoder.create("dev.wyck.decode.worldgen.function.DensityFunctionDecoders");
 
     /**
      * The resource key of the density function, if present.
@@ -514,5 +521,30 @@ public interface DensityFunction extends Wrapper, Keyed {
     @AsOf("3.0.0")
     static ReferencedDensityFunction reference(ResourceKey key) {
         return ReferencedDensityFunction.of(key);
+    }
+
+    /**
+     * Resolves this object's key in Minecraft's density-function registry and decodes the registered value.
+     * @return the decoded density function
+     * @throws IllegalStateException if this object has no resource key
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @ApiStatus.Experimental
+    default DensityFunction wrap() {
+        ResourceKey key = resourceKey().orElseThrow(() -> new IllegalStateException("Cannot wrap a density function without a resource key"));
+        Object minecraft = WyckRegistry.of(RegistryId.DENSITY_FUNCTION).retrieveOrThrow(key);
+        return decode(minecraft);
+    }
+
+    /**
+     * Converts a Minecraft density function into a Wyck density function.
+     * @param minecraftDensityFunction the Minecraft density function to convert
+     * @return the Wyck density function
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static DensityFunction decode(Object minecraftDensityFunction) {
+        return DECODER.decode(minecraftDensityFunction);
     }
 }

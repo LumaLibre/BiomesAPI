@@ -3,6 +3,7 @@ package dev.wyck.worldgen.feature.configurations.geode;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -21,6 +22,9 @@ public interface GeodeCrackSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<GeodeCrackSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.geode.GeodeCrackSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<GeodeCrackSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeCrackSettingsDecoder");
 
     /**
      * The probability for generating a crack. Value between 0.0 and 1.0.
@@ -77,6 +81,11 @@ public interface GeodeCrackSettings extends Wrapper {
     @AsOf("3.0.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    @ApiStatus.Internal
+    static GeodeCrackSettings decode(Object minecraftSettings) {
+        return DECODER.decode(minecraftSettings);
     }
 
     /**

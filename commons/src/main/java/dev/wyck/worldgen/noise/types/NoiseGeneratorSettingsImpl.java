@@ -60,4 +60,22 @@ public record NoiseGeneratorSettingsImpl(
         REGISTRY.get().register(key, this);
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "NoiseGeneratorSettingsImpl{" +
+            "resourceKey=" + resourceKey +
+            ", noiseSettings=" + noiseSettings +
+            ", defaultBlock=" + defaultBlock +
+            ", defaultFluid=" + defaultFluid +
+            ", noiseRouter=" + noiseRouter +
+            ", surfaceRule=" + surfaceRule +
+            ", spawnTarget=" + spawnTarget +
+            ", seaLevel=" + seaLevel +
+            ", disableMobGeneration=" + disableMobGeneration +
+            ", aquifersEnabled=" + aquifersEnabled +
+            ", oreVeinsEnabled=" + oreVeinsEnabled +
+            ", useLegacyRandomSource=" + useLegacyRandomSource +
+            '}';
+    }
 }

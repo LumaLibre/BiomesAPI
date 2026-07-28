@@ -2,6 +2,7 @@ package dev.wyck.worldgen.feature.configurations.end;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -20,6 +21,9 @@ public interface EndSpike extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<EndSpike> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.end.EndSpikeImpl");
+
+    @ApiStatus.Internal
+    Decoder<EndSpike> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.EndSpikeDecoder");
 
     /**
      * The X coordinate of the center of the spike.
@@ -94,6 +98,17 @@ public interface EndSpike extends Wrapper {
     @AsOf("3.0.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Decodes a Minecraft End spike.
+     * @param minecraftObject the Minecraft End spike
+     * @return the decoded spike
+     * @since 3.0.0
+     */
+    @ApiStatus.Internal
+    static EndSpike decode(Object minecraftObject) {
+        return DECODER.decode(minecraftObject);
     }
 
     /**

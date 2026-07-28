@@ -2,12 +2,15 @@ package dev.wyck.worldgen.feature;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.keys.ResourceKey;
+import dev.wyck.registry.internal.RegistryId;
+import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.worldgen.feature.configurations.FeatureConfiguration;
 import dev.wyck.worldgen.feature.custom.CustomFeature;
 import dev.wyck.worldgen.feature.types.ComposedConfiguredFeature;
 import dev.wyck.worldgen.feature.types.CustomComposedConfiguredFeature;
 import dev.wyck.worldgen.feature.types.ReferencedConfiguredFeature;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -26,6 +29,9 @@ import java.util.Optional;
 @NullMarked
 @AsOf("2.3.0")
 public interface ConfiguredFeature extends Wrapper, Keyed {
+
+    @ApiStatus.Internal
+    Decoder<ConfiguredFeature> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.ConfiguredFeatureDecoder");
 
     /**
      * The resource key of the configured feature, if present.
@@ -87,6 +93,20 @@ public interface ConfiguredFeature extends Wrapper, Keyed {
     }
 
     /**
+     * Resolves this object's key in Minecraft's configured-feature registry and decodes the registered value.
+     * @return the decoded configured feature
+     * @throws IllegalStateException if this object has no resource key
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @ApiStatus.Experimental
+    default ConfiguredFeature wrap() {
+        ResourceKey key = resourceKey().orElseThrow(() -> new IllegalStateException("Cannot wrap a configured feature without a resource key"));
+        Object minecraft = WyckRegistry.of(RegistryId.CONFIGURED_FEATURE).retrieveOrThrow(key);
+        return decode(minecraft);
+    }
+
+    /**
      * Authors a configured feature from a vanilla feature type and configuration.
      * @return an authored configured feature
      * @since 3.0.0
@@ -105,6 +125,17 @@ public interface ConfiguredFeature extends Wrapper, Keyed {
     @AsOf("3.0.0")
     static <C> CustomComposedConfiguredFeature.Builder<C> custom() {
         return CustomComposedConfiguredFeature.builder();
+    }
+
+    /**
+     * Reads a keyed Minecraft configured-feature holder into a wrapper.
+     * @param minecraftFeature the configured-feature holder to read
+     * @return the wrapper for the configured feature
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ConfiguredFeature decode(Object minecraftFeature) {
+        return DECODER.decode(minecraftFeature);
     }
 
 }

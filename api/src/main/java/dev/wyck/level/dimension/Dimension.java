@@ -11,18 +11,21 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.dimension.clock.WorldClock;
 import dev.wyck.level.dimension.timeline.Timeline;
 import dev.wyck.registry.DimensionRegistry;
+import dev.wyck.registry.internal.RegistryId;
+import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.tags.TagKey;
 import dev.wyck.tags.TagSet;
 import dev.wyck.util.Either;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 /**
@@ -35,6 +38,9 @@ import java.util.stream.Collectors;
 @NullMarked
 @AsOf("2.4.0")
 public interface Dimension extends Keyed, Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<Dimension> DECODER = Decoder.create("dev.wyck.decode.dimension.DimensionDecoder");
 
     /**
      * The key of this dimension type.
@@ -246,6 +252,29 @@ public interface Dimension extends Keyed, Wrapper {
             return KeyChains.DIMENSIONS.getOrThrow(resourceKey);
         }
         return builder().resourceKey(resourceKey).build();
+    }
+
+    /**
+     * Resolves this dimension's key in Minecraft's registry and decodes the registered value.
+     * @return the decoded dimension type
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @ApiStatus.Experimental
+    default Dimension wrap() {
+        Object minecraft = WyckRegistry.of(RegistryId.DIMENSION_TYPE).retrieveOrThrow(resourceKey());
+        return decode(minecraft);
+    }
+
+    /**
+     * Reads a keyed Minecraft dimension-type holder.
+     * @param minecraftDimension the dimension-type holder to read
+     * @return the decoded dimension type
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static Dimension decode(Object minecraftDimension) {
+        return DECODER.decode(minecraftDimension);
     }
     
     

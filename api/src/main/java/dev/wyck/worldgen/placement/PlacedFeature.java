@@ -4,9 +4,12 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.keys.ResourceKey;
+import dev.wyck.registry.internal.RegistryId;
+import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.worldgen.feature.ConfiguredFeature;
 import dev.wyck.worldgen.feature.custom.CustomFeature;
 import dev.wyck.wrapper.ContextWrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
@@ -34,6 +37,9 @@ public sealed interface PlacedFeature extends Wrapper, Keyed permits PlacedFeatu
 
     @ApiStatus.Internal
     WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.worldgen.placement.PlacedFeatureFactoryImpl");
+
+    @ApiStatus.Internal
+    Decoder<PlacedFeature> DECODER = Decoder.create("dev.wyck.decode.worldgen.placement.PlacedFeatureDecoder");
 
     @ApiStatus.Internal
     interface Factory extends ContextWrapper<PlacedFeature> {
@@ -72,6 +78,19 @@ public sealed interface PlacedFeature extends Wrapper, Keyed permits PlacedFeatu
     }
 
     /**
+     * Resolves this object's key in Minecraft's placed-feature registry and decodes the registered value.
+     * @return the decoded placed feature
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @ApiStatus.Experimental
+    default PlacedFeature wrap() {
+        ResourceKey key = ResourceKey.of(key().namespace(), key().value());
+        Object minecraft = WyckRegistry.of(RegistryId.PLACED_FEATURE).retrieveOrThrow(key);
+        return decode(minecraft);
+    }
+
+    /**
      * Authors a placed feature from a configured feature and a list of modifiers.
      * @param feature the configured feature to place
      * @param placements the ordered placement modifiers
@@ -103,6 +122,17 @@ public sealed interface PlacedFeature extends Wrapper, Keyed permits PlacedFeatu
     @AsOf("2.3.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads a keyed Minecraft placed-feature holder into a reference wrapper.
+     * @param minecraftPlacedFeature the placed-feature holder to read
+     * @return a reference to the placed feature
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static PlacedFeature decode(Object minecraftPlacedFeature) {
+        return DECODER.decode(minecraftPlacedFeature);
     }
 
     /**

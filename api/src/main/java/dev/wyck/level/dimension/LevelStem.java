@@ -7,6 +7,7 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.chunk.ChunkGenerator;
 import dev.wyck.wrapper.Registerable;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -27,6 +28,9 @@ public interface LevelStem extends Wrapper, Keyed, Registerable<LevelStem> {
 
     @ApiStatus.Internal
     ConstructWireProvider<LevelStem> WIRE = ConstructWireProvider.create("dev.wyck.level.dimension.LevelStemImpl");
+
+    @ApiStatus.Internal
+    Decoder<LevelStem> DECODER = Decoder.create("dev.wyck.decode.dimension.LevelStemDecoder");
 
     /**
      * Gets the resource key of this level stem, if it set.
@@ -105,6 +109,17 @@ public interface LevelStem extends Wrapper, Keyed, Registerable<LevelStem> {
     @AsOf("3.3.0")
     static LevelStem of(Dimension dimension, ChunkGenerator chunkGenerator) {
         return of(null, dimension, chunkGenerator);
+    }
+
+    /**
+     * Reads a Minecraft level-stem holder or value.
+     * @param minecraftStem the level-stem holder or value to read
+     * @return the decoded level stem
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static LevelStem decode(Object minecraftStem) {
+        return DECODER.decode(minecraftStem);
     }
 
     /**

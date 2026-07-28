@@ -2,7 +2,9 @@ package dev.wyck.worldgen.heightproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.util.WeightedList;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,6 +19,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface HeightProvider extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<HeightProvider> DECODER = Decoder.create("dev.wyck.decode.worldgen.heightproviders.HeightProviderDecoders");
 
     /**
      * The vertical anchor used as the minimum height.
@@ -239,5 +244,15 @@ public interface HeightProvider extends Wrapper {
          */
         @AsOf("3.0.0")
         public abstract T build();
+    }
+    /**
+     * Reads a Minecraft height provider into a wrapper.
+     * @param minecraftHeightProvider the height provider to read
+     * @return the wrapper for it
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static HeightProvider decode(Object minecraftHeightProvider) {
+        return DECODER.decode(minecraftHeightProvider);
     }
 }

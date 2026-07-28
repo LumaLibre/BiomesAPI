@@ -2,6 +2,7 @@ package dev.wyck.environment.sounds;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -23,6 +24,9 @@ public interface BackgroundMusic extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<BackgroundMusic> WIRE = ConstructWireProvider.construct("dev.wyck.environment.sounds.BackgroundMusicImpl");
+
+    @ApiStatus.Internal
+    Decoder<BackgroundMusic> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.BackgroundMusicDecoder");
 
     /**
      * Gets the default music.
@@ -70,6 +74,17 @@ public interface BackgroundMusic extends Wrapper {
     @AsOf("2.4.1")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads Minecraft background music into a wrapper.
+     * @param minecraftBackgroundMusic the background music to read
+     * @return the wrapper for it
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static BackgroundMusic decode(Object minecraftBackgroundMusic) {
+        return DECODER.decode(minecraftBackgroundMusic);
     }
 
     /**

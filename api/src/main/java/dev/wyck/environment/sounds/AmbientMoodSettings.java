@@ -3,6 +3,7 @@ package dev.wyck.environment.sounds;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.ApiStatus;
@@ -15,6 +16,9 @@ public interface AmbientMoodSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<AmbientMoodSettings> WIRE = ConstructWireProvider.create("dev.wyck.environment.sounds.AmbientMoodSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<AmbientMoodSettings> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientMoodSettingsDecoder");
 
     /**
      * Gets the sound event of the ambient mood settings.
@@ -85,6 +89,17 @@ public interface AmbientMoodSettings extends Wrapper {
     @AsOf("2.4.1")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads Minecraft ambient mood settings into a wrapper.
+     * @param minecraftAmbientMoodSettings the ambient mood settings to read
+     * @return the wrapper for them
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static AmbientMoodSettings decode(Object minecraftAmbientMoodSettings) {
+        return DECODER.decode(minecraftAmbientMoodSettings);
     }
 
     /**

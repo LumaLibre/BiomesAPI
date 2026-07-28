@@ -3,6 +3,8 @@ package dev.wyck.worldgen.feature.treedecorators;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,6 +18,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface TreeDecorator extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<TreeDecorator> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.TreeDecoratorDecoders");
 
     /**
      * Replaces blocks in the <code>#minecraft:dirt</code> tag around the tree with different blocks.
@@ -124,5 +129,10 @@ public interface TreeDecorator extends Wrapper {
     @AsOf("3.0.0")
     static TrunkVineDecorator trunkVine() {
         return TrunkVineDecorator.of();
+    }
+
+    @ApiStatus.Internal
+    static TreeDecorator decode(Object minecraftDecorator) {
+        return DECODER.decode(minecraftDecorator);
     }
 }

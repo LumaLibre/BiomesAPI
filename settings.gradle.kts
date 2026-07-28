@@ -6,6 +6,7 @@ rootProject.name = "Wyck"
 
 include(":api")
 include(":commons")
+include(":decoders")
 include(":bundle")
 include(":codegen")
 include(":paper")

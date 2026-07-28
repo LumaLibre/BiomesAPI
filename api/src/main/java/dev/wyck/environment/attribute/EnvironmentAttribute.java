@@ -5,12 +5,15 @@ import dev.wyck.biome.Biome;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.dimension.Dimension;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Keyed;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * Environment attributes control various visual and gameplay features depending on the dimension,
@@ -27,6 +30,9 @@ public interface EnvironmentAttribute<V> extends Wrapper, Keyed {
 
     @ApiStatus.Internal
     ConstructWireProvider<EnvironmentAttribute<?>> WIRE = ConstructWireProvider.create("dev.wyck.environment.attribute.EnvironmentAttributeImpl");
+
+    @ApiStatus.Internal
+    Decoder<EnvironmentAttribute<?>> DECODER = Decoder.create("dev.wyck.decode.environment.attribute.EnvironmentAttributeDecoders");
 
     /**
      * Gets the key of the environment attribute.
@@ -186,6 +192,24 @@ public interface EnvironmentAttribute<V> extends Wrapper, Keyed {
     @AsOf("3.0.0")
     static FriendlyColorSupplier ofFriendlyColorSupplier(ResourceKey key) {
         return new FriendlyColorSupplier(of(key));
+    }
+
+    /**
+     * Reads a Minecraft environment attribute into a wrapper.
+     *
+     * <p>The value is passed separately because Minecraft keeps it in the map the attribute is an entry
+     * of, not on the attribute itself.
+     *
+     * @param minecraftAttribute the environment attribute to read
+     * @param minecraftValue the value that attribute holds
+     * @return the wrapper for it, carrying the decoded value
+     * @param <V> the type of the environment attribute
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @SuppressWarnings("unchecked")
+    static <V> EnvironmentAttribute<V> decode(Object minecraftAttribute, Object minecraftValue) {
+        return (EnvironmentAttribute<V>) DECODER.decode(Map.entry(minecraftAttribute, minecraftValue));
     }
 
 

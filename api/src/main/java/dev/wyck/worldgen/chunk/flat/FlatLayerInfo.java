@@ -3,6 +3,7 @@ package dev.wyck.worldgen.chunk.flat;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Material;
 import org.jetbrains.annotations.ApiStatus;
@@ -21,6 +22,9 @@ import org.jspecify.annotations.Nullable;
 public interface FlatLayerInfo extends Wrapper {
     @ApiStatus.Internal
     ConstructWireProvider<FlatLayerInfo> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.flat.FlatLayerInfoImpl");
+
+    @ApiStatus.Internal
+    Decoder<FlatLayerInfo> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.FlatLayerInfoDecoder");
 
     /** The maximum height of a flat layer. */
     @AsOf("3.0.0")
@@ -63,6 +67,17 @@ public interface FlatLayerInfo extends Wrapper {
     static FlatLayerInfo of(Material block, int height) {
         Preconditions.checkArgument(height >= 0 && height <= Y_MAX, "height must be between 0 and 4064");
         return WIRE.construct(block, height);
+    }
+
+    /**
+     * Reads Minecraft flat-layer information.
+     * @param minecraftLayer the flat layer to read
+     * @return the decoded flat layer
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static FlatLayerInfo decode(Object minecraftLayer) {
+        return DECODER.decode(minecraftLayer);
     }
 
     /**

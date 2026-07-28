@@ -3,6 +3,7 @@ package dev.wyck.worldgen.material;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Range;
@@ -25,6 +26,9 @@ public interface FluidState extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<FluidState> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.material.FluidStateImpl");
+
+    @ApiStatus.Internal
+    Decoder<FluidState> DECODER = Decoder.create("dev.wyck.decode.worldgen.material.FluidStateDecoder");
 
     /**
      * The fluid this state belongs to.
@@ -163,6 +167,17 @@ public interface FluidState extends Wrapper {
     @AsOf("3.0.0")
     default Builder toBuilder() {
         return new Builder(this);
+    }
+
+    /**
+     * Reads a Minecraft fluid state into a wrapper.
+     * @param minecraftState the Minecraft fluid state to read
+     * @return the wrapper for the fluid state
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static FluidState decode(Object minecraftState) {
+        return DECODER.decode(minecraftState);
     }
 
     /**

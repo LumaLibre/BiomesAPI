@@ -4,6 +4,7 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.keys.ResourceKey;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Keyed;
 import org.bukkit.Sound;
@@ -25,6 +26,9 @@ public interface SoundEvent extends Wrapper, Keyed {
 
     @ApiStatus.Internal
     ConstructWireProvider<SoundEvent> WIRE = WireProvider.construct("dev.wyck.environment.sounds.SoundEventImpl");
+
+    @ApiStatus.Internal
+    Decoder<SoundEvent> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.SoundEventDecoder");
 
     /**
      * Gets the location of the sound event.
@@ -109,5 +113,16 @@ public interface SoundEvent extends Wrapper, Keyed {
     @AsOf("3.1.0")
     static BukkitSoundEvent fixedRange(Sound sound, float range) {
         return BukkitSoundEvent.fixedRange(sound, range);
+    }
+
+    /**
+     * Reads a Minecraft sound event, or a holder of one, into a wrapper.
+     * @param minecraftSoundEvent the sound event to read
+     * @return the wrapper for it
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static SoundEvent decode(Object minecraftSoundEvent) {
+        return DECODER.decode(minecraftSoundEvent);
     }
 }

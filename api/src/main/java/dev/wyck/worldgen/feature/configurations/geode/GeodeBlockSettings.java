@@ -9,6 +9,7 @@ import dev.wyck.tags.TagSet;
 import dev.wyck.util.Either;
 import dev.wyck.worldgen.stateproviders.BlockStateProvider;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.data.BlockData;
@@ -36,6 +37,9 @@ public interface GeodeBlockSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<GeodeBlockSettings> WIRE = ConstructWireProvider.create("dev.wyck.*?.worldgen.feature.configurations.geode.GeodeBlockSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<GeodeBlockSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeBlockSettingsDecoder");
 
     /**
      * The block state provider used for the filling layer. This is air in vanilla geodes.
@@ -157,6 +161,11 @@ public interface GeodeBlockSettings extends Wrapper {
     @AsOf("3.0.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    @ApiStatus.Internal
+    static GeodeBlockSettings decode(Object minecraftSettings) {
+        return DECODER.decode(minecraftSettings);
     }
 
     /**

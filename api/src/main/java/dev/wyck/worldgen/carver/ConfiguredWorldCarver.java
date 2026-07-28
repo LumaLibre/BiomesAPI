@@ -2,12 +2,16 @@ package dev.wyck.worldgen.carver;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.keys.ResourceKey;
+import dev.wyck.registry.internal.RegistryId;
+import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.worldgen.carver.custom.CustomCarver;
 import dev.wyck.worldgen.carver.types.ComposedCarver;
 import dev.wyck.worldgen.carver.types.CustomComposedCarver;
 import dev.wyck.worldgen.carver.types.ReferencedCarver;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -22,6 +26,10 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("2.3.0")
 public interface ConfiguredWorldCarver extends Wrapper, Keyed {
 
+    @ApiStatus.Internal
+    Decoder<ConfiguredWorldCarver> DECODER =
+        Decoder.create("dev.wyck.decode.worldgen.carver.ConfiguredWorldCarverDecoder");
+
     /**
      * References a configured carver already registered under the given key.
      * @param key the registry key of the configured carver
@@ -34,8 +42,20 @@ public interface ConfiguredWorldCarver extends Wrapper, Keyed {
     }
 
     /**
+     * Resolves this carver's key in Minecraft's configured-carver registry and decodes the registered value.
+     * @return the decoded configured carver
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @ApiStatus.Experimental
+    default ConfiguredWorldCarver wrap() {
+        ResourceKey key = ResourceKey.of(key().namespace(), key().value());
+        Object minecraft = WyckRegistry.of(RegistryId.CONFIGURED_CARVER).retrieveOrThrow(key);
+        return decode(minecraft);
+    }
+
+    /**
      * Authors a configured carver on the vanilla CAVE algorithm.
-     * @param configuration the cave carver configuration
      * @return a configured cave carver
      * @since 2.3.0
      */
@@ -46,7 +66,6 @@ public interface ConfiguredWorldCarver extends Wrapper, Keyed {
 
     /**
      * Authors a configured carver on the vanilla NETHER_CAVE algorithm.
-     * @param configuration the cave carver configuration
      * @return a configured nether-cave carver
      * @since 2.3.0
      */
@@ -57,7 +76,6 @@ public interface ConfiguredWorldCarver extends Wrapper, Keyed {
 
     /**
      * Authors a configured carver on the vanilla CANYON algorithm.
-     * @param configuration the canyon carver configuration
      * @return a configured canyon carver
      * @since 2.3.0
      */
@@ -88,5 +106,16 @@ public interface ConfiguredWorldCarver extends Wrapper, Keyed {
     @AsOf("3.0.0")
     static <C> CustomComposedCarver.Builder<C> custom() {
         return CustomComposedCarver.builder();
+    }
+
+    /**
+     * Reads a keyed Minecraft configured-carver holder into a reference wrapper.
+     * @param minecraftConfiguredCarver the configured-carver holder to read
+     * @return a reference to the configured carver
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ConfiguredWorldCarver decode(Object minecraftConfiguredCarver) {
+        return DECODER.decode(minecraftConfiguredCarver);
     }
 }

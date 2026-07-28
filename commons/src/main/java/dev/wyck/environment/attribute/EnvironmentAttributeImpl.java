@@ -63,12 +63,12 @@ public class EnvironmentAttributeImpl<V, U> implements EnvironmentAttribute<V> {
     @Override
     @SuppressWarnings("unchecked")
     public V defaultValue() {
-        Object defaultValue = nms.get().defaultValue();
+        net.minecraft.world.attribute.EnvironmentAttribute<U> nmsAttribute = nms.get();
+        Object defaultValue = nmsAttribute.defaultValue();
         if (isBasic(defaultValue)) {
             return (V) defaultValue;
         }
-        // TODO: NMS decoders
-        throw new UnsupportedOperationException("default value reversal not implemented for " + key);
+        return EnvironmentAttribute.<V>decode(nmsAttribute, defaultValue).value();
     }
 
     @SuppressWarnings("unchecked")

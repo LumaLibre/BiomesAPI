@@ -9,6 +9,7 @@ import dev.wyck.registry.internal.RegistryId;
 import dev.wyck.util.Either;
 import dev.wyck.wrapper.Registerable;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import net.kyori.adventure.key.Keyed;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -216,6 +217,20 @@ public interface TagSet<T extends Keyed> extends Wrapper, Keyed, Registerable<Ta
     @SuppressWarnings("unchecked")
     static <T extends Keyed> TagSet<T> of(@Nullable ResourceKey resourceKey, RegistryId registry, Either<Set<T>, TagKey> value) {
         return (TagSet<T>) WIRE.construct(resourceKey, registry, value);
+    }
+
+    /**
+     * Reads a Minecraft block holder set, preserving a named tag when present.
+     * @param minecraftHolderSet the Minecraft block holder set
+     * @return the decoded block tag set
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static TagSet<Material> decodeBlocks(Object minecraftHolderSet) {
+        record Holder() {
+            static final Decoder<TagSet<Material>> DECODER = Decoder.create("dev.wyck.decode.tags.BlockTagSetDecoder");
+        }
+        return Holder.DECODER.decode(minecraftHolderSet);
     }
 
     /**

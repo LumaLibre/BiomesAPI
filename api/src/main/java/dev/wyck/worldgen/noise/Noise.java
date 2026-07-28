@@ -2,6 +2,10 @@ package dev.wyck.worldgen.noise;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.keys.ResourceKey;
+import dev.wyck.registry.internal.RegistryId;
+import dev.wyck.registry.internal.WyckRegistry;
+import dev.wyck.wrapper.decode.Decoder;
+import org.jetbrains.annotations.ApiStatus;
 import dev.wyck.worldgen.chunk.NoiseBasedChunkGenerator;
 import dev.wyck.worldgen.noise.types.NoiseGeneratorSettings;
 import dev.wyck.worldgen.noise.types.ReferencedNoise;
@@ -22,6 +26,9 @@ import java.util.Optional;
 @NullMarked
 @AsOf("2.4.0")
 public interface Noise extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<Noise> DECODER = Decoder.create("dev.wyck.decode.worldgen.noise.NoiseDecoder");
 
     Noise OVERWORLD = reference(ResourceKey.minecraft("overworld"));
     Noise NETHER = reference(ResourceKey.minecraft("nether"));
@@ -59,6 +66,31 @@ public interface Noise extends Wrapper {
     @AsOf("2.4.0")
     static Noise reference(ResourceKey key) {
         return ReferencedNoise.of(key);
+    }
+
+    /**
+     * Resolves this object's key in Minecraft's noise-settings registry and decodes the registered value.
+     * @return the decoded noise-generator settings
+     * @throws IllegalStateException if this object has no resource key
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @ApiStatus.Experimental
+    default Noise wrap() {
+        ResourceKey key = resourceKey().orElseThrow(() -> new IllegalStateException("Cannot wrap noise settings without a resource key"));
+        Object minecraft = WyckRegistry.of(RegistryId.NOISE_SETTINGS).retrieveOrThrow(key);
+        return decode(minecraft);
+    }
+
+    /**
+     * Reads a Minecraft noise-generator-settings holder or value.
+     * @param minecraftNoise the holder or value to read
+     * @return the decoded noise settings
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static Noise decode(Object minecraftNoise) {
+        return DECODER.decode(minecraftNoise);
     }
 
 

@@ -2,7 +2,9 @@ package dev.wyck.environment.particle;
 
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -16,6 +18,9 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("2.3.0")
 public interface ParticleOptions extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<ParticleOptions> DECODER = Decoder.create("dev.wyck.decode.environment.particle.ParticleOptionsDecoder");
 
     /**
      * Creates a new ParticleOptions instance.
@@ -44,5 +49,16 @@ public interface ParticleOptions extends Wrapper {
     @AsOf("3.0.0")
     static ParticleOptions of(ParticleTypes type) {
         return of(type, null);
+    }
+
+    /**
+     * Reads Minecraft particle options into a wrapper.
+     * @param minecraftParticleOptions the particle options to read
+     * @return the wrapper for them
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ParticleOptions decode(Object minecraftParticleOptions) {
+        return DECODER.decode(minecraftParticleOptions);
     }
 }

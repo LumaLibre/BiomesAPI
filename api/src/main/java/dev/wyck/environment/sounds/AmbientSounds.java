@@ -2,6 +2,7 @@ package dev.wyck.environment.sounds;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.ApiStatus;
@@ -26,6 +27,9 @@ public interface AmbientSounds extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<AmbientSounds> WIRE = ConstructWireProvider.construct("dev.wyck.environment.sounds.AmbientSoundsImpl");
+
+    @ApiStatus.Internal
+    Decoder<AmbientSounds> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientSoundsDecoder");
 
     AmbientSounds EMPTY = AmbientSounds.of(null, null, Collections.emptyList());
 
@@ -74,6 +78,17 @@ public interface AmbientSounds extends Wrapper {
     @AsOf("2.4.1")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads Minecraft ambient sounds into a wrapper.
+     * @param minecraftAmbientSounds the ambient sounds to read
+     * @return the wrapper for them
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static AmbientSounds decode(Object minecraftAmbientSounds) {
+        return DECODER.decode(minecraftAmbientSounds);
     }
 
     /**

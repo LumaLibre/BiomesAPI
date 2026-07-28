@@ -2,6 +2,7 @@ package dev.wyck.worldgen.carver;
 
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.worldgen.feature.configurations.ProbabilityFeatureConfiguration;
 import dev.wyck.worldgen.heightproviders.HeightProvider;
 import dev.wyck.worldgen.heightproviders.VerticalAnchor;
@@ -9,6 +10,7 @@ import dev.wyck.worldgen.valueproviders.FloatProvider;
 import org.bukkit.Material;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -25,6 +27,10 @@ import java.util.Set;
 @NullMarked
 @AsOf("2.3.0")
 public interface CarverConfiguration extends ProbabilityFeatureConfiguration {
+
+    @ApiStatus.Internal
+    Decoder<CarverConfiguration> DECODER =
+        Decoder.create("dev.wyck.decode.worldgen.carver.CarverConfigurationDecoders");
 
     /**
      * @return the y-level of the carver
@@ -60,6 +66,17 @@ public interface CarverConfiguration extends ProbabilityFeatureConfiguration {
      */
     @AsOf("2.3.0")
     Set<Material> replaceable();
+
+    /**
+     * Reads the configuration owned by a Minecraft configured carver.
+     * @param minecraftConfiguredCarver the configured carver to read
+     * @return its carver configuration
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static CarverConfiguration decode(Object minecraftConfiguredCarver) {
+        return DECODER.decode(minecraftConfiguredCarver);
+    }
 
     @AsOf("3.0.0")
     @SuppressWarnings("unchecked")

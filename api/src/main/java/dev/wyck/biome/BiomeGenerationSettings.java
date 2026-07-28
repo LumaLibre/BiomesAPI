@@ -8,6 +8,7 @@ import dev.wyck.worldgen.carver.ConfiguredWorldCarver;
 import dev.wyck.worldgen.carver.custom.CustomCarver;
 import dev.wyck.worldgen.placement.PlacedFeature;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
@@ -30,6 +31,10 @@ public interface BiomeGenerationSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<BiomeGenerationSettings> WIRE = ConstructWireProvider.create("dev.wyck.biome.BiomeGenerationSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<BiomeGenerationSettings> DECODER =
+        Decoder.create("dev.wyck.decode.biome.BiomeGenerationSettingsDecoder");
 
     /**
      * The configured carvers applied to this biome's generation.
@@ -87,6 +92,17 @@ public interface BiomeGenerationSettings extends Wrapper {
     @AsOf("2.3.0")
     static BiomeGenerationSettings empty() {
         return new Builder().build();
+    }
+
+    /**
+     * Reads Minecraft biome generation settings into a wrapper.
+     * @param minecraftGenerationSettings the generation settings to read
+     * @return the wrapper for them
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static BiomeGenerationSettings decode(Object minecraftGenerationSettings) {
+        return DECODER.decode(minecraftGenerationSettings);
     }
 
     /**

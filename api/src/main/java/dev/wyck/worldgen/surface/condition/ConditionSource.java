@@ -4,6 +4,8 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.worldgen.surface.SurfaceRule;
 import dev.wyck.worldgen.surface.rule.ConditionRuleSource;
 import dev.wyck.worldgen.surface.rule.RuleSource;
+import dev.wyck.wrapper.decode.Decoder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,6 +20,10 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface ConditionSource extends SurfaceRule {
+
+    @ApiStatus.Internal
+    Decoder<ConditionSource> DECODER =
+        Decoder.create("dev.wyck.decode.worldgen.surface.ConditionSourceDecoders");
 
     /**
      * Inverts this condition, passing when it fails.
@@ -38,5 +44,16 @@ public interface ConditionSource extends SurfaceRule {
     @AsOf("3.0.0")
     default ConditionRuleSource then(RuleSource then) {
         return ConditionRuleSource.of(this, then);
+    }
+
+    /**
+     * Reads a Minecraft surface-rule condition source.
+     * @param minecraftCondition the condition to read
+     * @return the decoded condition
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ConditionSource decode(Object minecraftCondition) {
+        return DECODER.decode(minecraftCondition);
     }
 }

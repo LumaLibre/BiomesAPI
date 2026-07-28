@@ -11,6 +11,7 @@ import dev.wyck.worldgen.surface.condition.ConditionSource;
 import dev.wyck.worldgen.surface.condition.HoleConditionSource;
 import dev.wyck.worldgen.surface.condition.NoiseThresholdConditionSource;
 import dev.wyck.worldgen.surface.condition.NotConditionSource;
+import dev.wyck.worldgen.surface.condition.OptionallyFlatBedrockConditionSource;
 import dev.wyck.worldgen.surface.condition.SteepConditionSource;
 import dev.wyck.worldgen.surface.condition.StoneDepthConditionSource;
 import dev.wyck.worldgen.surface.condition.TemperatureConditionSource;
@@ -246,6 +247,30 @@ public interface SurfaceRule extends Wrapper {
     @AsOf("3.0.0")
     static VerticalGradientConditionSource.Builder verticalGradient() {
         return VerticalGradientConditionSource.builder();
+    }
+
+    /**
+     * Creates Paper's bedrock gradient, which collapses to one layer when flat bedrock is enabled.
+     * @param randomName the seed name for the gradient noise
+     * @param trueAtAndBelow the anchor at and below which the condition is true
+     * @param falseAtAndAbove the anchor at and above which the condition is false
+     * @param roof whether the collapsed flat layer belongs to the dimension roof
+     * @return an optionally-flat bedrock condition
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static OptionallyFlatBedrockConditionSource optionallyFlatBedrock(String randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
+        return OptionallyFlatBedrockConditionSource.of(randomName, trueAtAndBelow, falseAtAndAbove, roof);
+    }
+
+    /**
+     * Creates a new optionally-flat bedrock condition source builder.
+     * @return a new optionally-flat bedrock condition source builder
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static OptionallyFlatBedrockConditionSource.Builder optionallyFlatBedrock() {
+        return OptionallyFlatBedrockConditionSource.builder();
     }
 
     /**

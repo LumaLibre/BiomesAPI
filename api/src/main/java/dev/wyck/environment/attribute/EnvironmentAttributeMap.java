@@ -3,6 +3,7 @@ package dev.wyck.environment.attribute;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.util.internal.FriendlyColorUtil;
+import dev.wyck.wrapper.decode.Decoder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -30,6 +31,10 @@ public record EnvironmentAttributeMap(
 ) {
 
     public static final EnvironmentAttributeMap EMPTY = new EnvironmentAttributeMap(Map.of(), List.of());
+
+    @ApiStatus.Internal
+    public static final Decoder<EnvironmentAttributeMap> DECODER =
+        Decoder.create("dev.wyck.decode.environment.attribute.EnvironmentAttributeMapDecoder");
 
     @AsOf("2.1.0")
     public EnvironmentAttributeMap {
@@ -189,6 +194,18 @@ public record EnvironmentAttributeMap(
             map.put(key, attribute);
         }
         return new EnvironmentAttributeMap(map, List.of());
+    }
+
+    /**
+     * Reads a Minecraft environment attribute map into a wrapper.
+     * @param minecraftAttributeMap the attribute map to read
+     * @return the wrapper for it
+     * @throws IllegalArgumentException if an attribute is modified rather than set, which this map cannot hold
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    public static EnvironmentAttributeMap decode(Object minecraftAttributeMap) {
+        return DECODER.decode(minecraftAttributeMap);
     }
 
     /**

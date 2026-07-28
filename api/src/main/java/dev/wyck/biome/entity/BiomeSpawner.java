@@ -7,6 +7,7 @@ import dev.wyck.biome.entity.data.NaturalSpawner;
 import dev.wyck.biome.entity.data.SpawnCost;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.util.WeightedList;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.ApiStatus;
@@ -29,6 +30,9 @@ public interface BiomeSpawner extends Wrapper {
 
     @ApiStatus.Internal
     WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.biome.entity.BiomeSpawnerFactoryImpl");
+
+    @ApiStatus.Internal
+    Decoder<BiomeSpawner> DECODER = Decoder.create("dev.wyck.decode.biome.entity.BiomeSpawnerDecoder");
 
     @ApiStatus.Internal
     interface Factory {
@@ -85,6 +89,17 @@ public interface BiomeSpawner extends Wrapper {
     @AsOf("2.3.0")
     static BiomeSpawner empty() {
         return builder().build();
+    }
+
+    /**
+     * Reads Minecraft biome spawn settings into a wrapper.
+     * @param minecraftBiomeSpawner the spawn settings to read
+     * @return the wrapper for them
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static BiomeSpawner decode(Object minecraftBiomeSpawner) {
+        return DECODER.decode(minecraftBiomeSpawner);
     }
 
     /**

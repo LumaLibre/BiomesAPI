@@ -4,6 +4,7 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.environment.GrassColorModifier;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.internal.FriendlyColorUtil;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
@@ -26,6 +27,9 @@ public interface BiomeSpecialEffects extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<BiomeSpecialEffects> WIRE = ConstructWireProvider.create("dev.wyck.biome.BiomeSpecialEffectsImpl");
+
+    @ApiStatus.Internal
+    Decoder<BiomeSpecialEffects> DECODER = Decoder.create("dev.wyck.decode.biome.BiomeSpecialEffectsDecoder");
 
     BiomeSpecialEffects DEFAULT = of(0x3F75C4, null, null, null, GrassColorModifier.NONE);
 
@@ -118,6 +122,17 @@ public interface BiomeSpecialEffects extends Wrapper {
     @AsOf("3.0.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads Minecraft biome special effects into a wrapper.
+     * @param minecraftSpecialEffects the special effects to read
+     * @return the wrapper for them
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static BiomeSpecialEffects decode(Object minecraftSpecialEffects) {
+        return DECODER.decode(minecraftSpecialEffects);
     }
 
     /**

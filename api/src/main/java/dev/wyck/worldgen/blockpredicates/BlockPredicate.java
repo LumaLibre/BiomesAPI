@@ -2,9 +2,11 @@ package dev.wyck.worldgen.blockpredicates;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.keys.ResourceKey;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -19,6 +21,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface BlockPredicate extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<BlockPredicate> DECODER = Decoder.create("dev.wyck.decode.worldgen.blockpredicates.BlockPredicateDecoders");
 
     /**
      * Negates this predicate.
@@ -204,6 +209,17 @@ public interface BlockPredicate extends Wrapper {
     @AsOf("3.0.0")
     static WouldSurvivePredicate.Builder wouldSurvive() {
         return WouldSurvivePredicate.builder();
+    }
+
+    /**
+     * Reads a Minecraft block predicate into a wrapper.
+     * @param minecraftPredicate the Minecraft predicate to read
+     * @return the wrapper for the predicate
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static BlockPredicate decode(Object minecraftPredicate) {
+        return DECODER.decode(minecraftPredicate);
     }
 
 }

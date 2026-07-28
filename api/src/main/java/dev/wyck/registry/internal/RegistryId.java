@@ -27,6 +27,7 @@ public enum RegistryId {
     NOISE_SETTINGS("worldgen/noise_settings"),
     LEVEL_STEM("dimension"),
     PARTICLE_TYPE("particle_type"),
+    PLACED_FEATURE("worldgen/placed_feature"),
     TIMELINE("timeline"),
     WORLD_CLOCK("world_clock");
 

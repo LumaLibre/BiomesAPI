@@ -3,12 +3,17 @@ package dev.wyck.worldgen.chunk;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.biome.Biome;
 import dev.wyck.worldgen.biome.BiomeSource;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @AsOf("2.4.0")
 public interface ChunkGenerator extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<ChunkGenerator> DECODER = Decoder.create("dev.wyck.decode.worldgen.chunk.ChunkGeneratorDecoders");
 
     /**
      * The biome source this generator draws from.
@@ -57,5 +62,16 @@ public interface ChunkGenerator extends Wrapper {
     @AsOf("3.0.0")
     static CraftBukkitChunkGenerator.Builder craftBukkit() {
         return CraftBukkitChunkGenerator.builder();
+    }
+
+    /**
+     * Reads a Minecraft chunk generator.
+     * @param minecraftGenerator the chunk generator to read
+     * @return the decoded chunk generator
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ChunkGenerator decode(Object minecraftGenerator) {
+        return DECODER.decode(minecraftGenerator);
     }
 }

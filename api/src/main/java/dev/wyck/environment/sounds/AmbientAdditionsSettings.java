@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.factory.WireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.ApiStatus;
@@ -23,6 +24,9 @@ public interface AmbientAdditionsSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<AmbientAdditionsSettings> WIRE = WireProvider.construct("dev.wyck.environment.sounds.AmbientAdditionsSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<AmbientAdditionsSettings> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.AmbientAdditionsSettingsDecoder");
 
     /**
      * The sound event to play.
@@ -72,6 +76,17 @@ public interface AmbientAdditionsSettings extends Wrapper {
     @AsOf("2.4.1")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads Minecraft ambient additions settings into a wrapper.
+     * @param minecraftAmbientAdditionsSettings the ambient additions settings to read
+     * @return the wrapper for them
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static AmbientAdditionsSettings decode(Object minecraftAmbientAdditionsSettings) {
+        return DECODER.decode(minecraftAmbientAdditionsSettings);
     }
 
     /**

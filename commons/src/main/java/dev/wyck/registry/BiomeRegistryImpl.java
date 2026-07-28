@@ -7,10 +7,7 @@ import dev.wyck.biome.Biome;
 import dev.wyck.biome.BiomeGenerationSettings;
 import dev.wyck.biome.BiomeSpecialEffects;
 import dev.wyck.biome.ClimateSettings;
-import dev.wyck.biome.TemperatureModifier;
 import dev.wyck.biome.entity.BiomeSpawner;
-import dev.wyck.biome.entity.MobCategory;
-import dev.wyck.environment.GrassColorModifier;
 import dev.wyck.environment.attribute.EnvironmentAttributeMap;
 import dev.wyck.environment.attribute.NmsEnvironmentAttributes;
 import dev.wyck.keys.KeyChains;
@@ -20,10 +17,6 @@ import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.util.Lazy;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.random.Weighted;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.biome.MobSpawnSettings;
-import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
@@ -31,7 +24,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * This class implements the BiomeRegistry interface and provides a method to register a custom biome to a Minecraft server.
@@ -158,7 +150,6 @@ public class BiomeRegistryImpl implements BiomeRegistry {
         }
     }
 
-    // TODO: Cleanup when decoders are available
     @AsOf("2.3.0")
     @SuppressWarnings("unchecked")
     public @Nullable Biome getBiome(ResourceKey key) {
@@ -169,100 +160,8 @@ public class BiomeRegistryImpl implements BiomeRegistry {
         }
 
         Registry<net.minecraft.world.level.biome.Biome> biomeRegistry = this.registry.get().asHandle();
-
-        net.minecraft.world.level.biome.Biome biome = biomeRegistry.getOptional((Identifier) key.resourceLocation()).orElse(null);
-        if (biome == null) {
-            return null;
-        }
-
-        Biome.Builder builder = Biome.builder(key);
-
-        try {
-            Field climateSettingsField = net.minecraft.world.level.biome.Biome.class.getDeclaredField("climateSettings");
-            climateSettingsField.setAccessible(true);
-
-            net.minecraft.world.level.biome.Biome.ClimateSettings climate = (net.minecraft.world.level.biome.Biome.ClimateSettings) climateSettingsField.get(biome);
-            net.minecraft.world.attribute.EnvironmentAttributeMap attributeMap = biome.getAttributes();
-            net.minecraft.world.level.biome.MobSpawnSettings mobSettings = biome.getMobSettings();
-            net.minecraft.world.level.biome.BiomeSpecialEffects specialEffects = biome.getSpecialEffects();
-
-
-            builder.specialEffects(BiomeSpecialEffects.builder()
-                .waterColor(specialEffects.waterColor())
-                .foliageColorOverride(specialEffects.foliageColorOverride().orElse(null))
-                .dryFoliageColorOverride(specialEffects.dryFoliageColorOverride().orElse(null))
-                .grassColorOverride(specialEffects.grassColorOverride().orElse(null))
-                .grassColorModifier(GrassColorModifier.TRANSLATOR.fromNms(specialEffects.grassColorModifier()))
-                .build());
-
-            builder.climateSettings(
-                ClimateSettings.builder()
-                    .hasPrecipitation(climate.hasPrecipitation())
-                    .temperature(climate.temperature())
-                    .downfall(climate.downfall())
-                    .temperatureModifier(TemperatureModifier.TRANSLATOR.fromNms(climate.temperatureModifier()))
-                    .build()
-            );
-
-            // TODO: Reverse AmbientParticles back to wrappers
-            // TODO: Reverse attributes back to wrappers
-            // TODO: Reverse generation settings back to wrappers
-            //attributeMap.applyModifier(Environment)
-
-            builder.biomeSpawner(readSpawner(mobSettings));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("Failed to read biome state for " + key, e);
-        }
-
-        return builder.build();
-    }
-
-    // TODO: Remove this when decoders are available
-
-    @SuppressWarnings("unchecked")
-    private BiomeSpawner readSpawner(MobSpawnSettings settings) {
-        BiomeSpawner.Builder spawnerBuilder = BiomeSpawner.builder()
-            .creatureGenerationProbability(settings.getCreatureProbability());
-
-
-        for (net.minecraft.world.entity.MobCategory nmsCategory : net.minecraft.world.entity.MobCategory.values()) {
-            MobCategory category = toWrapperCategory(nmsCategory);
-
-            for (Weighted<MobSpawnSettings.SpawnerData> weighted : settings.getMobs(nmsCategory).unwrap()) {
-                MobSpawnSettings.SpawnerData data = weighted.value();
-                org.bukkit.entity.EntityType type = toBukkitEntityType(data.type());
-                if (type == null) continue;
-                spawnerBuilder.spawner(category, weighted.weight(), type, data.minCount(), data.maxCount());
-            }
-        }
-
-        try {
-            Field costsField = MobSpawnSettings.class.getDeclaredField("mobSpawnCosts");
-            costsField.setAccessible(true);
-            Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> costs =
-                (Map<net.minecraft.world.entity.EntityType<?>, MobSpawnSettings.MobSpawnCost>) costsField.get(settings);
-
-            for (Map.Entry<net.minecraft.world.entity.EntityType<?>, MobSpawnSettings.MobSpawnCost> entry : costs.entrySet()) {
-                org.bukkit.entity.EntityType type = toBukkitEntityType(entry.getKey());
-                if (type == null) continue;
-                MobSpawnSettings.MobSpawnCost cost = entry.getValue();
-
-                spawnerBuilder.spawnCost(type, cost.charge(), cost.energyBudget());
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("Failed to read mob spawn costs", e);
-        }
-
-        return spawnerBuilder.build();
-    }
-
-    private static MobCategory toWrapperCategory(net.minecraft.world.entity.MobCategory nms) {
-        return MobCategory.TRANSLATOR.fromNms(nms);
-    }
-
-    private static org.bukkit.entity.@Nullable EntityType toBukkitEntityType(net.minecraft.world.entity.EntityType<?> nms) {
-        NamespacedKey nmsKey = NamespacedKey.fromString(
-            net.minecraft.world.entity.EntityType.getKey(nms).toString());
-        return nmsKey == null ? null : org.bukkit.Registry.ENTITY_TYPE.get(nmsKey);
+        net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome> minecraftKey =
+            net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.BIOME, (Identifier) key.resourceLocation());
+        return biomeRegistry.get(minecraftKey).map(Biome::decode).orElse(null);
     }
 }

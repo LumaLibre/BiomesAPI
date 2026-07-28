@@ -10,10 +10,14 @@ import dev.wyck.environment.attribute.FriendlyColorSupplier;
 import dev.wyck.keys.KeyChains;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.registry.BiomeRegistry;
+import dev.wyck.registry.internal.RegistryId;
+import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import net.kyori.adventure.key.Keyed;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Represents an abstract biome in Minecraft.
@@ -25,6 +29,9 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("2.3.0")
 public interface Biome extends Keyed, Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<Biome> DECODER = Decoder.create("dev.wyck.decode.biome.BiomeDecoder");
 
     /**
      * The key associated with this biome.
@@ -180,6 +187,18 @@ public interface Biome extends Keyed, Wrapper {
     }
 
     /**
+     * Resolves this biome's key in Minecraft's registry and decodes the registered value.
+     * @return the decoded biome
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @ApiStatus.Experimental
+    default Biome wrap() {
+        Object minecraft = WyckRegistry.of(RegistryId.BIOME).retrieveOrThrow(resourceKey());
+        return decode(minecraft);
+    }
+
+    /**
      * A new builder for this class.
      * @return a new, empty {@link Builder}.
      * @since 2.3.0
@@ -198,6 +217,17 @@ public interface Biome extends Keyed, Wrapper {
     static Builder builder(ResourceKey resourceKey) {
         Preconditions.checkNotNull(resourceKey, "resourceKey cannot be null.");
         return new Builder().resourceKey(resourceKey);
+    }
+
+    /**
+     * Reads a keyed Minecraft biome holder into a wrapper.
+     * @param minecraftBiome the biome holder to read
+     * @return the wrapper for the biome
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static Biome decode(Object minecraftBiome) {
+        return DECODER.decode(minecraftBiome);
     }
 
     /**

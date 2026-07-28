@@ -1,9 +1,11 @@
 package dev.wyck.worldgen.stateproviders;
 
 import dev.wyck.annotations.AsOf;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -17,6 +19,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface BlockStateProvider extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<BlockStateProvider> DECODER = Decoder.create("dev.wyck.decode.worldgen.stateproviders.BlockStateProviderDecoders");
 
     /**
      * Creates a simple block state provider.
@@ -109,6 +114,17 @@ public interface BlockStateProvider extends Wrapper {
     @AsOf("2.3.0")
     static NoiseThresholdProvider.Builder noiseThreshold() {
         return NoiseThresholdProvider.builder();
+    }
+
+    /**
+     * Reads a Minecraft block state provider into a wrapper.
+     * @param minecraftProvider the Minecraft provider to read
+     * @return the wrapper for the provider
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static BlockStateProvider decode(Object minecraftProvider) {
+        return DECODER.decode(minecraftProvider);
     }
 
 }

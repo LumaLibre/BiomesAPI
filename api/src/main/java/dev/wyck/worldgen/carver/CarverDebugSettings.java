@@ -4,6 +4,7 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.util.BukkitBootstrapUtil;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.ApiStatus;
@@ -22,6 +23,10 @@ public interface CarverDebugSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<CarverDebugSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.carver.CarverDebugSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<CarverDebugSettings> DECODER =
+        Decoder.create("dev.wyck.decode.worldgen.carver.CarverDebugSettingsDecoder");
 
     /** The default debug settings, as they appear in Minecraft. */
     @AsOf("3.0.0")
@@ -100,6 +105,17 @@ public interface CarverDebugSettings extends Wrapper {
     @AsOf("3.0.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads Minecraft carver debug settings.
+     * @param minecraftSettings the settings to read
+     * @return the decoded settings
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static CarverDebugSettings decode(Object minecraftSettings) {
+        return DECODER.decode(minecraftSettings);
     }
 
     /**

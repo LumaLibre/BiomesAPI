@@ -1,5 +1,5 @@
 name: TestPlugin
 version: 1.0
 main: dev.wyck.test.WyckTest
-bootstrapper: dev.wyck.test.ExampleBootstrapper
+#bootstrapper: dev.wyck.test.ExampleBootstrapper
 api-version: 1.21

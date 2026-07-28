@@ -2,7 +2,9 @@ package dev.wyck.worldgen.feature.featuresize;
 
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,6 +23,9 @@ import java.util.OptionalInt;
 @NullMarked
 @AsOf("3.0.0")
 public interface FeatureSize extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<FeatureSize> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.FeatureSizeDecoders");
 
     /**
      * If specified and lower than the trunk height,
@@ -53,6 +58,11 @@ public interface FeatureSize extends Wrapper {
     @AsOf("3.0.0")
     static ThreeLayersFeatureSize.Builder threeLayers() {
         return ThreeLayersFeatureSize.builder();
+    }
+
+    @ApiStatus.Internal
+    static FeatureSize decode(Object minecraftFeatureSize) {
+        return DECODER.decode(minecraftFeatureSize);
     }
 
     /**

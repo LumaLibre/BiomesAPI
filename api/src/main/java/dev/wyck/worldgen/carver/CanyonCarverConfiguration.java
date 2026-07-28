@@ -7,6 +7,7 @@ import dev.wyck.worldgen.heightproviders.HeightProvider;
 import dev.wyck.worldgen.heightproviders.VerticalAnchor;
 import dev.wyck.worldgen.valueproviders.FloatProvider;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.bukkit.Material;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -146,6 +147,10 @@ public interface CanyonCarverConfiguration extends CarverConfiguration {
         @ApiStatus.Internal
         ConstructWireProvider<CanyonShapeConfiguration> INNER_WIRE = WIRE.resolve("CanyonShapeConfigurationImpl");
 
+        @ApiStatus.Internal
+        Decoder<CanyonShapeConfiguration> DECODER =
+            Decoder.create("dev.wyck.decode.worldgen.carver.CanyonShapeConfigurationDecoder");
+
         /**
          * Gets the distance factor for the canyon shape.
          * @return the distance factor for the canyon shape
@@ -228,6 +233,17 @@ public interface CanyonCarverConfiguration extends CarverConfiguration {
         @AsOf("3.0.0")
         static Builder builder() {
             return new Builder();
+        }
+
+        /**
+         * Reads a Minecraft canyon shape configuration.
+         * @param minecraftShape the shape to read
+         * @return the decoded shape
+         * @since 3.3.0
+         */
+        @AsOf("3.3.0")
+        static CanyonShapeConfiguration decode(Object minecraftShape) {
+            return DECODER.decode(minecraftShape);
         }
 
         /**

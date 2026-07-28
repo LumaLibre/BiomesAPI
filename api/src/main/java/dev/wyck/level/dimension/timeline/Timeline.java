@@ -4,8 +4,11 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.dimension.timeline.types.ComposedTimeline;
 import dev.wyck.level.dimension.timeline.types.ReferencedTimeline;
+import dev.wyck.registry.internal.RegistryId;
+import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
@@ -38,6 +41,19 @@ public interface Timeline extends Wrapper, Keyed {
     @AsOf("3.2.0")
     static ReferencedTimeline reference(ResourceKey key) {
         return ReferencedTimeline.of(key);
+    }
+
+    /**
+     * Resolves this timeline's key in Minecraft's registry and returns its registry-backed wrapper.
+     * @return the registered timeline wrapper
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @ApiStatus.Experimental
+    default Timeline wrap() {
+        // just check if it exists
+        WyckRegistry.of(RegistryId.TIMELINE).retrieveOrThrow(key());
+        return reference(key());
     }
 
     /**

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class WireProviderResolutionTest {
 
-    private static final Pattern TEMPLATE = Pattern.compile("WireProvider\\.(?:create|construct)\\(\"([^\"]+)\"\\)");
+    private static final Pattern TEMPLATE = Pattern.compile("(?:WireProvider|Decoder)\\.(?:create|construct)\\(\"([^\"]+)\"\\)");
     private static final Pattern VERSION_DIR = Pattern.compile("^v\\d\\w*$");
 
     @Test

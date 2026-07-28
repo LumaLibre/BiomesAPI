@@ -2,7 +2,9 @@ package dev.wyck.worldgen.feature.trunkplacers;
 
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,6 +18,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("3.0.0")
 public interface TrunkPlacer extends Wrapper {
+
+    @ApiStatus.Internal
+    Decoder<TrunkPlacer> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.tree.TrunkPlacerDecoders");
 
     int MAX_BASE_HEIGHT = 32; // vanilla constant
     int MAX_RAND = 24; // vanilla constant
@@ -134,6 +139,11 @@ public interface TrunkPlacer extends Wrapper {
     @AsOf("3.0.0")
     static UpwardsBranchingTrunkPlacer.Builder upwardsBranching() {
         return UpwardsBranchingTrunkPlacer.builder();
+    }
+
+    @ApiStatus.Internal
+    static TrunkPlacer decode(Object minecraftTrunkPlacer) {
+        return DECODER.decode(minecraftTrunkPlacer);
     }
 
     /**

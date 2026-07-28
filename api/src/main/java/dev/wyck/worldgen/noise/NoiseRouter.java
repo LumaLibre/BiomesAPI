@@ -4,6 +4,7 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.worldgen.function.DensityFunction;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
@@ -25,6 +26,9 @@ public interface NoiseRouter extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<NoiseRouter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.noise.NoiseRouterImpl");
+
+    @ApiStatus.Internal
+    Decoder<NoiseRouter> DECODER = Decoder.create("dev.wyck.decode.worldgen.noise.NoiseRouterDecoder");
 
     /**
      * Affects whether aquifers and open cave areas are separated; larger values make separation more likely.
@@ -209,6 +213,17 @@ public interface NoiseRouter extends Wrapper {
             veinRidged,
             veinGap
         );
+    }
+
+    /**
+     * Reads a Minecraft noise router.
+     * @param minecraftRouter the noise router to read
+     * @return the decoded noise router
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static NoiseRouter decode(Object minecraftRouter) {
+        return DECODER.decode(minecraftRouter);
     }
 
     /**

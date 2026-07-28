@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
@@ -19,6 +20,9 @@ public interface ClimateParameter extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<ClimateParameter> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.climate.ClimateParameterImpl");
+
+    @ApiStatus.Internal
+    Decoder<ClimateParameter> DECODER = Decoder.create("dev.wyck.decode.worldgen.climate.ClimateParameterDecoder");
 
     float MAX_BOUNDARY = 2.0f;
     float MIN_BOUNDARY = -2.0f;
@@ -84,5 +88,16 @@ public interface ClimateParameter extends Wrapper {
     @AsOf("2.4.1")
     static ClimateParameter all() {
         return span(MIN_BOUNDARY, MAX_BOUNDARY);
+    }
+
+    /**
+     * Reads a Minecraft climate parameter.
+     * @param minecraftParameter the climate parameter to read
+     * @return the decoded climate parameter
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ClimateParameter decode(Object minecraftParameter) {
+        return DECODER.decode(minecraftParameter);
     }
 }

@@ -3,6 +3,7 @@ package dev.wyck.environment.sounds;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.ApiStatus;
@@ -22,6 +23,9 @@ public interface Music extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<Music> WIRE = ConstructWireProvider.create("dev.wyck.environment.sounds.MusicImpl");
+
+    @ApiStatus.Internal
+    Decoder<Music> DECODER = Decoder.create("dev.wyck.decode.environment.sounds.MusicDecoder");
 
     /**
      * Gets the sound of the music.
@@ -105,6 +109,17 @@ public interface Music extends Wrapper {
     @AsOf("2.4.1")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads Minecraft music into a wrapper.
+     * @param minecraftMusic the music to read
+     * @return the wrapper for it
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static Music decode(Object minecraftMusic) {
+        return DECODER.decode(minecraftMusic);
     }
 
 

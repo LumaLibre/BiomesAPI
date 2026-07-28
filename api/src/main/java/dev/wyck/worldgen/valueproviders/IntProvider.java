@@ -2,6 +2,8 @@ package dev.wyck.worldgen.valueproviders;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.util.WeightedList;
+import dev.wyck.wrapper.decode.Decoder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -15,6 +17,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @AsOf("2.3.0")
 public interface IntProvider extends ValueProvider {
+
+    @ApiStatus.Internal
+    Decoder<IntProvider> DECODER = Decoder.create("dev.wyck.decode.worldgen.valueproviders.IntProviderDecoders");
 
     /**
      * The smallest value this provider can yield.
@@ -295,5 +300,15 @@ public interface IntProvider extends ValueProvider {
          */
         @AsOf("3.0.0")
         public abstract T build();
+    }
+    /**
+     * Reads a Minecraft int provider into a wrapper.
+     * @param minecraftIntProvider the int provider to read
+     * @return the wrapper for it
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static IntProvider decode(Object minecraftIntProvider) {
+        return DECODER.decode(minecraftIntProvider);
     }
 }

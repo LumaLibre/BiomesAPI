@@ -3,6 +3,7 @@ package dev.wyck.environment.particle;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -22,6 +23,9 @@ public interface AmbientParticle extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<AmbientParticle> WIRE = ConstructWireProvider.construct("dev.wyck.environment.particle.AmbientParticleImpl");
+
+    @ApiStatus.Internal
+    Decoder<AmbientParticle> DECODER = Decoder.create("dev.wyck.decode.environment.particle.AmbientParticleDecoders");
 
     /**
      * Gets the particle type.
@@ -107,6 +111,17 @@ public interface AmbientParticle extends Wrapper {
     @AsOf("3.0.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Reads a Minecraft ambient particle into a wrapper.
+     * @param minecraftAmbientParticle the ambient particle to read
+     * @return the wrapper for it
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static AmbientParticle decode(Object minecraftAmbientParticle) {
+        return DECODER.decode(minecraftAmbientParticle);
     }
 
     /**

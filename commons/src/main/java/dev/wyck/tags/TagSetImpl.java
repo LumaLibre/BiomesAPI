@@ -144,4 +144,12 @@ public final class TagSetImpl<T extends Keyed, U> implements TagSet<T> {
         return this.resourceKey;
     }
 
+    @Override
+    public String toString() {
+        return "TagSetImpl{" +
+            "resourceKey=" + resourceKey +
+            ", value=" + value +
+            ", registryId=" + registryId +
+            '}';
+    }
 }

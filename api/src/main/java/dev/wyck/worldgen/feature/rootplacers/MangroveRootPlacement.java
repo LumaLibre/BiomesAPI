@@ -99,7 +99,12 @@ public interface MangroveRootPlacement extends Wrapper {
      */
     @AsOf("3.0.0")
     static MangroveRootPlacement of(Set<Material> canGrowThrough, Set<Material> muddyRootsIn, BlockStateProvider muddyRootsProvider, int maxRootWidth, int maxRootLength) {
-        return WIRE.construct(canGrowThrough, muddyRootsIn, muddyRootsProvider, maxRootWidth, maxRootLength);
+        return of(canGrowThrough, muddyRootsIn, muddyRootsProvider, maxRootWidth, maxRootLength, 0.0F);
+    }
+
+    @ApiStatus.Internal
+    static MangroveRootPlacement of(Set<Material> canGrowThrough, Set<Material> muddyRootsIn, BlockStateProvider muddyRootsProvider, int maxRootWidth, int maxRootLength, float randomSkewChance) {
+        return WIRE.construct(canGrowThrough, muddyRootsIn, muddyRootsProvider, maxRootWidth, maxRootLength, randomSkewChance);
     }
 
     /**
@@ -246,7 +251,7 @@ public interface MangroveRootPlacement extends Wrapper {
             Preconditions.checkArgument(maxRootWidth >= 1 && maxRootWidth <= 12, "maxRootWidth must be between 1 and 12");
             Preconditions.checkArgument(maxRootLength >= 1 && maxRootLength <= 64, "maxRootLength must be between 1 and 64");
             Preconditions.checkArgument(randomSkewChance >= 0.0F && randomSkewChance <= 1.0F, "randomSkewChance must be between 0.0F and 1.0F");
-            return of(canGrowThrough, muddyRootsIn, muddyRootsProvider, maxRootWidth, maxRootLength);
+            return of(canGrowThrough, muddyRootsIn, muddyRootsProvider, maxRootWidth, maxRootLength, randomSkewChance);
         }
     }
 }

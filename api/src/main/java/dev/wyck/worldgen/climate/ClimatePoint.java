@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
+import dev.wyck.wrapper.decode.Decoder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
@@ -19,6 +20,9 @@ public interface ClimatePoint extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<ClimatePoint> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.climate.ClimatePointImpl");
+
+    @ApiStatus.Internal
+    Decoder<ClimatePoint> DECODER = Decoder.create("dev.wyck.decode.worldgen.climate.ClimatePointDecoder");
 
     /**
      * The temperature axis span.
@@ -140,6 +144,17 @@ public interface ClimatePoint extends Wrapper {
     @AsOf("2.4.1")
     static ClimatePoint spanAll(float offset) {
         return of(ClimateParameter.all(), ClimateParameter.all(), ClimateParameter.all(), ClimateParameter.all(), ClimateParameter.all(), ClimateParameter.all(), offset);
+    }
+
+    /**
+     * Reads a Minecraft climate parameter point.
+     * @param minecraftPoint the climate point to read
+     * @return the decoded climate point
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ClimatePoint decode(Object minecraftPoint) {
+        return DECODER.decode(minecraftPoint);
     }
 
     /**

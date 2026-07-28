@@ -3,6 +3,7 @@ package dev.wyck.worldgen.feature.configurations.geode;
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.factory.ConstructWireProvider;
+import dev.wyck.wrapper.decode.Decoder;
 import dev.wyck.wrapper.Wrapper;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -22,6 +23,9 @@ public interface GeodeLayerSettings extends Wrapper {
 
     @ApiStatus.Internal
     ConstructWireProvider<GeodeLayerSettings> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.feature.configurations.geode.GeodeLayerSettingsImpl");
+
+    @ApiStatus.Internal
+    Decoder<GeodeLayerSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.feature.geode.GeodeLayerSettingsDecoder");
 
     /**
      * The thickness of the filling layer. Value between 0.01 and 50.0.
@@ -87,6 +91,11 @@ public interface GeodeLayerSettings extends Wrapper {
     @AsOf("3.0.0")
     static Builder builder() {
         return new Builder();
+    }
+
+    @ApiStatus.Internal
+    static GeodeLayerSettings decode(Object minecraftSettings) {
+        return DECODER.decode(minecraftSettings);
     }
 
     /**
