@@ -29,37 +29,10 @@ Wyck was made for servers who are looking for more of an aesthetic feel to their
 
 ## Getting Started ⭐
 
-Wyck is built using Gradle and is hosted on my repository (repo.wyck.dev). To get started with Wyck,
-follow the instructions below to add Wyck to your project.
+\* Wyck comes as a shaded dependency or a standalone plugin, take your pick!
 
-1. Find the latest version of Wyck [HERE](https://repo.wyck.dev/#/releases/dev/wyck/Wyck). Versions with a git commit hash at the end are snapshot builds and may be unstable.
-2. Add the repository to your `build.gradle.kts`, `build.gradle`, or `pom.xml` file.
-
-And example for Gradle Kotlin DSL is provided below:
-
-```kotlin
-plugins {
-    // Make sure to shade it in if you're not using it as an external dependency!
-    id("com.gradleup.shadow") version "$SHADOW_VERSION"
-}
-
-
-repositories {
-    maven("https://repo.wyck.dev/releases")
-}
-
-// 3. Replace VERSION with the latest version found in step 1
-dependencies {
-    implementation("dev.wyck:Wyck:$VERSION")
-}
-
-// 4. Shade the Wyck package to avoid conflicts
-shadowJar {
-    relocate("dev.wyck", "your.package.name.wyck")
-}
-```
-
-Wyck comes as a shaded dependency or a standalone plugin, take your pick!
+Wyck is built using Gradle and is hosted on the project repository (https://repo.wyck.dev).
+See our [Getting Started](https://wyck.dev/setup/) guide on how to add Wyck to your project.
 
 ## Why Wyck 🤔
 
