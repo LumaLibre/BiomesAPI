@@ -1,8 +1,6 @@
 package dev.wyck.level.dimension.timeline.types;
 
-import dev.wyck.environment.attribute.modifier.AlphaValue;
-import dev.wyck.environment.attribute.modifier.AttributeOperation;
-import dev.wyck.environment.attribute.modifier.GrayBlend;
+import dev.wyck.util.attribute.AttributeModifiersUtil;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.dimension.clock.TimeMarker;
 import dev.wyck.level.dimension.clock.WorldClock;
@@ -12,14 +10,12 @@ import dev.wyck.registry.internal.RegistryId;
 import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.util.BootstrapSafeMinecraftRegistries;
 import dev.wyck.util.Lazy;
-import dev.wyck.wrapper.Wrapper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.KeyframeTrack;
 import net.minecraft.world.attribute.EnvironmentAttribute;
-import net.minecraft.world.attribute.modifier.AttributeModifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
@@ -62,11 +58,11 @@ public record ComposedTimelineImpl(
         return this;
     }
 
-    // TODO: clean this up
-
     private static <Value, Argument> void applyTo(net.minecraft.world.timeline.Timeline.Builder builder, AttributeTrack<?> track) {
         EnvironmentAttribute<Value> nms = track.attribute().asHandle();
-        AttributeModifier<Value, Argument> modifier = modifier(track, nms);
+        @SuppressWarnings("unchecked")
+        AttributeTrack<Value> typedTrack = (AttributeTrack<Value>) track;
+        var modifier = AttributeModifiersUtil.<Value, Argument>modifier(typedTrack);
         builder.addModifierTrack(nms, modifier, keyframes -> fill(keyframes, track));
     }
 
@@ -78,26 +74,7 @@ public record ComposedTimelineImpl(
     }
 
     @SuppressWarnings("unchecked")
-    private static <V, A> AttributeModifier<V, A> modifier(AttributeTrack<?> track, EnvironmentAttribute<V> nms) {
-        if (track.operation() == AttributeOperation.OVERRIDE) {
-            return (AttributeModifier<V, A>) AttributeModifier.override();
-        }
-
-        AttributeModifier.OperationId id = track.operation().toNms(AttributeModifier.OperationId.class);
-        AttributeModifier<V, ?> modifier = nms.type().modifierLibrary().get(id);
-        if (modifier == null) {
-            throw new IllegalArgumentException(
-                "Operation " + track.operation() + " is not supported by " + track.attribute().key()
-                    + "; supported operations are " + nms.type().modifierLibrary().keySet());
-        }
-        return (AttributeModifier<V, A>) modifier;
-    }
-
     private static <V, A> A argument(AttributeTrack<V> track, Object value) {
-        if (value instanceof AlphaValue || value instanceof GrayBlend) {
-            return ((Wrapper) value).asHandle();
-        }
-        track.attribute().value((V) value);
-        return track.attribute().minecraftValue();
+        return AttributeModifiersUtil.argument(track.attribute(), value);
     }
 }

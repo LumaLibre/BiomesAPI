@@ -4,6 +4,9 @@ import dev.wyck.biome.Biome;
 import dev.wyck.biome.BiomeGenerationSettings;
 import dev.wyck.biome.entity.BiomeSpawner;
 import dev.wyck.biome.entity.MobCategory;
+import dev.wyck.environment.attribute.EnvironmentAttributeMap;
+import dev.wyck.environment.attribute.EnvironmentAttributes;
+import dev.wyck.environment.attribute.modifier.AttributeOperation;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.test.bootstrap.MinecraftBootstrap;
 import dev.wyck.util.BootstrapSafeMinecraftRegistries;
@@ -67,6 +70,17 @@ class BiomeDecodeTest {
         assertFalse(spawner.mobSpawnCosts().isEmpty());
         assertTrue(spawner.mobSpawnCosts().values().stream()
             .allMatch(cost -> cost.charge() > 0 && cost.energyBudget() > 0));
+    }
+
+    @Test
+    void vanillaBiomeWithModifiedAttributesDecodes() {
+        Biome decoded = Biome.decode(vanilla(Biomes.SWAMP));
+
+        EnvironmentAttributeMap.Modification<Float, Float> waterFogDistance =
+            decoded.attributes().modification(EnvironmentAttributes.WATER_FOG_END_DISTANCE);
+        assertNotNull(waterFogDistance);
+        assertEquals(AttributeOperation.MULTIPLY, waterFogDistance.operation());
+        assertEquals(0.85F, waterFogDistance.argument());
     }
 
     @Test

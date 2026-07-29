@@ -1,6 +1,8 @@
 package dev.wyck.environment.attribute;
 
 import dev.wyck.annotations.AsOf;
+import dev.wyck.environment.attribute.modifier.AttributeModification;
+import dev.wyck.environment.attribute.modifier.AttributeOperation;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.util.internal.FriendlyColorUtil;
 import dev.wyck.wrapper.decode.Decoder;
@@ -20,31 +22,38 @@ import java.util.Map;
  *
  * @see EnvironmentAttributes
  * @since 1.1.0
- * @version 3.0.0
+ * @version 3.3.0
  * @author Jsinco
  */
 @NullMarked
 @AsOf("2.1.0")
 public record EnvironmentAttributeMap(
     Map<ResourceKey, EnvironmentAttribute<?>> attributes,
+    Map<ResourceKey, Modification<?, ?>> modifications,
     List<Pending<?>> pending
 ) {
 
-    public static final EnvironmentAttributeMap EMPTY = new EnvironmentAttributeMap(Map.of(), List.of());
+    public static final EnvironmentAttributeMap EMPTY = new EnvironmentAttributeMap(Map.of(), Map.of(), List.of());
 
     @AsOf("2.1.0")
     public EnvironmentAttributeMap {
         attributes = Map.copyOf(attributes);
+        modifications = Map.copyOf(modifications);
         pending = List.copyOf(pending);
     }
 
     @AsOf("2.1.0")
     public EnvironmentAttributeMap(Map<ResourceKey, EnvironmentAttribute<?>> attributes) {
-        this(attributes, List.of());
+        this(attributes, Map.of(), List.of());
+    }
+
+    @AsOf("3.3.0")
+    public EnvironmentAttributeMap(Map<ResourceKey, EnvironmentAttribute<?>> attributes, List<Pending<?>> pending) {
+        this(attributes, Map.of(), pending);
     }
 
     /**
-     * Returns the fully resolved attribute map.
+     * Returns the fully resolved directly set attribute map.
      *
      * @return the resolved attributes, in an unmodifiable map
      * @since 2.1.0
@@ -64,13 +73,38 @@ public record EnvironmentAttributeMap(
     }
 
     /**
-     * Returns the wrapped attributes as a collection. Order matches insertion order.
-     * @return the wrapped attributes
+     * Returns the directly set wrapped attributes as a collection. Order matches insertion order.
+     * @return the directly set wrapped attributes
      * @since 2.1.0
      */
     @AsOf("2.1.0")
     public Collection<EnvironmentAttribute<?>> values() {
         return attributes().values();
+    }
+
+    /**
+     * Returns the modifiers in this map, indexed by their attribute keys.
+     * @return the attribute modifiers
+     * @since 3.3.0
+     */
+    @Override
+    @AsOf("3.3.0")
+    public Map<ResourceKey, Modification<?, ?>> modifications() {
+        return modifications;
+    }
+
+    /**
+     * Returns the modifier for the given attribute, or null if that attribute is directly set or absent.
+     * @param supplier the attribute supplier
+     * @return the modifier associated with the attribute, or null if absent
+     * @param <V> the value type of the attribute
+     * @param <A> the argument type of the modifier
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    @SuppressWarnings("unchecked")
+    public <V, A> @Nullable Modification<V, A> modification(EnvironmentAttributeSupplier<V> supplier) {
+        return (Modification<V, A>) modifications.get(supplier.key());
     }
 
     /**
@@ -80,7 +114,7 @@ public record EnvironmentAttributeMap(
      *
      * @param supplier the attribute supplier
      * @param <V> the type of the attribute
-     * @return the value associated with the supplier, or null if absent
+     * @return the directly set value associated with the supplier, or null if modified or absent
      * @since 3.0.0
      */
     @AsOf("3.0.0")
@@ -102,7 +136,7 @@ public record EnvironmentAttributeMap(
      */
     @AsOf("1.1.0")
     public boolean empty() {
-        return attributes.isEmpty() && pending.isEmpty();
+        return attributes.isEmpty() && modifications.isEmpty() && pending.isEmpty();
     }
 
     /**
@@ -113,6 +147,7 @@ public record EnvironmentAttributeMap(
     public Builder toBuilder() {
         Builder builder = new Builder();
         builder.attributes.putAll(attributes);
+        builder.modifications.putAll(modifications);
         builder.pending.addAll(pending);
         return builder;
     }
@@ -127,13 +162,47 @@ public record EnvironmentAttributeMap(
      */
     @AsOf("2.1.0")
     public <V> EnvironmentAttributeMap with(EnvironmentAttributeSupplier<V> supplier, @Nullable V value) {
+        Map<ResourceKey, EnvironmentAttribute<?>> newAttributes = new LinkedHashMap<>(attributes);
+        newAttributes.remove(supplier.key());
+
+        Map<ResourceKey, Modification<?, ?>> newModifications = new LinkedHashMap<>(modifications);
+        newModifications.remove(supplier.key());
+
         List<Pending<?>> newPending = new ArrayList<>(pending);
-        if (value == null) {
-            newPending.removeIf(entry -> entry.supplier().equals(supplier));
-        } else {
+        newPending.removeIf(entry -> entry.supplier().key().equals(supplier.key()));
+        if (value != null) {
             newPending.add(new Pending<>(supplier, value));
         }
-        return new EnvironmentAttributeMap(attributes, newPending);
+        return new EnvironmentAttributeMap(newAttributes, newModifications, newPending);
+    }
+
+    /**
+     * Creates a new map with a modifier for the given attribute.
+     *
+     * <p>The operation and argument use the same types as an attribute timeline track. For example,
+     * multiplying a float attribute takes a {@link Float} argument, while
+     * {@link AttributeOperation#ALPHA_BLEND} takes an
+     * {@link dev.wyck.environment.attribute.modifier.AlphaValue} for float attributes.
+     *
+     * @param supplier the attribute supplier
+     * @param operation the operation applied to the attribute
+     * @param argument the operation argument
+     * @return a new map containing the modifier
+     * @param <V> the value type of the attribute
+     * @param <A> the argument type of the modifier
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    public <V, A> EnvironmentAttributeMap withModifier(EnvironmentAttributeSupplier<V> supplier, AttributeOperation operation, A argument) {
+        Map<ResourceKey, EnvironmentAttribute<?>> newAttributes = new LinkedHashMap<>(attributes);
+        newAttributes.remove(supplier.key());
+
+        List<Pending<?>> newPending = new ArrayList<>(pending);
+        newPending.removeIf(entry -> entry.supplier().key().equals(supplier.key()));
+
+        Map<ResourceKey, Modification<?, ?>> newModifications = new LinkedHashMap<>(modifications);
+        newModifications.put(supplier.key(), new Modification<>(supplier.get(), operation, argument));
+        return new EnvironmentAttributeMap(newAttributes, newModifications, newPending);
     }
 
     /**
@@ -188,14 +257,13 @@ public record EnvironmentAttributeMap(
             }
             map.put(key, attribute);
         }
-        return new EnvironmentAttributeMap(map, List.of());
+        return new EnvironmentAttributeMap(map, Map.of(), List.of());
     }
 
     /**
      * Reads a Minecraft environment attribute map into a wrapper.
      * @param minecraftAttributeMap the attribute map to read
      * @return the wrapper for it
-     * @throws IllegalArgumentException if an attribute is modified rather than set, which this map cannot hold
      * @since 3.3.0
      */
     @AsOf("3.3.0")
@@ -205,6 +273,19 @@ public record EnvironmentAttributeMap(
         }
         return Holder.DECODER.decode(minecraftAttributeMap);
     }
+
+    /**
+     * A fixed operation and argument applied to an environment attribute.
+     *
+     * @param attribute the attribute being modified
+     * @param operation the operation applied to the attribute
+     * @param argument the argument supplied to the operation
+     * @param <V> the value type of the attribute
+     * @param <A> the argument type of the operation
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    public record Modification<V, A>(EnvironmentAttribute<V> attribute, AttributeOperation operation, A argument) implements AttributeModification<V> {}
 
     /**
      * A builder for creating WrappedEnvironmentAttributeMap instances.
@@ -217,6 +298,7 @@ public record EnvironmentAttributeMap(
     public static class Builder {
 
         private final Map<ResourceKey, EnvironmentAttribute<?>> attributes = new LinkedHashMap<>();
+        private final Map<ResourceKey, Modification<?, ?>> modifications = new LinkedHashMap<>();
         private final List<Pending<?>> pending = new ArrayList<>();
 
         /**
@@ -232,7 +314,31 @@ public record EnvironmentAttributeMap(
          */
         @AsOf("1.1.0")
         public <V> Builder attribute(EnvironmentAttributeSupplier<V> supplier, V value) {
+            this.attributes.remove(supplier.key());
+            this.modifications.remove(supplier.key());
+            this.pending.removeIf(entry -> entry.supplier().key().equals(supplier.key()));
             this.pending.add(new Pending<>(supplier, value));
+            return this;
+        }
+
+        /**
+         * Adds an attribute modifier to the builder.
+         *
+         * <p>The operation and argument follow the same rules as an attribute timeline track.
+         *
+         * @param supplier the attribute supplier
+         * @param operation the operation applied to the attribute
+         * @param argument the operation argument
+         * @return the builder
+         * @param <V> the value type of the attribute
+         * @param <A> the argument type of the modifier
+         * @since 3.3.0
+         */
+        @AsOf("3.3.0")
+        public <V, A> Builder modify(EnvironmentAttributeSupplier<V> supplier, AttributeOperation operation, A argument) {
+            this.attributes.remove(supplier.key());
+            this.pending.removeIf(entry -> entry.supplier().key().equals(supplier.key()));
+            this.modifications.put(supplier.key(), new Modification<>(supplier.get(), operation, argument));
             return this;
         }
 
@@ -257,6 +363,7 @@ public record EnvironmentAttributeMap(
         @AsOf("2.1.0")
         public Builder clear() {
             this.attributes.clear();
+            this.modifications.clear();
             this.pending.clear();
             return this;
         }
@@ -270,10 +377,16 @@ public record EnvironmentAttributeMap(
         @AsOf("2.1.0")
         public Builder merge(EnvironmentAttributeMap source) {
             for (var entry : source.attributes().entrySet()) {
-                if (this.attributes.containsKey(entry.getKey())) {
+                if (this.attributes.containsKey(entry.getKey()) || this.modifications.containsKey(entry.getKey())) {
                     throw new IllegalArgumentException("Attribute: " + entry.getKey() + " is already present.");
                 }
                 this.attributes.put(entry.getKey(), entry.getValue());
+            }
+            for (var entry : source.modifications().entrySet()) {
+                if (this.attributes.containsKey(entry.getKey()) || this.modifications.containsKey(entry.getKey())) {
+                    throw new IllegalArgumentException("Attribute: " + entry.getKey() + " is already present.");
+                }
+                this.modifications.put(entry.getKey(), entry.getValue());
             }
             this.pending.addAll(source.pending);
             return this;
@@ -287,7 +400,7 @@ public record EnvironmentAttributeMap(
          */
         @AsOf("1.1.0")
         public EnvironmentAttributeMap build() {
-            return new EnvironmentAttributeMap(this.attributes, this.pending);
+            return new EnvironmentAttributeMap(this.attributes, this.modifications, this.pending);
         }
     }
 }

@@ -5,6 +5,7 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.environment.attribute.EnvironmentAttribute;
 import dev.wyck.environment.attribute.EnvironmentAttributeSupplier;
 import dev.wyck.environment.attribute.modifier.AlphaValue;
+import dev.wyck.environment.attribute.modifier.AttributeModification;
 import dev.wyck.environment.attribute.modifier.AttributeOperation;
 import dev.wyck.environment.attribute.modifier.GrayBlend;
 import dev.wyck.factory.ConstructWireProvider;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @NullMarked
 @AsOf("3.2.0")
-public interface AttributeTrack<V> extends Wrapper {
+public interface AttributeTrack<V> extends Wrapper, AttributeModification<V> {
 
     /**
      * The attribute this track modifies.

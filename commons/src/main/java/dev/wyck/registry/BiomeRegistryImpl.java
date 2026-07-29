@@ -9,7 +9,7 @@ import dev.wyck.biome.BiomeSpecialEffects;
 import dev.wyck.biome.ClimateSettings;
 import dev.wyck.biome.entity.BiomeSpawner;
 import dev.wyck.environment.attribute.EnvironmentAttributeMap;
-import dev.wyck.environment.attribute.NmsEnvironmentAttributes;
+import dev.wyck.util.attribute.EnvironmentAttributesUtil;
 import dev.wyck.keys.KeyChains;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.registry.internal.RegistryId;
@@ -62,7 +62,7 @@ public class BiomeRegistryImpl implements BiomeRegistry {
             .generationSettings(generationSettings != null ? generationSettings.asHandle() : net.minecraft.world.level.biome.BiomeGenerationSettings.EMPTY);
 
         if (!attributes.empty()) {
-            NmsEnvironmentAttributes.applyTo(biomeBuilder, attributes);
+            EnvironmentAttributesUtil.applyTo(biomeBuilder, attributes);
         }
 
         return biomeBuilder.build();
@@ -110,7 +110,7 @@ public class BiomeRegistryImpl implements BiomeRegistry {
 
             // Rebuild biome components
             net.minecraft.world.attribute.EnvironmentAttributeMap.Builder environmentAttributeMapBuilder = net.minecraft.world.attribute.EnvironmentAttributeMap.builder();
-            NmsEnvironmentAttributes.applyTo(environmentAttributeMapBuilder, abstractBiome.attributes());
+            EnvironmentAttributesUtil.applyTo(environmentAttributeMapBuilder, abstractBiome.attributes());
 
             net.minecraft.world.level.biome.Biome.ClimateSettings climateSettings = abstractBiome.climateSettings().asHandle();
             net.minecraft.world.level.biome.BiomeSpecialEffects specialEffects = abstractBiome.specialEffects().asHandle();

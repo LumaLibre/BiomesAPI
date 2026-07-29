@@ -469,7 +469,7 @@ public final class Generators {
             AttributeModifier.OperationId.class,
             Generators::serializedName,
             List.of(
-                "Modifiers for environment attribute timelines."
+                "Operations for environment attribute maps and timelines."
             ),
             "3.2.0"
         );

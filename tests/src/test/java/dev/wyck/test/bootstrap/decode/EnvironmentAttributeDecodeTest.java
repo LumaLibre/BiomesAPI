@@ -4,10 +4,12 @@ import dev.wyck.environment.Activity;
 import dev.wyck.environment.BedRule;
 import dev.wyck.environment.MoonPhase;
 import dev.wyck.environment.TriState;
-import dev.wyck.environment.attribute.EnvironmentAttribute;
 import dev.wyck.environment.attribute.EnvironmentAttributeMap;
 import dev.wyck.environment.attribute.EnvironmentAttributes;
-import dev.wyck.environment.attribute.NmsEnvironmentAttributes;
+import dev.wyck.environment.attribute.modifier.AlphaValue;
+import dev.wyck.environment.attribute.modifier.AttributeOperation;
+import dev.wyck.environment.attribute.modifier.GrayBlend;
+import dev.wyck.util.attribute.EnvironmentAttributesUtil;
 import dev.wyck.environment.particle.ParticleCatalog;
 import dev.wyck.environment.particle.ParticleOptions;
 import dev.wyck.environment.particle.ParticleTypes;
@@ -15,7 +17,9 @@ import dev.wyck.environment.sounds.AmbientSounds;
 import dev.wyck.environment.sounds.BackgroundMusic;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.test.bootstrap.MinecraftBootstrap;
+import dev.wyck.util.BootstrapSafeMinecraftRegistries;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.attribute.modifier.ColorModifier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +28,9 @@ import org.jspecify.annotations.NullMarked;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @NullMarked
@@ -129,7 +134,7 @@ class EnvironmentAttributeDecodeTest {
             .set(net.minecraft.world.attribute.EnvironmentAttributes.DEFAULT_DRIPSTONE_PARTICLE, net.minecraft.core.particles.ParticleTypes.DRIPPING_LAVA)
             .build();
 
-        assertEquals(original, NmsEnvironmentAttributes.toNms(EnvironmentAttributeMap.decode(original)));
+        assertEquals(original, EnvironmentAttributesUtil.toNms(EnvironmentAttributeMap.decode(original)));
     }
 
     /**
@@ -148,7 +153,7 @@ class EnvironmentAttributeDecodeTest {
         assertEquals(ResourceKey.minecraft("ambient.cave"), decoded.mood().orElseThrow().soundEvent().location());
 
         net.minecraft.world.attribute.AmbientSounds reEncoded =
-            sounds(NmsEnvironmentAttributes.toNms(EnvironmentAttributeMap.decode(original)));
+            sounds(EnvironmentAttributesUtil.toNms(EnvironmentAttributeMap.decode(original)));
         assertEquals(sounds(original).mood().orElseThrow().soundEvent().value(), reEncoded.mood().orElseThrow().soundEvent().value());
         assertInstanceOf(net.minecraft.core.Holder.Direct.class, reEncoded.mood().orElseThrow().soundEvent());
     }
@@ -158,16 +163,73 @@ class EnvironmentAttributeDecodeTest {
             map.get(net.minecraft.world.attribute.EnvironmentAttributes.AMBIENT_SOUNDS).argument();
     }
 
-    /** Wyck's map holds plain values, so an entry that modifies its attribute has nowhere to land. */
     @Test
-    void aModifiedAttributeIsRejected() {
+    void modifiedAttributesPreserveTheirOperationAndArgument() {
         net.minecraft.world.attribute.EnvironmentAttributeMap modified = minecraftMap()
-            .modify(net.minecraft.world.attribute.EnvironmentAttributes.SKY_COLOR, ColorModifier.ADD, 0x010101)
+            .modify(net.minecraft.world.attribute.EnvironmentAttributes.WATER_FOG_END_DISTANCE,
+                net.minecraft.world.attribute.modifier.FloatModifier.MULTIPLY, 0.85F)
             .build();
 
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
-            () -> EnvironmentAttributeMap.decode(modified));
-        assertTrue(thrown.getMessage().contains("modified rather than set"), thrown::getMessage);
+        EnvironmentAttributeMap decoded = EnvironmentAttributeMap.decode(modified);
+        EnvironmentAttributeMap.Modification<Float, Float> modification =
+            decoded.modification(EnvironmentAttributes.WATER_FOG_END_DISTANCE);
+
+        assertNotNull(modification);
+        assertEquals(AttributeOperation.MULTIPLY, modification.operation());
+        assertEquals(0.85F, modification.argument());
+        assertEquals(modified, EnvironmentAttributesUtil.toNms(decoded));
+    }
+
+    @Test
+    void modifierBuilderUsesTheTimelineOperationModel() {
+        EnvironmentAttributeMap attributes = EnvironmentAttributeMap.builder()
+            .modify(EnvironmentAttributes.WATER_FOG_END_DISTANCE, AttributeOperation.MULTIPLY, 0.85F)
+            .build();
+
+        net.minecraft.world.attribute.EnvironmentAttributeMap encoded = EnvironmentAttributesUtil.toNms(attributes);
+        var entry = encoded.get(net.minecraft.world.attribute.EnvironmentAttributes.WATER_FOG_END_DISTANCE);
+
+        assertNotNull(entry);
+        assertEquals(net.minecraft.world.attribute.modifier.FloatModifier.MULTIPLY, entry.modifier());
+        assertEquals(0.85F, entry.argument());
+    }
+
+    @Test
+    void everyVanillaBiomeAttributeMapDecodes() {
+        BootstrapSafeMinecraftRegistries.mappedRegistry(Registries.BIOME).entrySet().forEach(entry ->
+            assertDoesNotThrow(
+                () -> EnvironmentAttributeMap.decode(entry.getValue().getAttributes()),
+                () -> "failed to decode the environment attributes of " + entry.getKey()
+            ));
+    }
+
+    @Test
+    void structuredModifierArgumentsUseTheTimelineWrappers() {
+        net.minecraft.world.attribute.EnvironmentAttributeMap modified = minecraftMap()
+            .modify(net.minecraft.world.attribute.EnvironmentAttributes.STAR_BRIGHTNESS,
+                net.minecraft.world.attribute.modifier.FloatModifier.ALPHA_BLEND,
+                new net.minecraft.world.attribute.modifier.FloatWithAlpha(0.75F, 0.25F))
+            .modify(net.minecraft.world.attribute.EnvironmentAttributes.FOG_COLOR,
+                ColorModifier.BLEND_TO_GRAY,
+                new ColorModifier.BlendToGray(0.4F, 0.6F))
+            .build();
+
+        EnvironmentAttributeMap decoded = EnvironmentAttributeMap.decode(modified);
+        EnvironmentAttributeMap.Modification<Float, AlphaValue> alpha =
+            decoded.modification(EnvironmentAttributes.STAR_BRIGHTNESS);
+        EnvironmentAttributeMap.Modification<Integer, GrayBlend> gray =
+            decoded.modification(EnvironmentAttributes.FOG_COLOR);
+
+        assertNotNull(alpha);
+        assertEquals(AttributeOperation.ALPHA_BLEND, alpha.operation());
+        assertEquals(0.75F, alpha.argument().value());
+        assertEquals(0.25F, alpha.argument().alpha());
+
+        assertNotNull(gray);
+        assertEquals(AttributeOperation.BLEND_TO_GRAY, gray.operation());
+        assertEquals(0.4F, gray.argument().brightness());
+        assertEquals(0.6F, gray.argument().factor());
+        assertEquals(modified, EnvironmentAttributesUtil.toNms(decoded));
     }
 
     /** {@code defaultValue()} used to throw for anything that was not a number, boolean or string. */

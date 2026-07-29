@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import dev.wyck.annotations.WireFactory;
 import dev.wyck.biome.entity.data.MonsterSettings;
 import dev.wyck.environment.attribute.EnvironmentAttributeMap;
-import dev.wyck.environment.attribute.NmsEnvironmentAttributes;
+import dev.wyck.util.attribute.EnvironmentAttributesUtil;
 import dev.wyck.keys.KeyChains;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.dimension.Dimension;
@@ -16,7 +16,6 @@ import dev.wyck.registry.internal.WyckRegistry;
 import dev.wyck.util.BootstrapSafeMinecraftRegistries;
 import dev.wyck.util.Lazy;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -25,7 +24,6 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.clock.WorldClock;
 import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.timeline.Timeline;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
@@ -55,7 +53,7 @@ public class DimensionTypeRegistry implements DimensionRegistry {
 
         net.minecraft.world.attribute.EnvironmentAttributeMap.Builder attributeBuilder = net.minecraft.world.attribute.EnvironmentAttributeMap.builder();
         EnvironmentAttributeMap attributes = dimension.attributes();
-        NmsEnvironmentAttributes.applyTo(attributeBuilder, attributes);
+        EnvironmentAttributesUtil.applyTo(attributeBuilder, attributes);
 
         InfiniburnImpl infiniburn = (InfiniburnImpl) dimension.infiniburn();
 

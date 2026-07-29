@@ -5,7 +5,7 @@ import dev.wyck.annotations.AsOf;
 import dev.wyck.annotations.WireFactory;
 import dev.wyck.biome.entity.data.MonsterSettings;
 import dev.wyck.environment.attribute.EnvironmentAttributeMap;
-import dev.wyck.environment.attribute.NmsEnvironmentAttributes;
+import dev.wyck.util.attribute.EnvironmentAttributesUtil;
 import dev.wyck.keys.KeyChains;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.dimension.Dimension;
@@ -54,7 +54,7 @@ public class DimensionTypeRegistry implements DimensionRegistry {
 
         net.minecraft.world.attribute.EnvironmentAttributeMap.Builder attributeBuilder = net.minecraft.world.attribute.EnvironmentAttributeMap.builder();
         EnvironmentAttributeMap attributes = dimension.attributes();
-        NmsEnvironmentAttributes.applyTo(attributeBuilder, attributes);
+        EnvironmentAttributesUtil.applyTo(attributeBuilder, attributes);
 
         InfiniburnImpl infiniburn = (InfiniburnImpl) dimension.infiniburn();
         Optional<Holder<WorldClock>> clockHolder = dimension.defaultClock()

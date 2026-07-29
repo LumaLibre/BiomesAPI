@@ -1,4 +1,4 @@
-//acebf80fcff81e79404d908cea62f860
+//2b7d0c1cde52f6b2db9c5fa04c080d9d
 package dev.wyck.environment.attribute.modifier;
 
 import dev.wyck.annotations.AsOf;
@@ -11,16 +11,16 @@ import org.jspecify.annotations.NullMarked;
  * Auto-generated. Do not modify!
  * Run ./gradlew generateSources to regenerate.
  * <p>
- * Modifiers for environment attribute timelines.
+ * Operations for environment attribute maps and timelines.
  * </p>
  *
  * @since 3.2.0
- * @version 3.2.0
+ * @version 3.3.0
  * @author Wyck codegen
  */
 @NullMarked
 @AsOf("3.2.0")
-@Generated("2026-07-18T23:07:51.395622Z")
+@Generated("2026-07-29T05:15:58.132075Z")
 public enum AttributeOperation implements WrappedEnumerator<AttributeOperation> {
 
     OVERRIDE("override"),
