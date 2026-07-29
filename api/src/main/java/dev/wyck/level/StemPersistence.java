@@ -1,11 +1,13 @@
 package dev.wyck.level;
 
 import dev.wyck.annotations.AsOf;
+import dev.wyck.level.dimension.LevelStem;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Represents the persistence mode of a level stem.
  *
+ * @deprecated Use {@link LevelStem#register()} instead.
  * @since 2.4.0
  * @version 2.4.0
  * @author Jsinco

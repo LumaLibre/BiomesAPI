@@ -437,7 +437,7 @@ public final class Generators {
 
     private static GeneratorSpec easingTypes() {
         return new ReferenceSpec(
-            "dev.wyck.level.timeline",
+            "dev.wyck.level.dimension.timeline",
             "EasingType",
             "Easing",
             "Easing.of",
@@ -445,7 +445,7 @@ public final class Generators {
             Generators::easingLocation,
             List.of(EasingType.class),
             "The easing functions vanilla registers for timeline keyframe tracks.\n"
-                + "Inherited by {@link dev.wyck.level.timeline.Easing}, which is where these are used from.",
+                + "Inherited by {@link dev.wyck.level.dimension.timeline.Easing}, which is where these are used from.",
             "3.2.0"
         ).asConstantsInterface();
     }

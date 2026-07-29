@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @NullMarked
 @ApiStatus.Internal
@@ -25,7 +24,7 @@ public record FlatLevelGeneratorSettingsImpl(
     @Override Biome biome,
     @Override Biome fallbackBiome,
     @Override List<PlacedFeature> lakes,
-    @Override Set<ResourceKey> structures
+    @Override Optional<Set<ResourceKey>> structures
 ) implements FlatLevelGeneratorSettings {
 
     @Override
@@ -34,9 +33,11 @@ public record FlatLevelGeneratorSettingsImpl(
         net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> biomes =
             BootstrapSafeMinecraftRegistries.mappedRegistry(net.minecraft.core.registries.Registries.BIOME);
 
-        net.minecraft.core.HolderSet.Direct<net.minecraft.world.level.levelgen.structure.StructureSet> structuresHolder = net.minecraft.core.HolderSet.direct(structures.stream().map(it -> {
-            return structureSets.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE_SET, it.identifier()));
-        }).collect(Collectors.toList()));
+        Optional<net.minecraft.core.HolderSet<net.minecraft.world.level.levelgen.structure.StructureSet>> structuresHolder = this.structures.map(structs ->
+            net.minecraft.core.HolderSet.direct(structs.stream().map(it ->
+                structureSets.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE_SET, it.identifier()))
+            ).toList())
+        );
 
         net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome> biomeHolder = biomes
             .get(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.BIOME, biome.resourceKey().identifier()))
@@ -47,7 +48,7 @@ public record FlatLevelGeneratorSettingsImpl(
 
         // Underlying impl is awkward, so we have to do it ourselves.
         net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings gen = new DecorationAwareSettings(
-            structures.isEmpty() ? Optional.empty() : Optional.of(structuresHolder),
+            structuresHolder,
             biomeHolder,
             lakes.stream().map(it -> net.minecraft.core.Holder.direct(it.<net.minecraft.world.level.levelgen.placement.PlacedFeature>asHandle())).toList(),
             decoration

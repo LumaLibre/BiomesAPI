@@ -13,10 +13,12 @@ import dev.wyck.wrapper.decode.Decoder;
 import org.bukkit.Material;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -178,7 +180,7 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
      */
     @AsOf("3.0.0")
     @ApiStatus.Experimental
-    Set<ResourceKey> structures();
+    Optional<Set<ResourceKey>> structures();
 
     /**
      * Converts this object back to a builder.
@@ -203,11 +205,11 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
      * @since 3.0.0
      */
     @AsOf("3.0.0")
-    static FlatLevelGeneratorSettings of(List<FlatLayerInfo> layers, boolean decoration, boolean addLakes, Biome biome, Biome fallbackBiome, List<PlacedFeature> lakes, Set<ResourceKey> structures) {
+    static FlatLevelGeneratorSettings of(List<FlatLayerInfo> layers, boolean decoration, boolean addLakes, Biome biome, Biome fallbackBiome, List<PlacedFeature> lakes, @Nullable Set<ResourceKey> structures) {
         record Holder() {
             static final ConstructWireProvider<FlatLevelGeneratorSettings> WIRE = ConstructWireProvider.construct("dev.wyck.worldgen.chunk.flat.FlatLevelGeneratorSettingsImpl");
         }
-        return Holder.WIRE.construct(layers, decoration, addLakes, biome, fallbackBiome, lakes, structures);
+        return Holder.WIRE.construct(layers, decoration, addLakes, biome, fallbackBiome, lakes, Optional.ofNullable(structures));
     }
 
     /**
@@ -248,7 +250,7 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
         private Biome biome = Biomes.PLAINS;
         private Biome fallbackBiome = Biomes.PLAINS;
         private List<PlacedFeature> lakes = new ArrayList<>();
-        private Set<ResourceKey> structures = new HashSet<>();
+        private @Nullable Set<ResourceKey> structures = null;
 
         public Builder() {}
 
@@ -258,7 +260,7 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
             this.biome = settings.biome();
             this.fallbackBiome = settings.fallbackBiome();
             this.lakes = new ArrayList<>(settings.lakes());
-            this.structures = new HashSet<>(settings.structures());
+            this.structures = settings.structures().map(HashSet::new).orElse(null);
         }
 
         /**
@@ -380,6 +382,9 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
          */
         @AsOf("3.0.0")
         public Builder structure(ResourceKey... structure) {
+            if (this.structures == null) {
+                this.structures = new HashSet<>();
+            }
             this.structures.addAll(List.of(structure));
             return this;
         }
