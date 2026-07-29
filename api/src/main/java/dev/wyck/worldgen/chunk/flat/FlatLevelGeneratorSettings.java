@@ -128,8 +128,8 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
     List<FlatLayerInfo> layers();
 
     /**
-     * If features should be generated.
-     * @return whether features should be generated
+     * If decorations should be generated.
+     * @return whether decorations should be generated
      * @since 3.0.0
      */
     @AsOf("3.0.0")
@@ -242,7 +242,6 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
      */
     @AsOf("3.0.0")
     final class Builder {
-        //PlacedFeatures.LAKE_LAVA_UNDERGROUND, PlacedFeatures.LAKE_LAVA_SURFACE
         private List<FlatLayerInfo> layers = new ArrayList<>();
         private boolean decoration = false;
         private boolean addLakes = false;
@@ -265,6 +264,7 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
         /**
          * Sets the layers.
          * @param layers the layers
+         * @return this builder
          * @since 3.0.0
          */
         @AsOf("3.0.0")
@@ -274,8 +274,9 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
         }
 
         /**
-         * Sets whether decoration should be generated.
-         * @param decoration whether decoration should be generated
+         * Sets whether decorations should be generated.
+         * @param decoration whether decorations should be generated
+         * @return this builder
          * @since 3.0.0
          */
         @AsOf("3.0.0")
@@ -287,6 +288,7 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
         /**
          * Sets whether lakes should be generated.
          * @param addLakes whether lakes should be generated
+         * @return this builder
          * @since 3.0.0
          */
         @AsOf("3.0.0")
@@ -298,6 +300,7 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
         /**
          * Sets the biome.
          * @param biome the biome
+         * @return this builder
          * @since 3.0.0
          */
         @AsOf("3.0.0")
@@ -309,6 +312,7 @@ public interface FlatLevelGeneratorSettings extends Wrapper {
         /**
          * Sets the fallback biome.
          * @param fallbackBiome the fallback biome
+         * @return this builder
          * @since 3.0.0
          */
         @AsOf("3.0.0")

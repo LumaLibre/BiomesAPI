@@ -2,13 +2,18 @@ package dev.wyck.test.bootstrap;
 
 import dev.wyck.biome.Biomes;
 import dev.wyck.worldgen.biome.FixedBiomeSource;
+import dev.wyck.worldgen.biome.custom.BiomeSourceContext;
+import dev.wyck.worldgen.biome.custom.CustomBiomeSource;
 import dev.wyck.worldgen.chunk.ChunkGenerator;
 import dev.wyck.worldgen.chunk.FlatLevelSource;
 import dev.wyck.worldgen.chunk.flat.FlatLevelGeneratorSettings;
 import dev.wyck.util.BootstrapSafeMinecraftRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.block.Blocks;
@@ -18,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MinecraftBootstrap.class)
 class ChunkGeneratorTest {
@@ -108,5 +114,82 @@ class ChunkGeneratorTest {
         for (int y = -64; y < -58; y++) {
             assertSame(viaBuilderColumn.getBlock(y).getBlock(), viaFactoryColumn.getBlock(y).getBlock(), "ChunkGenerator.flat() and FlatLevelSource.builder() disagree at y=" + y);
         }
+    }
+
+    @Test
+    void disablingDecorationSuppressesFeaturesFromEveryCustomSourceBiome() {
+        CustomBiomeSource source = new CustomBiomeSource(Biomes.THE_VOID, Biomes.SMALL_END_ISLANDS) {
+            @Override
+            public dev.wyck.biome.Biome biome(BiomeSourceContext context) {
+                return Biomes.THE_VOID;
+            }
+        };
+
+        net.minecraft.world.level.levelgen.FlatLevelSource generator = FlatLevelSource.builder()
+            .biomeSource(source)
+            .settings(FlatLevelGeneratorSettings.builder()
+                .biome(Biomes.THE_VOID)
+                .layer(Material.AIR, 1)
+                .decoration(false)
+                .build())
+            .build()
+            .asHandle();
+
+        Holder<net.minecraft.world.level.biome.Biome> voidBiome = possibleBiome(generator, "the_void");
+        Holder<net.minecraft.world.level.biome.Biome> smallEndIslands = possibleBiome(generator, "small_end_islands");
+        int rawGeneration = GenerationStep.Decoration.RAW_GENERATION.ordinal();
+
+        assertSame(voidBiome, generator.settings().getBiome(),
+            "flat settings and the biome source should share the registry-backed biome holder");
+        assertTrue(smallEndIslands.value().getGenerationSettings().features().get(rawGeneration).size() > 0,
+            "the vanilla small-end-islands biome should carry its island feature");
+
+        BiomeGenerationSettings suppressed = generator.getBiomeGenerationSettings(smallEndIslands);
+        assertTrue(rawGeneration >= suppressed.features().size()
+                || suppressed.features().get(rawGeneration).size() == 0,
+            "decoration(false) should suppress the small End island feature");
+        assertSame(suppressed, generator.getBiomeGenerationSettings(voidBiome),
+            "all source biomes should use the same decoration-free flat settings");
+        assertTrue(suppressed.features().stream().anyMatch(features -> features.size() > 0),
+            "flat-owned handling for the AIR layer should remain available");
+    }
+
+    @Test
+    void enablingDecorationRetainsFeaturesFromCustomSourceBiomes() {
+        CustomBiomeSource source = new CustomBiomeSource(Biomes.THE_VOID, Biomes.SMALL_END_ISLANDS) {
+            @Override
+            public dev.wyck.biome.Biome biome(BiomeSourceContext context) {
+                return Biomes.THE_VOID;
+            }
+        };
+
+        net.minecraft.world.level.chunk.ChunkGenerator generator = FlatLevelSource.builder()
+            .biomeSource(source)
+            .settings(FlatLevelGeneratorSettings.builder()
+                .biome(Biomes.THE_VOID)
+                .layer(Material.AIR, 1)
+                .decoration(true)
+                .build())
+            .build()
+            .asHandle();
+
+        Holder<net.minecraft.world.level.biome.Biome> smallEndIslands = possibleBiome(generator, "small_end_islands");
+
+        assertSame(
+            smallEndIslands.value().getGenerationSettings(),
+            generator.getBiomeGenerationSettings(smallEndIslands),
+            "decoration(true) should retain the source biome's generation settings"
+        );
+    }
+
+    private static Holder<net.minecraft.world.level.biome.Biome> possibleBiome(
+        net.minecraft.world.level.chunk.ChunkGenerator generator,
+        String path
+    ) {
+        Identifier id = Identifier.withDefaultNamespace(path);
+        return generator.getBiomeSource().possibleBiomes().stream()
+            .filter(holder -> holder.unwrapKey().orElseThrow().identifier().equals(id))
+            .findFirst()
+            .orElseThrow();
     }
 }
