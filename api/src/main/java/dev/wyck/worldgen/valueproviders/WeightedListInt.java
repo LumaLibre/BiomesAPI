@@ -28,6 +28,16 @@ public interface WeightedListInt extends IntProvider {
     @AsOf("3.0.0")
     WeightedList<IntProvider> distribution();
 
+    /**
+     * Creates a new builder with the same weighted distribution as this provider.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
     @Override
     @AsOf("3.0.0")
     default int minInclusive() {
@@ -85,6 +95,10 @@ public interface WeightedListInt extends IntProvider {
         private final WeightedList.Builder<IntProvider> distribution = WeightedList.builder();
 
         public Builder() {}
+
+        public Builder(WeightedListInt provider) {
+            this.distribution.addAll(provider.distribution().unwrap());
+        }
 
         /**
          * Adds a provider with a weight of one.

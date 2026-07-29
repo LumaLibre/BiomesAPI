@@ -46,6 +46,16 @@ public interface BackgroundMusic extends Wrapper {
     Optional<Music> underwaterMusic();
 
     /**
+     * Creates a new builder with the same values as this background music.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new background music record.
      * @param defaultMusic the default music
      * @param creativeMusic the creative music
@@ -97,6 +107,14 @@ public interface BackgroundMusic extends Wrapper {
         private @Nullable Music defaultMusic;
         private @Nullable Music creativeMusic;
         private @Nullable Music underwaterMusic;
+
+        public Builder() {}
+
+        public Builder(BackgroundMusic music) {
+            this.defaultMusic = music.defaultMusic().orElse(null);
+            this.creativeMusic = music.creativeMusic().orElse(null);
+            this.underwaterMusic = music.underwaterMusic().orElse(null);
+        }
 
         /**
          * Sets the default music.

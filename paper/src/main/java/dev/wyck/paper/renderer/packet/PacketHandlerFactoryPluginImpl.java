@@ -93,7 +93,7 @@ public final class PacketHandlerFactoryPluginImpl implements PacketHandler.Facto
     }
 
     private PacketHandler.Injector applyForcedOverride(PacketHandler.Injector requested) {
-        PacketHandler.Injector override = plugin.getPluginConfig().forcedInjector().getInjector();
+        PacketHandler.Injector override = plugin.getPluginConfig().forcedInjector.injector();
         return override != null ? override : requested;
     }
 }

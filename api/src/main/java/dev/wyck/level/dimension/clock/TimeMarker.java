@@ -55,6 +55,16 @@ public interface TimeMarker extends Wrapper, Keyed, Registerable<TimeMarker> {
     boolean showInCommands();
 
     /**
+     * Creates a new builder with the same values as this time marker.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new time marker with the given key and ticks.
      * @param key the key of the time marker
      * @param ticks the number of ticks the time marker represents

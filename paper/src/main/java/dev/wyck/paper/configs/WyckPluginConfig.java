@@ -1,19 +1,15 @@
 package dev.wyck.paper.configs;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
-@Getter
 @ConfigSerializable
-@Accessors(fluent = true)
 @SuppressWarnings("FieldMayBeFinal")
 public class WyckPluginConfig {
     @Comment("Whether to enable FastStats metrics collection for this plugin.")
     @Setting("metrics")
-    private boolean metrics = true;
+    public boolean metrics = true;
 
     @Comment(
             "Wyck may force a specific packet handler implementation to be used by all plugins that hook into it.\n" +
@@ -26,6 +22,6 @@ public class WyckPluginConfig {
             "* NONE: No forced injector. Plugins that have chosen a specific injector will have a single instance of their injector used for sending packet-based biomes."
     )
     @Setting("forced-injector")
-    private ForcedInjector forcedInjector = ForcedInjector.NONE;
+    public ForcedInjector forcedInjector = ForcedInjector.NONE;
 
 }

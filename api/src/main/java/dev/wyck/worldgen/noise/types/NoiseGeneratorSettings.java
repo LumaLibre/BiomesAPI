@@ -130,6 +130,16 @@ public interface NoiseGeneratorSettings extends Noise, Registerable<NoiseGenerat
     boolean useLegacyRandomSource();
 
     /**
+     * Converts this object back to a builder.
+     * @return A new builder with these values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new noise generator settings.
      * @param resourceKey the resource key to register this noise generator settings with
      * @param noiseSettings the noise settings
@@ -184,6 +194,23 @@ public interface NoiseGeneratorSettings extends Noise, Registerable<NoiseGenerat
         private boolean aquifersEnabled = true;
         private boolean oreVeinsEnabled = true;
         private boolean useLegacyRandomSource = false;
+
+        public Builder() {}
+
+        public Builder(NoiseGeneratorSettings settings) {
+            this.resourceKey = settings.resourceKey().orElse(null);
+            this.noiseSettings = settings.noiseSettings();
+            this.defaultBlock = settings.defaultBlock();
+            this.defaultFluid = settings.defaultFluid();
+            this.noiseRouter = settings.noiseRouter();
+            this.surfaceRule = settings.surfaceRule();
+            this.spawnTarget = new ArrayList<>(settings.spawnTarget());
+            this.seaLevel = settings.seaLevel();
+            this.disableMobGeneration = settings.disableMobGeneration();
+            this.aquifersEnabled = settings.aquifersEnabled();
+            this.oreVeinsEnabled = settings.oreVeinsEnabled();
+            this.useLegacyRandomSource = settings.useLegacyRandomSource();
+        }
 
         /**
          * Sets the resource key for this object.

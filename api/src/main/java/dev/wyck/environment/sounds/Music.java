@@ -53,6 +53,16 @@ public interface Music extends Wrapper {
     boolean replaceCurrentMusic();
 
     /**
+     * Creates a new builder with the same values as this music.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new music record.
      * @param sound the sound of the music
      * @param minDelay the minimum delay of the music
@@ -133,6 +143,15 @@ public interface Music extends Wrapper {
         private int minDelay;
         private int maxDelay;
         private boolean replaceCurrentMusic;
+
+        public Builder() {}
+
+        public Builder(Music music) {
+            this.sound = music.sound();
+            this.minDelay = music.minDelay();
+            this.maxDelay = music.maxDelay();
+            this.replaceCurrentMusic = music.replaceCurrentMusic();
+        }
 
         /**
          * Sets the sound of the music.

@@ -61,6 +61,16 @@ public interface NoiseSettings extends Wrapper {
     int sizeVertical();
 
     /**
+     * Creates a new builder with the same values as these noise settings.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a noise settings shape.
      *
      * @apiNote The values must satisfy the vanilla constraints, height a

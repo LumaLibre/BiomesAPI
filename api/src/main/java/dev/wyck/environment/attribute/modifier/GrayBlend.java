@@ -34,6 +34,16 @@ public interface GrayBlend extends Wrapper {
     float factor();
 
     /**
+     * Creates a new builder with the same values as this gray blend.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new gray blend.
      * @param brightness the brightness of the gray color
      * @param factor the factor of the gray color

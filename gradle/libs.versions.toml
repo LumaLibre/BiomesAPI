@@ -12,7 +12,6 @@ run-paper = "3.0.2"
 plugin-yml-paper = "0.9.0"
 spongepowered-configurate = "4.2.0"
 faststats = "0.26.1"
-lombok = "9.5.0"
 modrinth-minotaur = "2.+"
 junit = "5.11.4"
 mockito = "5.23.0"
@@ -22,7 +21,6 @@ paperweight-userdev = { id = "io.papermc.paperweight.userdev", version.ref = "pa
 gradleup-shadow = { id = "com.gradleup.shadow", version.ref = "gradleup-shadow" }
 run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }
 plugin-yml-paper = { id = "de.eldoria.plugin-yml.paper", version.ref = "plugin-yml-paper" }
-lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
 modrinth-minotaur = { id = "com.modrinth.minotaur", version.ref = "modrinth-minotaur" }
 
 [libraries]

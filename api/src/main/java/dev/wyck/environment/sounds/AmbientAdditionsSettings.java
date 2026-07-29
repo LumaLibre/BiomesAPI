@@ -38,6 +38,16 @@ public interface AmbientAdditionsSettings extends Wrapper {
     double tickChance();
 
     /**
+     * Creates a new builder with the same values as these ambient additions settings.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new ambient additions settings record.
      * @param soundEvent the sound event to play
      * @param tickChance the chance of the sound event to play per tick
@@ -98,6 +108,13 @@ public interface AmbientAdditionsSettings extends Wrapper {
     final class Builder {
         private @Nullable SoundEvent soundEvent;
         private double tickChance;
+
+        public Builder() {}
+
+        public Builder(AmbientAdditionsSettings settings) {
+            this.soundEvent = settings.soundEvent();
+            this.tickChance = settings.tickChance();
+        }
 
         /**
          * Sets the sound event to play.

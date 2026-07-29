@@ -46,6 +46,16 @@ public interface AmbientMoodSettings extends Wrapper {
     double soundPositionOffset();
 
     /**
+     * Creates a new builder with the same values as these ambient mood settings.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new ambient mood settings record.
      * @param soundEvent the sound event of the ambient mood settings
      * @param tickDelay the tick delay of the ambient mood settings
@@ -112,6 +122,15 @@ public interface AmbientMoodSettings extends Wrapper {
         private int tickDelay;
         private int blockSearchExtent;
         private double soundPositionOffset;
+
+        public Builder() {}
+
+        public Builder(AmbientMoodSettings settings) {
+            this.soundEvent = settings.soundEvent();
+            this.tickDelay = settings.tickDelay();
+            this.blockSearchExtent = settings.blockSearchExtent();
+            this.soundPositionOffset = settings.soundPositionOffset();
+        }
 
         /**
          * Sets the sound event of the ambient mood settings.

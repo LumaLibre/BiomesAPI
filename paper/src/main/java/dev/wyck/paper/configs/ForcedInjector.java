@@ -15,7 +15,7 @@ public enum ForcedInjector {
         this.injector = injector;
     }
 
-    public PacketHandler.@Nullable Injector getInjector() {
+    public PacketHandler.@Nullable Injector injector() {
         return injector;
     }
 

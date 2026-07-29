@@ -5,7 +5,6 @@ import org.gradle.kotlin.dsl.project
 plugins {
     alias(libs.plugins.plugin.yml.paper)
     alias(libs.plugins.paperweight.userdev)
-    alias(libs.plugins.lombok)
     alias(libs.plugins.modrinth.minotaur)
 }
 
@@ -22,6 +21,7 @@ dependencies {
     compileOnly(libs.spongepowered.configurate.yaml)
     implementation(libs.faststats.metrics)
     implementation(project(":commons"))
+    implementation(project(":decoders"))
 
     for (project in minecraftProjects) {
         implementation(project(path = "${minecraft}:${project}"))
@@ -36,6 +36,7 @@ tasks {
         minimize {
             exclude(project(":api"))
             exclude(project(":commons"))
+            exclude(project(":decoders"))
             for (project in minecraftProjects) {
                 exclude(project("${minecraft}:${project}"))
             }

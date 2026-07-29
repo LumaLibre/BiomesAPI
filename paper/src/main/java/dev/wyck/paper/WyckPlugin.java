@@ -59,10 +59,10 @@ public final class WyckPlugin extends JavaPlugin implements Wyck {
     public void onEnable() {
         this.handlerFactory.enableDeferredHandlers();
 
-        if (this.config.metrics()) {
+        if (this.config.metrics) {
             this.metrics = new BukkitContext.Factory(this, METRICS_TOKEN)
                 .metrics(factory -> factory
-                    .addMetric(Metric.string("forced_injector", () -> config.forcedInjector().toString()))
+                    .addMetric(Metric.string("forced_injector", () -> config.forcedInjector.toString()))
                     .addMetric(Metric.number("registered_biomes", KeyChains.BIOMES::size))
                     .create()
                 )

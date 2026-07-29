@@ -26,7 +26,7 @@ import java.util.Set;
 @NullMarked
 @AsOf("3.3.0")
 @ApiStatus.Experimental
-public abstract class CustomBiomeSource implements BiomeSource {
+public abstract class CustomBiomeSource implements BiomeSource /*, TODO: Registerable<CustomBiomeSource> */ {
 
     private final Set<Biome> possibleBiomes;
 

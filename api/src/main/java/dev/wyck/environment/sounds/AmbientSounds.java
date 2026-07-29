@@ -51,6 +51,16 @@ public interface AmbientSounds extends Wrapper {
     List<AmbientAdditionsSettings> additions();
 
     /**
+     * Creates a new builder with the same values as these ambient sounds.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new ambient sounds record.
      * @param loop the loop sound event
      * @param mood the mood settings
@@ -101,6 +111,14 @@ public interface AmbientSounds extends Wrapper {
         private @Nullable SoundEvent loop;
         private @Nullable AmbientMoodSettings mood;
         private final List<AmbientAdditionsSettings> additions = new ArrayList<>();
+
+        public Builder() {}
+
+        public Builder(AmbientSounds sounds) {
+            this.loop = sounds.loop().orElse(null);
+            this.mood = sounds.mood().orElse(null);
+            this.additions.addAll(sounds.additions());
+        }
 
         /**
          * Sets the loop sound event.

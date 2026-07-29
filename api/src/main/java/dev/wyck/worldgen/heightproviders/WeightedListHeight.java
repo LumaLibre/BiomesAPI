@@ -38,6 +38,16 @@ public interface WeightedListHeight extends HeightProvider {
     WeightedList<HeightProvider> distribution();
 
     /**
+     * Creates a new builder with the same weighted distribution as this provider.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new weighted list height provider.
      * @param distribution the weighted pool of providers, which must not be empty
      * @return the weighted list height provider
@@ -74,6 +84,10 @@ public interface WeightedListHeight extends HeightProvider {
         private final WeightedList.Builder<HeightProvider> distribution = WeightedList.builder();
 
         public Builder() {}
+
+        public Builder(WeightedListHeight provider) {
+            this.distribution.addAll(provider.distribution().unwrap());
+        }
 
         /**
          * Adds a provider with a weight of one.

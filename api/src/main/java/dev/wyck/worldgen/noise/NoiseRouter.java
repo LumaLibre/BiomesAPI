@@ -151,6 +151,16 @@ public interface NoiseRouter extends Wrapper {
     DensityFunction veinGap();
 
     /**
+     * Converts this noise router back to a builder.
+     * @return a new builder with these values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
      * Creates a new noise router from its density function slots.
      *
      * @param barrier the barrier density function
@@ -260,6 +270,26 @@ public interface NoiseRouter extends Wrapper {
         private DensityFunction veinToggle = DensityFunction.zero();
         private DensityFunction veinRidged = DensityFunction.zero();
         private DensityFunction veinGap = DensityFunction.zero();
+
+        public Builder() {}
+
+        public Builder(NoiseRouter router) {
+            this.barrier = router.barrier();
+            this.fluidLevelFloodedness = router.fluidLevelFloodedness();
+            this.fluidLevelSpread = router.fluidLevelSpread();
+            this.lava = router.lava();
+            this.temperature = router.temperature();
+            this.vegetation = router.vegetation();
+            this.continents = router.continents();
+            this.erosion = router.erosion();
+            this.depth = router.depth();
+            this.ridges = router.ridges();
+            this.preliminarySurfaceLevel = router.preliminarySurfaceLevel();
+            this.finalDensity = router.finalDensity();
+            this.veinToggle = router.veinToggle();
+            this.veinRidged = router.veinRidged();
+            this.veinGap = router.veinGap();
+        }
 
         /**
          * Sets the {@linkplain NoiseRouter#barrier() barrier} slot.

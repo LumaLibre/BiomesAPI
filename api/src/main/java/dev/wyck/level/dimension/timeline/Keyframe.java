@@ -36,6 +36,16 @@ public interface Keyframe<V> extends Wrapper {
     V value();
 
     /**
+     * Creates a new builder with the same values as this keyframe.
+     * @return a new builder with the same values
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    default Builder<V> toBuilder() {
+        return new Builder<>(this);
+    }
+
+    /**
      * Creates a new keyframe with the given ticks and value.
      * @param ticks the number of ticks this keyframe occurs at
      * @param value the value stored in this keyframe
