@@ -11,7 +11,7 @@ import dev.wyck.worldgen.surface.condition.ConditionSource;
 import dev.wyck.worldgen.surface.condition.HoleConditionSource;
 import dev.wyck.worldgen.surface.condition.NoiseThresholdConditionSource;
 import dev.wyck.worldgen.surface.condition.NotConditionSource;
-import dev.wyck.worldgen.surface.condition.OptionallyFlatBedrockConditionSource;
+import dev.wyck.worldgen.surface.condition.PaperOptionallyFlatBedrockConditionSource;
 import dev.wyck.worldgen.surface.condition.SteepConditionSource;
 import dev.wyck.worldgen.surface.condition.StoneDepthConditionSource;
 import dev.wyck.worldgen.surface.condition.TemperatureConditionSource;
@@ -259,8 +259,8 @@ public interface SurfaceRule extends Wrapper {
      * @since 3.3.0
      */
     @AsOf("3.3.0")
-    static OptionallyFlatBedrockConditionSource optionallyFlatBedrock(ResourceKey randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
-        return OptionallyFlatBedrockConditionSource.of(randomName, trueAtAndBelow, falseAtAndAbove, roof);
+    static PaperOptionallyFlatBedrockConditionSource optionallyFlatBedrock(ResourceKey randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
+        return PaperOptionallyFlatBedrockConditionSource.of(randomName, trueAtAndBelow, falseAtAndAbove, roof);
     }
 
     /**
@@ -269,8 +269,8 @@ public interface SurfaceRule extends Wrapper {
      * @since 3.3.0
      */
     @AsOf("3.3.0")
-    static OptionallyFlatBedrockConditionSource.Builder optionallyFlatBedrock() {
-        return OptionallyFlatBedrockConditionSource.builder();
+    static PaperOptionallyFlatBedrockConditionSource.Builder optionallyFlatBedrock() {
+        return PaperOptionallyFlatBedrockConditionSource.builder();
     }
 
     /**

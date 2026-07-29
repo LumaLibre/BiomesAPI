@@ -12,7 +12,7 @@ import dev.wyck.worldgen.surface.condition.ConditionSource;
 import dev.wyck.worldgen.surface.condition.HoleConditionSource;
 import dev.wyck.worldgen.surface.condition.NoiseThresholdConditionSource;
 import dev.wyck.worldgen.surface.condition.NotConditionSource;
-import dev.wyck.worldgen.surface.condition.OptionallyFlatBedrockConditionSource;
+import dev.wyck.worldgen.surface.condition.PaperOptionallyFlatBedrockConditionSource;
 import dev.wyck.worldgen.surface.condition.SteepConditionSource;
 import dev.wyck.worldgen.surface.condition.StoneDepthConditionSource;
 import dev.wyck.worldgen.surface.condition.TemperatureConditionSource;
@@ -69,7 +69,7 @@ public final class ConditionSourceDecoders extends DecoderRegistry<ConditionSour
         register(ResourceKey.of("paper", "optionally_flat_bedrock_condition_source"), source -> {
             io.papermc.paper.world.worldgen.OptionallyFlatBedrockConditionSource condition =
                 (io.papermc.paper.world.worldgen.OptionallyFlatBedrockConditionSource) source;
-            return OptionallyFlatBedrockConditionSource.of(
+            return PaperOptionallyFlatBedrockConditionSource.of(
                 Decoders.key(condition.randomName()),
                 VerticalAnchor.decode(condition.trueAtAndBelow()),
                 VerticalAnchor.decode(condition.falseAtAndAbove()),

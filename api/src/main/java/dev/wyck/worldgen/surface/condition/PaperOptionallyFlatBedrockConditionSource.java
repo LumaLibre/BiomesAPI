@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AsOf("3.3.0")
 @ApiStatus.Experimental
-public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
+public interface PaperOptionallyFlatBedrockConditionSource extends ConditionSource {
 
     /**
      * Gets the seed name used to randomize the non-flat gradient.
@@ -74,9 +74,9 @@ public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
      * @since 3.3.0
      */
     @AsOf("3.3.0")
-    static OptionallyFlatBedrockConditionSource of(ResourceKey randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
+    static PaperOptionallyFlatBedrockConditionSource of(ResourceKey randomName, VerticalAnchor trueAtAndBelow, VerticalAnchor falseAtAndAbove, boolean roof) {
         record Holder() {
-            static final ConstructWireProvider<OptionallyFlatBedrockConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.OptionallyFlatBedrockConditionSourceImpl");
+            static final ConstructWireProvider<PaperOptionallyFlatBedrockConditionSource> WIRE = ConstructWireProvider.create("dev.wyck.worldgen.surface.condition.PaperOptionallyFlatBedrockConditionSourceImpl");
         }
         return Holder.WIRE.construct(randomName, trueAtAndBelow, falseAtAndAbove, roof);
     }
@@ -92,7 +92,7 @@ public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
     }
 
     /**
-     * Builder for {@link OptionallyFlatBedrockConditionSource}.
+     * Builder for {@link PaperOptionallyFlatBedrockConditionSource}.
      *
      * @since 3.3.0
      * @version 3.3.0
@@ -107,7 +107,7 @@ public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
 
         public Builder() {}
 
-        public Builder(OptionallyFlatBedrockConditionSource source) {
+        public Builder(PaperOptionallyFlatBedrockConditionSource source) {
             this.randomName = source.randomName();
             this.trueAtAndBelow = source.trueAtAndBelow();
             this.falseAtAndAbove = source.falseAtAndAbove();
@@ -168,7 +168,7 @@ public interface OptionallyFlatBedrockConditionSource extends ConditionSource {
          * @since 3.3.0
          */
         @AsOf("3.3.0")
-        public OptionallyFlatBedrockConditionSource build() {
+        public PaperOptionallyFlatBedrockConditionSource build() {
             Preconditions.checkNotNull(this.randomName, "randomName must be set");
             Preconditions.checkNotNull(this.trueAtAndBelow, "trueAtAndBelow must be set");
             Preconditions.checkNotNull(this.falseAtAndAbove, "falseAtAndAbove must be set");

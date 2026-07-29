@@ -5,7 +5,7 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.test.bootstrap.MinecraftBootstrap;
 import dev.wyck.util.BootstrapSafeMinecraftRegistries;
 import dev.wyck.worldgen.surface.condition.ConditionSource;
-import dev.wyck.worldgen.surface.condition.OptionallyFlatBedrockConditionSource;
+import dev.wyck.worldgen.surface.condition.PaperOptionallyFlatBedrockConditionSource;
 import dev.wyck.worldgen.surface.rule.RuleSource;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -54,8 +54,8 @@ class SurfaceRuleDecodeTest {
             true
         );
 
-        OptionallyFlatBedrockConditionSource decoded = assertInstanceOf(
-            OptionallyFlatBedrockConditionSource.class,
+        PaperOptionallyFlatBedrockConditionSource decoded = assertInstanceOf(
+            PaperOptionallyFlatBedrockConditionSource.class,
             ConditionSource.decode(minecraftCondition)
         );
 
