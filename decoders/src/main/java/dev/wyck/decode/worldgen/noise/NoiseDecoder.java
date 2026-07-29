@@ -1,6 +1,7 @@
 package dev.wyck.decode.worldgen.noise;
 
 import dev.wyck.decode.Decoders;
+import dev.wyck.keys.ResourceKey;
 import dev.wyck.worldgen.climate.ClimatePoint;
 import dev.wyck.worldgen.noise.Noise;
 import dev.wyck.worldgen.noise.NoiseRouter;
@@ -14,16 +15,18 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @ApiStatus.Internal
-public final class NoiseDecoder implements Decodable<Noise, Object> {
+public final class NoiseDecoder implements Decodable<NoiseGeneratorSettings, Object> {
     @Override
     @SuppressWarnings("deprecation") // disableMobGeneration
-    public Noise decode(Object minecraftObject) {
+    public NoiseGeneratorSettings decode(Object minecraftObject) {
+        ResourceKey nullableResourceKey = null;
+
         if (minecraftObject instanceof Holder<?> holder && holder.unwrapKey().isPresent()) {
-            return Noise.reference(Decoders.referenceKey(holder));
+            nullableResourceKey = Decoders.referenceKey(holder);
         }
         net.minecraft.world.level.levelgen.NoiseGeneratorSettings settings = Decoders.value(minecraftObject);
         return NoiseGeneratorSettings.of(
-            null,
+            nullableResourceKey,
             NoiseSettings.decode(settings.noiseSettings()),
             Decoders.blockData(settings.defaultBlock()),
             Decoders.blockData(settings.defaultFluid()),

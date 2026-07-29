@@ -73,7 +73,7 @@ public interface Noise extends Wrapper {
      */
     @AsOf("3.3.0")
     @ApiStatus.Experimental
-    default Noise wrap() {
+    default NoiseGeneratorSettings wrap() {
         ResourceKey key = resourceKey().orElseThrow(() -> new IllegalStateException("Cannot wrap noise settings without a resource key"));
         Object minecraft = WyckRegistry.of(RegistryId.NOISE_SETTINGS).retrieveOrThrow(key);
         return decode(minecraft);
@@ -86,9 +86,9 @@ public interface Noise extends Wrapper {
      * @since 3.3.0
      */
     @AsOf("3.3.0")
-    static Noise decode(Object minecraftNoise) {
+    static NoiseGeneratorSettings decode(Object minecraftNoise) {
         record Holder() {
-            static final Decoder<Noise> DECODER = Decoder.create("dev.wyck.decode.worldgen.noise.NoiseDecoder");
+            static final Decoder<NoiseGeneratorSettings> DECODER = Decoder.create("dev.wyck.decode.worldgen.noise.NoiseDecoder");
         }
         return Holder.DECODER.decode(minecraftNoise);
     }
