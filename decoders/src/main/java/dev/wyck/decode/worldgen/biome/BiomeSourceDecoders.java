@@ -12,6 +12,7 @@ import dev.wyck.worldgen.biome.FixedBiomeSource;
 import dev.wyck.worldgen.biome.MultiNoiseBiomeSource;
 import dev.wyck.worldgen.biome.MultiNoisePresetBiomeSource;
 import dev.wyck.worldgen.biome.TheEndBiomeSource;
+import dev.wyck.worldgen.biome.custom.CustomBiomeSourceBridge;
 import dev.wyck.worldgen.climate.ClimatePoint;
 import dev.wyck.wrapper.decode.DecoderRegistry;
 import net.minecraft.core.Holder;
@@ -31,7 +32,10 @@ import java.util.stream.Collectors;
 @ApiStatus.Internal
 public final class BiomeSourceDecoders extends DecoderRegistry<BiomeSource, net.minecraft.world.level.biome.BiomeSource> {
 
+    private static final ResourceKey CUSTOM = ResourceKey.wyck("custom");
+
     public BiomeSourceDecoders() {
+        register(CUSTOM, source -> ((CustomBiomeSourceBridge) source).delegate());
         register("fixed", source -> FixedBiomeSource.of(reference(FastReflection.read(source, "biome"))));
         register("checkerboard", source -> CheckeredColumnBiomeSource.of(
             checkerboardBiomes(source), FastReflection.read(source, "size")
@@ -43,6 +47,9 @@ public final class BiomeSourceDecoders extends DecoderRegistry<BiomeSource, net.
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected ResourceKey discriminate(net.minecraft.world.level.biome.BiomeSource minecraftObject) {
+        if (minecraftObject instanceof CustomBiomeSourceBridge) {
+            return CUSTOM;
+        }
         Object codec = FastReflection.call(minecraftObject, "codec");
         return Decoders.registryKey(BuiltInRegistries.BIOME_SOURCE, (com.mojang.serialization.MapCodec) codec);
     }

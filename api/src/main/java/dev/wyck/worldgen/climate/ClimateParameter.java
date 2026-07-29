@@ -17,8 +17,8 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("2.3.0")
 public interface ClimateParameter extends Wrapper {
 
-    float MAX_BOUNDARY = 2.0f;
-    float MIN_BOUNDARY = -2.0f;
+    double MAX_BOUNDARY = 2.0;
+    double MIN_BOUNDARY = -2.0;
 
     /**
      * The minimum and maximum values of this parameter between -2.0 and 2.0.
@@ -26,7 +26,7 @@ public interface ClimateParameter extends Wrapper {
      * @since 2.3.0
      */
     @AsOf("2.3.0")
-    float min();
+    double min();
 
     /**
      * The minimum and maximum values of this parameter between -2.0 and 2.0.
@@ -34,7 +34,7 @@ public interface ClimateParameter extends Wrapper {
      * @since 2.3.0
      */
     @AsOf("2.3.0")
-    float max();
+    double max();
 
     /**
      * A span between two values.
@@ -45,7 +45,7 @@ public interface ClimateParameter extends Wrapper {
      * @since 2.3.0
      */
     @AsOf("2.3.0")
-    static ClimateParameter span(float min, float max) {
+    static ClimateParameter span(double min, double max) {
         Preconditions.checkArgument(min <= max, "min > max: %s %s", min, max);
         Preconditions.checkArgument(min >= MIN_BOUNDARY && max <= MAX_BOUNDARY, "climate values must be within [-2.0, 2.0]: %s %s", min, max);
         record Holder() {
@@ -62,7 +62,7 @@ public interface ClimateParameter extends Wrapper {
      * @since 2.3.0
      */
     @AsOf("2.3.0")
-    static ClimateParameter point(float value) {
+    static ClimateParameter point(double value) {
         return span(value, value);
     }
 
@@ -73,7 +73,7 @@ public interface ClimateParameter extends Wrapper {
      */
     @AsOf("2.4.1")
     static ClimateParameter zero() {
-        return point(0.0f);
+        return point(0.0);
     }
 
     /**

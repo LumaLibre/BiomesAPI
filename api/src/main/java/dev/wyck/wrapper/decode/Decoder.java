@@ -1,6 +1,7 @@
 package dev.wyck.wrapper.decode;
 
 import dev.wyck.annotations.AsOf;
+import dev.wyck.exceptions.MissingDecoderException;
 import dev.wyck.factory.WireProvider;
 import dev.wyck.keys.ResourceKey;
 import org.jetbrains.annotations.ApiStatus;
@@ -21,9 +22,11 @@ import java.util.Set;
 @ApiStatus.Internal
 public final class Decoder<T> {
 
+    private final String implementation;
     private final WireProvider<Decodable<T, ?>> provider;
 
     private Decoder(String className) {
+        this.implementation = className;
         this.provider = WireProvider.create(className);
     }
 
@@ -47,7 +50,7 @@ public final class Decoder<T> {
      */
     @AsOf("3.3.0")
     public T decode(Object minecraftObject) {
-        return decode(this.provider.get(), minecraftObject);
+        return decode(resolved(), minecraftObject);
     }
 
     /**
@@ -83,11 +86,33 @@ public final class Decoder<T> {
     }
 
     private DecoderRegistry<T, ?> registry() {
-        Decodable<T, ?> decoder = this.provider.get();
+        Decodable<T, ?> decoder = resolved();
         if (!(decoder instanceof DecoderRegistry<?, ?> registry)) {
             throw new IllegalStateException("Decoder " + decoder.getClass().getName() + " is not registry-backed");
         }
         return castRegistry(registry);
+    }
+
+    private Decodable<T, ?> resolved() {
+        try {
+            return this.provider.get();
+        } catch (IllegalStateException exception) {
+            if (causedByMissingClass(exception)) {
+                throw new MissingDecoderException(this.implementation, exception);
+            }
+            throw exception;
+        } catch (NoClassDefFoundError error) {
+            throw new MissingDecoderException(this.implementation, error);
+        }
+    }
+
+    private static boolean causedByMissingClass(Throwable throwable) {
+        for (Throwable current = throwable; current != null; current = current.getCause()) {
+            if (current instanceof ClassNotFoundException || current instanceof NoClassDefFoundError) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")

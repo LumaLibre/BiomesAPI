@@ -5,10 +5,10 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 @ApiStatus.Internal
-public record ClimateParameterImpl(@Override float min, @Override float max) implements ClimateParameter {
+public record ClimateParameterImpl(@Override double min, @Override double max) implements ClimateParameter {
 
     @Override
     public Object toMinecraft() {
-        return net.minecraft.world.level.biome.Climate.Parameter.span(this.min, this.max);
+        return net.minecraft.world.level.biome.Climate.Parameter.span((float) this.min, (float) this.max);
     }
 }
