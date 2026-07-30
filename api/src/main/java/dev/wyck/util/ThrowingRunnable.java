@@ -1,7 +1,6 @@
 package dev.wyck.util;
 
 import dev.wyck.annotations.AsOf;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * A runnable that has a checked exception.
@@ -9,7 +8,6 @@ import org.jspecify.annotations.NullMarked;
  * @version 2.3.0
  * @author Jsinco
  */
-@NullMarked
 @AsOf("2.3.0")
 @FunctionalInterface
 public interface ThrowingRunnable {

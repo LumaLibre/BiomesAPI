@@ -64,17 +64,18 @@ public class GlobalBiomeSetter implements BiomeSetter {
 
     @Override
     public void setChunkBiome(Chunk chunk, Biome biome) {
-        World.Environment env = chunk.getWorld().getEnvironment();
-        int minHeight = getMinHeight(env);
-        int maxHeight = getMaxHeight(env);
+        World world = chunk.getWorld();
+
+        int minHeight = world.getMinHeight();
+        int maxHeight = world.getMaxHeight();
         setChunkBiome(chunk, minHeight, maxHeight, biome);
     }
 
     @Override
     public void setChunkBiome(Chunk chunk, Biome biome, boolean updateBiome) {
-        World.Environment env = chunk.getWorld().getEnvironment();
-        int minHeight = getMinHeight(env);
-        int maxHeight = getMaxHeight(env);
+        World world = chunk.getWorld();
+        int minHeight = world.getMinHeight();
+        int maxHeight = world.getMaxHeight();
         setChunkBiome(chunk, minHeight, maxHeight, biome, updateBiome);
     }
 
@@ -169,20 +170,6 @@ public class GlobalBiomeSetter implements BiomeSetter {
         if (updateBiome) {
             biomeUpdater.updateChunks(from, to);
         }
-    }
-
-    private int getMinHeight(World.Environment environment) {
-        return switch (environment) {
-            case NORMAL, CUSTOM -> OVERWORLD_MIN_HEIGHT;
-            case NETHER, THE_END -> NETHER_END_MIN_HEIGHT;
-        };
-    }
-
-    private int getMaxHeight(World.Environment environment) {
-        return switch (environment) {
-            case NORMAL, CUSTOM -> OVERWORLD_MAX_HEIGHT;
-            case NETHER, THE_END -> NETHER_END_MAX_HEIGHT;
-        };
     }
 
 }

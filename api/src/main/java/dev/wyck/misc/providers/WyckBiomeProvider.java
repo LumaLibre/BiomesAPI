@@ -39,7 +39,7 @@ public abstract class WyckBiomeProvider extends BiomeProvider {
     }
 
     @AsOf("2.3.1")
-    public Map<ResourceKey, Biome> getBiomeMap() {
+    public Map<ResourceKey, Biome> biomeMap() {
         return biomeMap;
     }
 }

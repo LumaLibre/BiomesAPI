@@ -110,8 +110,7 @@ public interface SoundEvent extends Wrapper, Keyed {
 
     private static SoundEvent create(ResourceKey location, Optional<Float> range) {
         record Holder() {
-            static final ConstructWireProvider<SoundEvent> WIRE =
-                WireProvider.construct("dev.wyck.environment.sounds.SoundEventImpl");
+            static final ConstructWireProvider<SoundEvent> WIRE = ConstructWireProvider.construct("dev.wyck.environment.sounds.SoundEventImpl");
         }
         return Holder.WIRE.construct(location, range);
     }

@@ -78,7 +78,7 @@ public final class StepsBiomeProvider extends WyckBiomeProvider {
     public static final class Builder {
         private final List<BiomeStep> steps = new ArrayList<>();
         private final Set<Biome> biomes = new LinkedHashSet<>();
-        private Biome fallback;
+        private @Nullable Biome fallback;
 
         /**
          * Full-control step. The lambda receives the position and returns a biome to place,

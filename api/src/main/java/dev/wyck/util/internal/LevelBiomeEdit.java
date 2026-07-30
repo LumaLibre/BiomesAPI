@@ -32,8 +32,7 @@ public sealed interface LevelBiomeEdit permits LevelBiomeEdit.Add, LevelBiomeEdi
      * @since 2.3.0
      */
     @AsOf("2.3.0")
-    record Add(ResourceKey dimension, ResourceKey biome, ClimatePoint point) implements LevelBiomeEdit {
-    }
+    record Add(ResourceKey dimension, ResourceKey biome, ClimatePoint point) implements LevelBiomeEdit {}
 
     /**
      * Replaces a biome in a dimension.
@@ -43,6 +42,5 @@ public sealed interface LevelBiomeEdit permits LevelBiomeEdit.Add, LevelBiomeEdi
      * @since 2.3.0
      */
     @AsOf("2.3.0")
-    record Replace(ResourceKey dimension, ResourceKey target, ResourceKey replacement) implements LevelBiomeEdit {
-    }
+    record Replace(ResourceKey dimension, ResourceKey target, ResourceKey replacement) implements LevelBiomeEdit {}
 }

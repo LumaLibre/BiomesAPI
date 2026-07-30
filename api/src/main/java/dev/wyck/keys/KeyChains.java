@@ -2,7 +2,6 @@ package dev.wyck.keys;
 
 import dev.wyck.annotations.AsOf;
 import dev.wyck.biome.Biome;
-import dev.wyck.environment.sounds.SoundEvent;
 import dev.wyck.level.dimension.Dimension;
 import dev.wyck.worldgen.feature.ConfiguredFeature;
 import dev.wyck.worldgen.function.DensityFunction;
@@ -38,9 +37,6 @@ public interface KeyChains {
 
     @AsOf("2.4.0")
     KeyChain<NoiseParameters> NOISE = KeyChain.mutable();
-
-    @AsOf("2.4.1")
-    KeyChain<SoundEvent> SOUND_EVENTS = KeyChain.mutable();
 
     /**
      * @return {@link #BIOMES}
@@ -96,12 +92,4 @@ public interface KeyChains {
         return NOISE;
     }
 
-    /**
-     * @return {@link #SOUND_EVENTS}
-     * @since 3.3.0
-     */
-    @AsOf("3.3.0")
-    static KeyChain<SoundEvent> soundEvents() {
-        return SOUND_EVENTS;
-    }
 }

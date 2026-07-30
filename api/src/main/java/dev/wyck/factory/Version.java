@@ -19,8 +19,8 @@ public record Version(String[] applicable, String id, Type type) {
      * @return the message associated with the version
      */
     @AsOf("2.0.0")
-    public String getMessage() {
-        return type.getMessage();
+    public String message() {
+        return type.message();
     }
 
     /**
@@ -75,7 +75,7 @@ public record Version(String[] applicable, String id, Type type) {
             this.message = message;
         }
 
-        public String getMessage() {
+        public String message() {
             return String.format(message, Bukkit.getMinecraftVersion(), BuildInfo.VERSION);
         }
     }

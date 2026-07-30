@@ -9,8 +9,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Optional;
-
 /**
  * Common interface for miscellaneous Wyck (BiomesAPI) methods and utilities.
  * Implemented by the main plugin class when running as a standalone plugin, and by a default
@@ -36,7 +34,7 @@ public interface Wyck {
      */
     @AsOf("2.1.0")
     static Wyck wyck() {
-        return WIRE.optional().orElseGet(ShadedWyck::get);
+        return WIRE.optional().orElseGet(ShadedWyck::instance);
     }
 
     /**
@@ -99,7 +97,7 @@ public interface Wyck {
 
         private static Wyck.@Nullable ShadedWyck INSTANCE;
 
-        private static synchronized ShadedWyck get() {
+        private static synchronized ShadedWyck instance() {
             if (INSTANCE == null) {
                 INSTANCE = new ShadedWyck();
             }

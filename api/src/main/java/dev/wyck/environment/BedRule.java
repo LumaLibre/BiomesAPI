@@ -179,7 +179,7 @@ public interface BedRule extends Wrapper {
          * @since 1.1.0
          */
         @AsOf("1.1.0")
-        public Builder setCanSleep(Rule canSleep) {
+        public Builder canSleep(Rule canSleep) {
             this.canSleep = canSleep;
             return this;
         }
@@ -191,7 +191,7 @@ public interface BedRule extends Wrapper {
          * @since 1.1.0
          */
         @AsOf("1.1.0")
-        public Builder setCanSetSpawn(Rule canSetSpawn) {
+        public Builder canSetSpawn(Rule canSetSpawn) {
             this.canSetSpawn = canSetSpawn;
             return this;
         }
@@ -203,7 +203,7 @@ public interface BedRule extends Wrapper {
          * @since 1.1.0
          */
         @AsOf("1.1.0")
-        public Builder setExplodes(boolean explodes) {
+        public Builder explodes(boolean explodes) {
             this.explodes = explodes;
             return this;
         }
@@ -215,7 +215,7 @@ public interface BedRule extends Wrapper {
          * @since 1.1.0
          */
         @AsOf("1.1.0")
-        public Builder setErrorMessage(@Nullable Component errorMessage) {
+        public Builder errorMessage(@Nullable Component errorMessage) {
             this.errorMessage = errorMessage;
             return this;
         }

@@ -13,9 +13,11 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A collection of EnvironmentAttributes.
@@ -215,6 +217,47 @@ public record EnvironmentAttributeMap(
     @AsOf("2.1.0")
     public EnvironmentAttributeMap with(FriendlyColorSupplier supplier, @Nullable String hex) {
         return with(supplier, FriendlyColorUtil.hexOrNull(hex));
+    }
+
+    /**
+     * Creates a new map containing every entry from this map plus every entry from the given map.
+     *
+     * <p>Unlike {@link Builder#merge(EnvironmentAttributeMap)}, colliding keys do not throw: any
+     * attribute, modifier, or pending value in {@code source} fully replaces the entry for that key
+     * in this map, regardless of which form it took here.
+     *
+     * @param source the map whose entries take precedence
+     * @return a new map with the given map's entries applied over this one
+     * @since 3.4.0
+     */
+    @AsOf("3.4.0")
+    public EnvironmentAttributeMap with(EnvironmentAttributeMap source) {
+        if (source.empty()) {
+            return this;
+        }
+        if (this.empty()) {
+            return source;
+        }
+
+        Set<ResourceKey> overridden = new HashSet<>(source.attributes.keySet());
+        overridden.addAll(source.modifications.keySet());
+        for (Pending<?> entry : source.pending) {
+            overridden.add(entry.supplier().key());
+        }
+
+        Map<ResourceKey, EnvironmentAttribute<?>> newAttributes = new LinkedHashMap<>(attributes);
+        Map<ResourceKey, Modification<?, ?>> newModifications = new LinkedHashMap<>(modifications);
+        List<Pending<?>> newPending = new ArrayList<>(pending);
+
+        newAttributes.keySet().removeAll(overridden);
+        newModifications.keySet().removeAll(overridden);
+        newPending.removeIf(entry -> overridden.contains(entry.supplier().key()));
+
+        newAttributes.putAll(source.attributes);
+        newModifications.putAll(source.modifications);
+        newPending.addAll(source.pending);
+
+        return new EnvironmentAttributeMap(newAttributes, newModifications, newPending);
     }
 
     /**

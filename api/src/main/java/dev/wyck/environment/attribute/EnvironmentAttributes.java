@@ -12,7 +12,6 @@ import dev.wyck.environment.sounds.AmbientSounds;
 import dev.wyck.environment.sounds.BackgroundMusic;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.wrapper.WrappedConstant;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -223,6 +222,7 @@ public final class EnvironmentAttributes {
     public static final EnvironmentAttributeSupplier<Boolean> MONSTERS_BURN = supplier("gameplay/monsters_burn");
 
     /** Whether patrols can spawn when the global skylight is greater than 11. */
+    @AsOf("1.1.0")
     public static final EnvironmentAttributeSupplier<Boolean> CAN_PILLAGER_PATROL_SPAWN = supplier("gameplay/can_pillager_patrol_spawn");
 
     /** Controls the default AI activity of villagers.
@@ -253,9 +253,8 @@ public final class EnvironmentAttributes {
     @AsOf("1.1.0")
     public static final EnvironmentAttributeSupplier<TriState> EYEBLOSSOM_OPEN = supplierWith("gameplay/eyeblossom_open", it -> it.toNms("net.minecraft.util.TriState"));
 
-    @ApiStatus.Internal
+
     private static @Nullable Map<String, EnvironmentAttributeSupplier<?>> BY_ID;
-    @ApiStatus.Internal
     private static volatile @Nullable Map<String, EnvironmentAttributeSupplier<?>> BY_NAME;
 
     /**

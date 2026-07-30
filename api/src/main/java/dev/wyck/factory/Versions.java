@@ -21,7 +21,7 @@ public enum Versions {
     V26_1(Version.of(Version.Type.SUPPORTED, "v26_1", "26.1", "26.1.1", "26.1.2")),
     V26_2(Version.of(Version.Type.SUPPORTED, "v26_2", "26.2"));
 
-    public static final Version ACTIVE = getActive();
+    public static final Version ACTIVE = active();
 
     private final Version version;
 
@@ -29,12 +29,12 @@ public enum Versions {
         this.version = version;
     }
 
-    public Version getVersion() {
+    public Version version() {
         return version;
     }
 
     @AsOf("2.0.0")
-    public static Version getActive() {
+    public static Version active() {
         String mc;
         try {
             mc = ServerBuildInfo.buildInfo().minecraftVersionId();
@@ -43,15 +43,15 @@ public enum Versions {
         }
 
         for (Versions versions : values()) {
-            if (versions.getVersion().isApplicable(mc)) {
-                Version del = versions.getVersion();
+            if (versions.version().isApplicable(mc)) {
+                Version del = versions.version();
                 if (del.type() == Version.Type.UNSUPPORTED) {
-                    throw new UnsupportedVersionException(del.getMessage());
+                    throw new UnsupportedVersionException(del.message());
                 }
                 return del;
             }
         }
 
-        throw new UnsupportedVersionException(Version.of(Version.Type.UNKNOWN, mc).getMessage());
+        throw new UnsupportedVersionException(Version.of(Version.Type.UNKNOWN, mc).message());
     }
 }

@@ -66,7 +66,7 @@ public class ExampleBootstrapper implements PluginBootstrap {
                 .attribute(EnvironmentAttributes.SKY_COLOR, "#0000FF")
                 .attribute(EnvironmentAttributes.BED_RULE, BedRule.builder()
                     .setErrorMessage(Component.text("No sleeping!").color(NamedTextColor.RED))
-                    .setCanSleep(BedRule.Rule.NEVER)
+                    .canSleep(BedRule.Rule.NEVER)
                     .setCanSetSpawn(BedRule.Rule.WHEN_DARK)
                     .build()
                 )

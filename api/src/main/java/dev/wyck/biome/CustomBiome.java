@@ -371,7 +371,7 @@ public interface CustomBiome extends Biome {
          */
         @AsOf("3.0.0")
         public Builder attributes(EnvironmentAttributeMap attributeMap) {
-            this.attributeMap = attributeMap;
+            this.attributeMap = this.attributeMap.with(attributeMap);
             return this;
         }
 

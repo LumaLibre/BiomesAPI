@@ -26,12 +26,6 @@ import org.jspecify.annotations.NullMarked;
 @AsOf("2.1.0")
 public interface BiomeSetter extends AbstractBiomeRenderer {
 
-    int OVERWORLD_MIN_HEIGHT = -64;
-    int OVERWORLD_MAX_HEIGHT = 320;
-
-    int NETHER_END_MIN_HEIGHT = 0;
-    int NETHER_END_MAX_HEIGHT = 128;
-
     /**
      * Returns a new instance of the BiomeSetter interface.
      *
