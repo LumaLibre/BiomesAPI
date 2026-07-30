@@ -3,7 +3,7 @@ package dev.wyck.connection;
 import dev.wyck.Wyck;
 import dev.wyck.annotations.AsOf;
 import dev.wyck.exceptions.HorriblePlayerLoginEvent;
-import dev.wyck.factory.WireProvider;
+import dev.wyck.factory.ConstructWireProvider;
 import io.papermc.paper.connection.PlayerConfigurationConnection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -23,12 +23,6 @@ import java.util.function.Consumer;
 @AsOf("2.2.0")
 public interface RegistryReconfigurer {
 
-    @AsOf("2.2.0")
-    @ApiStatus.Internal
-    interface Factory {
-        RegistryReconfigurer create(Plugin provider);
-    }
-
     /**
      * Creates a new RegistryReconfigurer instance.
      * @return a new RegistryReconfigurer instance
@@ -46,9 +40,9 @@ public interface RegistryReconfigurer {
     @AsOf("2.2.0")
     static RegistryReconfigurer newReconfigurer(Plugin provider) {
         record Holder() {
-            static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.connection.RegistryReconfigurerFactoryImpl");
+            static final ConstructWireProvider<RegistryReconfigurer> WIRE = ConstructWireProvider.create("dev.wyck.connection.RegistryReconfigurerImpl");
         }
-        return Holder.WIRE.get().create(provider);
+        return Holder.WIRE.construct(provider);
     }
 
     /**

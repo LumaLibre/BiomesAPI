@@ -56,7 +56,6 @@ import java.util.Map;
  * @since 2.3.0
  */
 @NullMarked
-@WireFactory
 @AsOf("2.3.0")
 @ApiStatus.Internal
 @SuppressWarnings("UnstableApiUsage")

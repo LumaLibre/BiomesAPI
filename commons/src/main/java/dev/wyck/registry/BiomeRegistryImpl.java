@@ -2,7 +2,6 @@ package dev.wyck.registry;
 
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
-import dev.wyck.annotations.WireFactory;
 import dev.wyck.biome.Biome;
 import dev.wyck.biome.BiomeGenerationSettings;
 import dev.wyck.biome.BiomeSpecialEffects;
@@ -34,7 +33,6 @@ import java.util.Collection;
  * @author Outspending
  */
 @NullMarked
-@WireFactory
 @AsOf("0.0.1")
 @ApiStatus.Internal
 public class BiomeRegistryImpl implements BiomeRegistry {

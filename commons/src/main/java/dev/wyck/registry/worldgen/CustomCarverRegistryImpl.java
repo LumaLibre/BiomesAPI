@@ -1,7 +1,6 @@
 package dev.wyck.registry.worldgen;
 
 import dev.wyck.annotations.AsOf;
-import dev.wyck.annotations.WireFactory;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.registry.internal.RegistryId;
 import dev.wyck.registry.internal.WyckRegistry;
@@ -15,7 +14,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-@WireFactory
 @AsOf("3.0.0")
 @ApiStatus.Internal
 public final class CustomCarverRegistryImpl implements CustomCarverRegistry {

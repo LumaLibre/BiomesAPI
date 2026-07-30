@@ -95,4 +95,13 @@ public interface KeyChains {
     static KeyChain<NoiseParameters> noise() {
         return NOISE;
     }
+
+    /**
+     * @return {@link #SOUND_EVENTS}
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static KeyChain<SoundEvent> soundEvents() {
+        return SOUND_EVENTS;
+    }
 }

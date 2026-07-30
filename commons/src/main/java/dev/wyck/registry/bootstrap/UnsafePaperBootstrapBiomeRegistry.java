@@ -2,7 +2,6 @@ package dev.wyck.registry.bootstrap;
 
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
-import dev.wyck.annotations.WireFactory;
 import dev.wyck.biome.Biome;
 import dev.wyck.keys.KeyChains;
 import dev.wyck.keys.ResourceKey;
@@ -53,7 +52,6 @@ import java.util.Set;
  * @author Jsinco
  */
 @NullMarked
-@WireFactory
 @AsOf("2.3.0")
 @ApiStatus.Internal
 @SuppressWarnings("UnstableApiUsage")

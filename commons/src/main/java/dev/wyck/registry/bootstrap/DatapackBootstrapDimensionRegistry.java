@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import dev.wyck.annotations.WireFactory;
 import dev.wyck.keys.KeyChains;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.level.dimension.Dimension;
@@ -34,7 +33,6 @@ import java.util.Map;
 
 
 @NullMarked
-@WireFactory
 @ApiStatus.Internal
 @SuppressWarnings("UnstableApiUsage")
 public final class DatapackBootstrapDimensionRegistry implements BootstrapDimensionRegistry {

@@ -53,7 +53,6 @@ import java.util.Set;
  * @author Jsinco
  */
 @NullMarked
-@WireFactory
 @ApiStatus.Internal
 @SuppressWarnings("UnstableApiUsage")
 public final class UnsafePaperBootstrapDimensionRegistry implements BootstrapDimensionRegistry {

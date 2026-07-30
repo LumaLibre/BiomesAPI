@@ -2,12 +2,11 @@ package dev.wyck.keys;
 
 import com.google.common.base.Preconditions;
 import dev.wyck.annotations.AsOf;
-import dev.wyck.factory.WireProvider;
+import dev.wyck.factory.ConstructWireProvider;
 import dev.wyck.wrapper.Wrapper;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.KeyPattern;
 import net.kyori.adventure.key.Keyed;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -25,11 +24,6 @@ public interface ResourceKey extends Key, Keyed, Wrapper {
     String MINECRAFT_NAMESPACE = "minecraft";
     String WYCK_NAMESPACE = "wyck";
     char NAMESPACE_SEPARATOR = ':';
-
-    @ApiStatus.Internal
-    interface Factory {
-        ResourceKey create(String namespace, String path);
-    }
 
     /**
      * The namespace portion of this key (e.g. "minecraft", "wyck").
@@ -53,9 +47,20 @@ public interface ResourceKey extends Key, Keyed, Wrapper {
     @AsOf("2.0.0")
     Object resourceLocation();
 
+    /**
+     * The underlying Minecraft Identifier.
+     * @return the underlying Minecraft Identifier
+     * @param <T> the type of the underlying Minecraft Identifier
+     * @since 2.4.1
+     */
     @AsOf("2.4.1")
     <T> T identifier();
 
+    /**
+     * Returns the path portion of this key.
+     * @return the path portion of this key
+     * @since 2.2.1
+     */
     @Override
     @AsOf("2.2.1")
     @KeyPattern.Value
@@ -63,18 +68,33 @@ public interface ResourceKey extends Key, Keyed, Wrapper {
         return path();
     }
 
-    @AsOf("2.2.1")
+    /**
+     * Returns the string representation of this key in the format "namespace:path".
+     * @return the string representation of this key
+     * @since 2.2.1
+     */
     @Override
+    @AsOf("2.2.1")
     default String asString() {
         return namespace() + NAMESPACE_SEPARATOR + path();
     }
 
-    @AsOf("0.0.6")
+    /**
+     * Returns a {@link Key} object representing this ResourceKey.
+     * @return a {@link Key} object representing this ResourceKey
+     * @since 0.0.6
+     */
     @Override
+    @AsOf("0.0.6")
     default Key key() {
         return Key.key(namespace(), path());
     }
 
+    /**
+     * Returns the underlying Minecraft object that this ResourceKey wraps.
+     * @return the underlying Minecraft object that this ResourceKey wraps
+     * @since 2.3.0
+     */
     @Override
     @AsOf("2.3.0")
     default Object toMinecraft() {
@@ -94,9 +114,9 @@ public interface ResourceKey extends Key, Keyed, Wrapper {
         Preconditions.checkArgument(!namespace.isEmpty(), "namespace cannot be empty");
         Preconditions.checkArgument(!path.isEmpty(), "path cannot be empty");
         record Holder() {
-            static final WireProvider<Factory> WIRE = WireProvider.create("dev.wyck.keys.ResourceKeyFactoryImpl");
+            static final ConstructWireProvider<ResourceKey> WIRE = ConstructWireProvider.create("dev.wyck.keys.ResourceKeyImpl");
         }
-        return Holder.WIRE.get().create(namespace.toLowerCase(), path.toLowerCase());
+        return Holder.WIRE.construct(namespace.toLowerCase(), path.toLowerCase());
     }
 
     /**
