@@ -131,6 +131,17 @@ public interface ResourceKey extends Key, Keyed, Wrapper {
     }
 
     /**
+     * Creates a new ResourceKey from the given Key.
+     * @param key  the Key to create the ResourceKey from
+     * @return a new ResourceKey with the given Key
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    static ResourceKey of(Key key) {
+        return of(key.namespace(), key.value());
+    }
+
+    /**
      * Creates a new ResourceKey in the "wyck" namespace with the given path.
      * @param path the path for the resource location
      * @return a new ResourceKey with the "wyck" namespace and the given path
