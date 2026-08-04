@@ -26,11 +26,10 @@ public final class ShiftedFunctionImpl extends NoiseParameterFunctionImpl implem
 
     @Override
     public Object toMinecraft() {
-        net.minecraft.core.Holder<net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters> noiseData = net.minecraft.core.Holder.direct(this.noiseParameters.asHandle());
         return switch (kind) {
-            case SHIFT -> net.minecraft.world.level.levelgen.DensityFunctions.shift(noiseData);
-            case SHIFT_A -> net.minecraft.world.level.levelgen.DensityFunctions.shiftA(noiseData);
-            case SHIFT_B -> net.minecraft.world.level.levelgen.DensityFunctions.shiftB(noiseData);
+            case SHIFT -> net.minecraft.world.level.levelgen.DensityFunctions.shift(this.noiseData());
+            case SHIFT_A -> net.minecraft.world.level.levelgen.DensityFunctions.shiftA(this.noiseData());
+            case SHIFT_B -> net.minecraft.world.level.levelgen.DensityFunctions.shiftB(this.noiseData());
         };
     }
 }

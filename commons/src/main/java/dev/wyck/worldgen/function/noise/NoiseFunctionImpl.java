@@ -33,7 +33,6 @@ public class NoiseFunctionImpl extends NoiseParameterFunctionImpl implements Noi
 
     @Override
     public Object toMinecraft() {
-        net.minecraft.core.Holder<net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters> noiseData = net.minecraft.core.Holder.direct(this.noiseParameters.asHandle());
-        return net.minecraft.world.level.levelgen.DensityFunctions.noise(noiseData, this.xzScale, this.yScale);
+        return net.minecraft.world.level.levelgen.DensityFunctions.noise(this.noiseData(), this.xzScale, this.yScale);
     }
 }

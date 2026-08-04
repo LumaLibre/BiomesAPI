@@ -43,13 +43,12 @@ public class ShiftedNoise2dFunctionImpl extends NoiseParameterFunctionImpl imple
     public Object toMinecraft() {
         net.minecraft.world.level.levelgen.DensityFunction unwrappedX = this.shiftX.asHandle();
         net.minecraft.world.level.levelgen.DensityFunction unwrappedZ = this.shiftZ.asHandle();
-        net.minecraft.core.Holder<net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters> noiseData = net.minecraft.core.Holder.direct(this.noiseParameters.asHandle());
 
         return net.minecraft.world.level.levelgen.DensityFunctions.shiftedNoise2d(
             unwrappedX,
             unwrappedZ,
             this.xzScale,
-            noiseData
+            this.noiseData()
         );
     }
 }

@@ -3,6 +3,7 @@ package dev.wyck.worldgen.function.noise;
 import dev.wyck.keys.ResourceKey;
 import dev.wyck.registry.internal.RegistryId;
 import dev.wyck.registry.internal.WyckRegistry;
+import dev.wyck.util.BootstrapSafeMinecraftRegistries;
 import dev.wyck.util.Lazy;
 import dev.wyck.worldgen.synth.NoiseParameters;
 import net.kyori.adventure.key.Key;
@@ -47,4 +48,15 @@ public abstract class NoiseParameterFunctionImpl implements NoiseParameterFuncti
     public Key key() {
         return this.resourceKey.orElseThrow();
     }
+
+    protected final net.minecraft.core.Holder<net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters> noiseData() {
+        Optional<ResourceKey> key = this.noiseParameters.resourceKey();
+        if (key.isEmpty()) {
+            return net.minecraft.core.Holder.direct(this.noiseParameters.asHandle());
+        }
+        return BootstrapSafeMinecraftRegistries.getter(net.minecraft.core.registries.Registries.NOISE).getOrThrow(
+            net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.NOISE, key.orElseThrow().identifier())
+        );
+    }
+
 }

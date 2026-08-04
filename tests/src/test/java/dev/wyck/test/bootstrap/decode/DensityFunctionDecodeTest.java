@@ -19,6 +19,9 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.NoiseRouter;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +29,10 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -151,6 +156,73 @@ class DensityFunctionDecodeTest {
 
         assertInstanceOf(TwoArgumentSimpleFunction.class, decoded);
         assertEquals(encode(original.asHandle()), encode(decoded.asHandle()));
+    }
+
+    @Test
+    void registeredNoiseParametersRemainReferencesWhenRandomStateWiresTheRouter() {
+        ResourceKey key = ResourceKey.of("wyck_test:random_state_noise");
+        NoiseParameters parameters = NoiseParameters.of(key, -4, List.of(1.0, 0.5)).register();
+        net.minecraft.world.level.levelgen.DensityFunction customNoise =
+            DensityFunction.noise(parameters, 1.0, 1.0).asHandle();
+
+        var registryKey = net.minecraft.resources.ResourceKey.create(Registries.NOISE, key.identifier());
+        AtomicReference<net.minecraft.core.Holder<net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters>> noiseData = new AtomicReference<>();
+        customNoise.mapAll(new net.minecraft.world.level.levelgen.DensityFunction.Visitor() {
+            @Override
+            public net.minecraft.world.level.levelgen.DensityFunction apply(
+                net.minecraft.world.level.levelgen.DensityFunction function
+            ) {
+                return function;
+            }
+
+            @Override
+            public net.minecraft.world.level.levelgen.DensityFunction.NoiseHolder visitNoise(
+                net.minecraft.world.level.levelgen.DensityFunction.NoiseHolder noise
+            ) {
+                noiseData.set(noise.noiseData());
+                return noise;
+            }
+        });
+        assertEquals(registryKey, noiseData.get().unwrapKey().orElseThrow());
+
+        NoiseGeneratorSettings vanilla = BootstrapSafeMinecraftRegistries.mappedRegistry(Registries.NOISE_SETTINGS)
+            .getOrThrow(NoiseGeneratorSettings.OVERWORLD)
+            .value();
+        NoiseRouter router = vanilla.noiseRouter();
+        NoiseRouter customRouter = new NoiseRouter(
+            router.barrierNoise(),
+            router.fluidLevelFloodednessNoise(),
+            router.fluidLevelSpreadNoise(),
+            router.lavaNoise(),
+            customNoise,
+            router.vegetation(),
+            router.continents(),
+            router.erosion(),
+            router.depth(),
+            router.ridges(),
+            router.preliminarySurfaceLevel(),
+            router.finalDensity(),
+            router.veinToggle(),
+            router.veinRidged(),
+            router.veinGap()
+        );
+        NoiseGeneratorSettings settings = new NoiseGeneratorSettings(
+            vanilla.noiseSettings(),
+            vanilla.defaultBlock(),
+            vanilla.defaultFluid(),
+            customRouter,
+            vanilla.surfaceRule(),
+            vanilla.spawnTarget(),
+            vanilla.seaLevel(),
+            vanilla.disableMobGeneration(),
+            vanilla.aquifersEnabled(),
+            vanilla.oreVeinsEnabled(),
+            vanilla.useLegacyRandomSource()
+        );
+
+        assertDoesNotThrow(() -> RandomState.create(
+            settings, BootstrapSafeMinecraftRegistries.getter(Registries.NOISE), 1234L
+        ));
     }
 
     /**

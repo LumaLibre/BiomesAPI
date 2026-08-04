@@ -33,7 +33,8 @@ public final class MappedNoiseFunctionImpl extends NoiseFunctionImpl implements 
 
     @Override
     public Object toMinecraft() {
-        net.minecraft.core.Holder<net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters> holderParams = net.minecraft.core.Holder.direct(this.noiseParameters.asHandle());
-        return net.minecraft.world.level.levelgen.DensityFunctions.mappedNoise(holderParams, this.xzScale, this.yScale, this.minTarget, this.maxTarget);
+        return net.minecraft.world.level.levelgen.DensityFunctions.mappedNoise(
+            this.noiseData(), this.xzScale, this.yScale, this.minTarget, this.maxTarget
+        );
     }
 }
