@@ -186,45 +186,58 @@ public class PacketEventsPacketHandler implements PacketHandler {
             }
 
             SnapshotChunkData snapshot = new PacketEventsSnapshotChunkData(chunkLocation, column, user);
-            VirtualBiome phonyCustomBiome = resolver.resolve(snapshot);
-            if (phonyCustomBiome == null) {
-                return;
-            }
-            ResourceKey biomeResourceKey = phonyCustomBiome.biomeResourceKey();
-            List<BlockReplacement> blockReplacements = phonyCustomBiome.blockReplacements();
-
-
             IRegistry<?> elementRegistry = user.getRegistry(ResourceLocation.minecraft(REGISTRY_KEY));
             Preconditions.checkNotNull(elementRegistry, "Biome registry not found for user " + user.getName());
-            var element = elementRegistry.getByName(new ResourceLocation(biomeResourceKey.namespace(), biomeResourceKey.path()));
-            Preconditions.checkNotNull(element, "Biome " + biomeResourceKey.resourceLocation() + " not found in registry for user " + user.getName());
+            Map<ResourceKey, Integer> biomeIds = new HashMap<>();
+            boolean modified = false;
+            BaseChunk[] chunks = wrapperPlayServerChunkData.getColumn().getChunks();
 
-            int biomeId = element.getId(user.getClientVersion());
-
-
-            for (var chunk : wrapperPlayServerChunkData.getColumn().getChunks()) {
+            for (int sectionIndex = 0; sectionIndex < chunks.length; sectionIndex++) {
+                BaseChunk chunk = chunks[sectionIndex];
                 if (!(chunk instanceof Chunk_v1_18 chunkV1_18)) {
                     continue;
                 }
 
+                VirtualBiome[][][] resolved = new VirtualBiome[CHUNK_SECTIONS][CHUNK_SECTIONS][CHUNK_SECTIONS];
                 for (int x = 0; x < CHUNK_SECTIONS; x++) {
                     for (int z = 0; z < CHUNK_SECTIONS; z++) {
                         for (int y = 0; y < CHUNK_SECTIONS; y++) {
+                            VirtualBiome phony = resolver.resolve(
+                                snapshot, x, sectionIndex * CHUNK_SECTIONS + y, z
+                            );
+                            resolved[x][y][z] = phony;
+                            if (phony == null) {
+                                continue;
+                            }
+                            ResourceKey biomeKey = phony.biomeResourceKey();
+                            Integer biomeId = biomeIds.get(biomeKey);
+                            if (biomeId == null) {
+                                var element = elementRegistry.getByName(
+                                    new ResourceLocation(biomeKey.namespace(), biomeKey.path())
+                                );
+                                Preconditions.checkNotNull(
+                                    element,
+                                    "Biome " + biomeKey.resourceLocation() + " not found in registry for user " + user.getName()
+                                );
+                                biomeId = element.getId(user.getClientVersion());
+                                biomeIds.put(biomeKey, biomeId);
+                            }
                             chunkV1_18.getBiomeData().set(x, y, z, biomeId);
+                            modified = true;
                         }
                     }
-                }
-
-                if (blockReplacements.isEmpty()) {
-                    continue;
                 }
 
                 for (int x = 0; x < CHUNK_SECTION_SIZE; x++) {
                     for (int y = 0; y < CHUNK_SECTION_SIZE; y++) {
                         for (int z = 0; z < CHUNK_SECTION_SIZE; z++) {
+                            VirtualBiome phony = resolved[x >> 2][y >> 2][z >> 2];
+                            if (phony == null || phony.blockReplacements().isEmpty()) {
+                                continue;
+                            }
                             WrappedBlockState state = chunkV1_18.get(x, y, z);
 
-                            for (BlockReplacement replacement : blockReplacements) {
+                            for (BlockReplacement replacement : phony.blockReplacements()) {
                                 WrappedBlockState wrappedReplacement = PacketEventsBukkitMaterials.fromCachedBukkitBlockData(replacement.originalBlock());
                                 if (!state.equals(wrappedReplacement)) {
                                     continue;
@@ -232,6 +245,7 @@ public class PacketEventsPacketHandler implements PacketHandler {
 
                                 WrappedBlockState newState = PacketEventsBukkitMaterials.fromCachedBukkitBlockData(replacement.replacementBlock());
                                 chunkV1_18.set(x, y, z, newState);
+                                modified = true;
                                 break;
                             }
                         }
@@ -239,7 +253,9 @@ public class PacketEventsPacketHandler implements PacketHandler {
                 }
             }
 
-            event.markForReEncode(true);
+            if (modified) {
+                event.markForReEncode(true);
+            }
         }
     }
 
@@ -261,7 +277,9 @@ public class PacketEventsPacketHandler implements PacketHandler {
             Player player = event.getPlayer();
             Vector3i vector3i =  wrapper.getBlockPosition();
 
-            VirtualBiome override = context.collector.bestBiomeFor(player, ChunkLocation.fromBlockCoords(vector3i.getX(), vector3i.getZ()));
+            VirtualBiome override = context.collector.bestBiomeFor(
+                player, vector3i.getX(), vector3i.getY(), vector3i.getZ()
+            );
             if (override == null) {
                 return;
             }
@@ -304,21 +322,16 @@ public class PacketEventsPacketHandler implements PacketHandler {
             WrapperPlayServerMultiBlockChange wrapper = new WrapperPlayServerMultiBlockChange(event);
             Player player = event.getPlayer();
             ClientVersion clientVersion = event.getUser().getClientVersion();
-            Vector3i chunkPosition = wrapper.getChunkPosition();
-            VirtualBiome override = context.collector.bestBiomeFor(player, ChunkLocation.of(chunkPosition.getX(), chunkPosition.getZ()));
-
-            if (override == null) {
-                return;
-            }
-
-            List<BlockReplacement> blockReplacements = override.blockReplacements();
-            if (blockReplacements.isEmpty()) {
-                return;
-            }
-
+            boolean modified = false;
             for (WrapperPlayServerMultiBlockChange.EncodedBlock encodedBlock : wrapper.getBlocks()) {
+                VirtualBiome override = context.collector.bestBiomeFor(
+                    player, encodedBlock.getX(), encodedBlock.getY(), encodedBlock.getZ()
+                );
+                if (override == null || override.blockReplacements().isEmpty()) {
+                    continue;
+                }
                 WrappedBlockState wrappedBlockData = encodedBlock.getBlockState(clientVersion);
-                for (BlockReplacement replacement : blockReplacements) {
+                for (BlockReplacement replacement : override.blockReplacements()) {
                     WrappedBlockState originalState = PacketEventsBukkitMaterials.fromCachedBukkitBlockData(replacement.originalBlock());
                     if (!wrappedBlockData.equals(originalState)) {
                         continue;
@@ -326,11 +339,14 @@ public class PacketEventsPacketHandler implements PacketHandler {
 
                     WrappedBlockState newState = PacketEventsBukkitMaterials.fromCachedBukkitBlockData(replacement.replacementBlock());
                     encodedBlock.setBlockState(newState);
+                    modified = true;
                     break;
                 }
             }
 
-            event.markForReEncode(true);
+            if (modified) {
+                event.markForReEncode(true);
+            }
         }
     }
 

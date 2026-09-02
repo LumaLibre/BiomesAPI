@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
  * {@link VirtualBiome} to apply, or {@code null} to leave the packet untouched (in which case
  * the NMS side skips serialization entirely).
  *
- * @version 2.2.0
+ * @version 3.3.0
  * @since 2.2.0
  * @author Jsinco
  */
@@ -29,7 +29,12 @@ public interface VirtualBiomeResolver {
 
     /**
      * @param chunkData the decoded chunk view, exposing the real biome/block data
-     * @return the custom biome to apply, or {@code null} to leave the packet unmodified
+     * @param localQuartX the chunk-relative quart X, from 0 through 3
+     * @param localQuartY the column-relative quart Y
+     * @param localQuartZ the chunk-relative quart Z, from 0 through 3
+     * @return the custom biome to apply, or {@code null} to preserve the original biome cell
+     * @since 3.3.0
      */
-    @Nullable VirtualBiome resolve(SnapshotChunkData chunkData);
+    @AsOf("3.3.0")
+    @Nullable VirtualBiome resolve(SnapshotChunkData chunkData, int localQuartX, int localQuartY, int localQuartZ);
 }

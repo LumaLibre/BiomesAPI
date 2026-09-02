@@ -161,6 +161,7 @@ public class NettyPacketHandler implements PacketHandler {
 
         private static final @Nullable Field BLOCK_UPDATE_STATE_FIELD = findFieldByType(ClientboundBlockUpdatePacket.class, BlockState.class, "blockState");
         private static final @Nullable Field SECTION_POS_FIELD = findFieldByType(ClientboundSectionBlocksUpdatePacket.class, SectionPos.class, "sectionPos");
+        private static final @Nullable Field SECTION_POSITIONS_FIELD = findFieldByType(ClientboundSectionBlocksUpdatePacket.class, short[].class, "positions");
         private static final @Nullable Field SECTION_STATES_FIELD = findFieldByType(ClientboundSectionBlocksUpdatePacket.class, BlockState[].class, "states");
 
         private final VirtualBiomeCollector collector;
@@ -208,8 +209,7 @@ public class NettyPacketHandler implements PacketHandler {
             VirtualBiomeResolver resolver = collector.resolverFor(player, loc);
             if (resolver == null) return;
 
-            PacketHandler.DimensionSectionCount sectionCount = PacketHandler.DimensionSectionCount.fromBukkitEnvironment(player.getWorld().getEnvironment());
-
+            int sectionCount = (player.getWorld().getMaxHeight() - player.getWorld().getMinHeight()) >> 4;
             NativeChunkPacketHandler.instance().modifyChunkBiomes(packet.getChunkData(), loc, resolver, sectionCount);
         }
 
@@ -217,8 +217,7 @@ public class NettyPacketHandler implements PacketHandler {
             if (BLOCK_UPDATE_STATE_FIELD == null) return;
 
             BlockPos pos = packet.getPos();
-            ChunkLocation loc = ChunkLocation.fromBlockCoords(pos.getX(), pos.getZ());
-            VirtualBiome override = collector.bestBiomeFor(player, loc);
+            VirtualBiome override = collector.bestBiomeFor(player, pos.getX(), pos.getY(), pos.getZ());
             if (override == null) return;
 
             List<BlockReplacement> replacements = override.blockReplacements();
@@ -242,24 +241,26 @@ public class NettyPacketHandler implements PacketHandler {
         }
 
         private void handleSectionUpdate(Player player, ClientboundSectionBlocksUpdatePacket packet) {
-            if (SECTION_POS_FIELD == null || SECTION_STATES_FIELD == null) return;
+            if (SECTION_POS_FIELD == null || SECTION_POSITIONS_FIELD == null || SECTION_STATES_FIELD == null) return;
 
             try {
                 SectionPos sectionPos = (SectionPos) SECTION_POS_FIELD.get(packet);
-                ChunkLocation loc = ChunkLocation.of(sectionPos.x(), sectionPos.z());
-                VirtualBiome override = collector.bestBiomeFor(player, loc);
-                if (override == null) return;
-
-                List<BlockReplacement> replacements = override.blockReplacements();
-                if (replacements.isEmpty()) return;
-
+                short[] positions = (short[]) SECTION_POSITIONS_FIELD.get(packet);
                 BlockState[] states = (BlockState[]) SECTION_STATES_FIELD.get(packet);
-                if (states == null || states.length == 0) return;
+                if (positions == null || states == null || states.length == 0 || positions.length != states.length) return;
 
                 boolean modified = false;
                 for (int i = 0; i < states.length; i++) {
+                    short packedPosition = positions[i];
+                    int blockX = sectionPos.relativeToBlockX(packedPosition);
+                    int blockY = sectionPos.relativeToBlockY(packedPosition);
+                    int blockZ = sectionPos.relativeToBlockZ(packedPosition);
+                    VirtualBiome override = collector.bestBiomeFor(player, blockX, blockY, blockZ);
+                    if (override == null || override.blockReplacements().isEmpty()) {
+                        continue;
+                    }
                     Material mat = states[i].getBukkitMaterial();
-                    for (BlockReplacement r : replacements) {
+                    for (BlockReplacement r : override.blockReplacements()) {
                         if (mat == r.originalBlock()) {
                             BlockState replaced = materialToState(r.replacementBlock());
                             if (replaced != null) {

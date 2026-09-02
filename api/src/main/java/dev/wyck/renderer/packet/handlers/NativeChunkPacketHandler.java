@@ -11,7 +11,7 @@ import org.jspecify.annotations.NullMarked;
 /**
  * Internal handler for NMS-level chunk packet manipulation. Implemented by the NMS module.
  *
- * @version 2.2.0
+ * @version 3.3.0
  * @since 2.0.0
  * @author Jsinco
  */
@@ -43,8 +43,22 @@ public interface NativeChunkPacketHandler {
      * @param chunkLocation the chunk being sent, used to build the snapshot view
      * @param resolver chooses the custom biome to apply based on the decoded chunk data,
      *                 or returns {@code null} to leave the packet unmodified
-     * @param dimensionSectionCount how many sections the dimension has
+     * @param sectionCount how many sections the dimension has
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    void modifyChunkBiomes(Object chunkData, ChunkLocation chunkLocation, VirtualBiomeResolver resolver, int sectionCount);
+
+    /**
+     * Rewrites a chunk using one of the legacy environment height presets.
+     * @param chunkData the NMS chunk packet data
+     * @param chunkLocation the chunk being sent
+     * @param resolver the virtual-biome resolver
+     * @param dimensionSectionCount the legacy dimension section count
+     * @since 2.2.0
      */
     @AsOf("2.2.0")
-    void modifyChunkBiomes(Object chunkData, ChunkLocation chunkLocation, VirtualBiomeResolver resolver, PacketHandler.DimensionSectionCount dimensionSectionCount);
+    default void modifyChunkBiomes(Object chunkData, ChunkLocation chunkLocation, VirtualBiomeResolver resolver, PacketHandler.DimensionSectionCount dimensionSectionCount) {
+        modifyChunkBiomes(chunkData, chunkLocation, resolver, dimensionSectionCount.getSectionCount());
+    }
 }

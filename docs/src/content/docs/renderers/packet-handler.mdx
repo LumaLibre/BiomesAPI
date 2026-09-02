@@ -67,6 +67,10 @@ The <SourceLink path="renderer/packet/PacketHandler.java">PacketHandler</SourceL
 is a biome renderer that injects biome data directly into packets sent to players.
 This means that the biome change is purely visual and does not affect gameplay elements such as mob spawns and is purely visual.
 
+Minecraft sends one biome value for each 4-by-4-by-4 block cell. Wyck exposes this as a
+<SourceLink path="misc/BiomePosition.java">BiomePosition</SourceLink>, with both quart coordinates and the minimum block coordinates represented
+by the cell. Block-coordinate conditions are therefore rounded to this quart-resolution grid.
+
 #### When to use the PacketHandler
 
 * You want to show different biomes to different players in the same area.
@@ -119,3 +123,35 @@ public class ExamplePlugin extends JavaPlugin {
     }
 }`}
 />
+
+### Rendering individual biome cells
+
+Use `positionCondition` when a virtual biome should cover only part of a chunk. Chunk and
+biome-aware conditions are evaluated first; the position condition is then evaluated for each
+biome cell.
+
+<CodeBlock
+    lang="java"
+    filename="ExamplePlugin.java"
+    code={`VirtualBiome underground = VirtualBiome.builder()
+    .biome(customBiome)
+    .conditional((player, chunk) -> player.getWorld().getName().equals("realm"))
+    .positionCondition((player, position) -> {
+        // blockY() is the bottom of this 4x4x4 biome cell.
+        return position.blockY() < 32;
+    })
+    .build();
+
+PacketHandler.of(this)
+    .appendBiome(underground)
+    .register();`}
+/>
+
+The handler also provides a convenience overload when the condition is kept separately:
+
+```java
+packetHandler.appendBiome(
+    virtualBiome,
+    (player, position) -> position.quartX() == targetQuartX
+);
+```

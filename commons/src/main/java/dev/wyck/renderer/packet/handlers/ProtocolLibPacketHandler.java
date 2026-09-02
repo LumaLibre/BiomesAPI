@@ -136,10 +136,10 @@ public class ProtocolLibPacketHandler implements PacketHandler {
                 return;
             }
 
-            DimensionSectionCount dimensionSectionCount = DimensionSectionCount.fromBukkitEnvironment(player.getWorld().getEnvironment());
+            int sectionCount = (player.getWorld().getMaxHeight() - player.getWorld().getMinHeight()) >> 4;
             ClientboundLevelChunkPacketData chunkData = packet.getSpecificModifier(ClientboundLevelChunkPacketData.class).read(0);
 
-            NativeChunkPacketHandler.instance().modifyChunkBiomes(chunkData, chunkLocation, resolver, dimensionSectionCount);
+            NativeChunkPacketHandler.instance().modifyChunkBiomes(chunkData, chunkLocation, resolver, sectionCount);
         }
     }
 
@@ -162,8 +162,9 @@ public class ProtocolLibPacketHandler implements PacketHandler {
             Player player = event.getPlayer();
             BlockPosition blockPosition = packet.getBlockPositionModifier().read(0);
 
-            ChunkLocation chunkLocation = ChunkLocation.fromBlockCoords(blockPosition.getX(), blockPosition.getZ());
-            VirtualBiome override = context.collector.bestBiomeFor(player, chunkLocation);
+            VirtualBiome override = context.collector.bestBiomeFor(
+                player, blockPosition.getX(), blockPosition.getY(), blockPosition.getZ()
+            );
             if (override == null) {
                 return;
             }
@@ -203,24 +204,24 @@ public class ProtocolLibPacketHandler implements PacketHandler {
             Player player = event.getPlayer();
             PacketContainer packet = event.getPacket();
 
-            BlockPosition blockPosition = packet.getSectionPositions().read(0);
-            ChunkLocation chunkLocation = ChunkLocation.fromBlockCoords(blockPosition.getX(), blockPosition.getZ());
-
-            VirtualBiome override = context.collector.bestBiomeFor(player, chunkLocation);
-            if (override == null) {
-                return;
-            }
-
-            List<BlockReplacement> blockReplacements = override.blockReplacements();
-            if (blockReplacements.isEmpty()) {
-                return;
-            }
-
+            BlockPosition sectionPosition = packet.getSectionPositions().read(0);
             WrappedBlockData[] wrappedBlockDatas = packet.getBlockDataArrays().read(0);
+            short[] positions = packet.getShortArrays().read(0);
+            if (positions.length != wrappedBlockDatas.length) {
+                return;
+            }
             boolean modified = false;
             for (int i = 0; i < wrappedBlockDatas.length; i++) {
+                short packedPosition = positions[i];
+                int blockX = (sectionPosition.getX() << 4) + ((packedPosition >> 8) & 15);
+                int blockY = (sectionPosition.getY() << 4) + (packedPosition & 15);
+                int blockZ = (sectionPosition.getZ() << 4) + ((packedPosition >> 4) & 15);
+                VirtualBiome override = context.collector.bestBiomeFor(player, blockX, blockY, blockZ);
+                if (override == null || override.blockReplacements().isEmpty()) {
+                    continue;
+                }
                 WrappedBlockData wrappedBlockData = wrappedBlockDatas[i];
-                for (BlockReplacement replacement : blockReplacements) {
+                for (BlockReplacement replacement : override.blockReplacements()) {
                     if (wrappedBlockData.getType() == replacement.originalBlock()) {
                         wrappedBlockData.setType(replacement.replacementBlock());
                         wrappedBlockDatas[i] = wrappedBlockData;

@@ -2,7 +2,6 @@ package dev.wyck.v26_2.renderer.packet.handlers;
 
 import dev.wyck.annotations.WireFactory;
 import dev.wyck.misc.ChunkLocation;
-import dev.wyck.renderer.packet.PacketHandler;
 import dev.wyck.renderer.packet.VirtualBiomeResolver;
 import dev.wyck.renderer.packet.data.BlockReplacement;
 import dev.wyck.renderer.packet.data.SnapshotChunkData;
@@ -27,7 +26,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @NullMarked
 @WireFactory
@@ -35,56 +35,57 @@ import java.util.List;
 public final class NmsNativeChunkPacketHandler implements NativeChunkPacketHandler {
 
     @Override
-    public void modifyChunkBiomes(Object chunkDataObj, ChunkLocation chunkLocation, VirtualBiomeResolver resolver, PacketHandler.DimensionSectionCount dimensionSectionCount) {
+    public void modifyChunkBiomes(Object chunkDataObj, ChunkLocation chunkLocation, VirtualBiomeResolver resolver, int sectionCount) {
         ClientboundLevelChunkPacketData chunkData = (ClientboundLevelChunkPacketData) chunkDataObj;
 
-        LevelChunkSection[] sections = extractChunkSections(chunkData, dimensionSectionCount.getSectionCount());
+        LevelChunkSection[] sections = extractChunkSections(chunkData, sectionCount);
 
         SnapshotChunkData snapshot = new NmsSnapshotChunkData(chunkLocation, sections);
-        VirtualBiome phony = resolver.resolve(snapshot);
-        if (phony == null) {
-            return;
-        }
+        VirtualBiome[][][][] resolved = new VirtualBiome[sections.length][CHUNK_SECTIONS][CHUNK_SECTIONS][CHUNK_SECTIONS];
+        Map<dev.wyck.keys.ResourceKey, Holder<net.minecraft.world.level.biome.Biome>> biomeCache = new HashMap<>();
+        boolean modified = false;
 
-        org.bukkit.block.Biome bukkitBiome = phony.biome().bukkitBiome();
-        Holder<net.minecraft.world.level.biome.Biome> minecraftBiome =
-                CraftBiome.bukkitToMinecraftHolder(bukkitBiome);
-
-        if (minecraftBiome == null) {
-            throw new IllegalStateException("Failed to get Minecraft biome for " + bukkitBiome);
-        }
-
-        List<BlockReplacement> blockReplacements = phony.blockReplacements();
-
-        for (LevelChunkSection section : sections) {
+        for (int sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
+            LevelChunkSection section = sections[sectionIndex];
             for (int x = 0; x < CHUNK_SECTIONS; x++) {
                 for (int y = 0; y < CHUNK_SECTIONS; y++) {
                     for (int z = 0; z < CHUNK_SECTIONS; z++) {
-                        section.setNoiseBiome(x, y, z, minecraftBiome);
+                        VirtualBiome phony = resolver.resolve(snapshot, x, sectionIndex * CHUNK_SECTIONS + y, z);
+                        resolved[sectionIndex][x][y][z] = phony;
+                        if (phony == null) {
+                            continue;
+                        }
+                        section.setNoiseBiome(x, y, z, minecraftBiome(phony, biomeCache));
+                        modified = true;
                     }
                 }
-            }
-
-            if (blockReplacements.isEmpty()) {
-                continue;
             }
 
             for (int x = 0; x < CHUNK_SECTION_SIZE; x++) {
                 for (int y = 0; y < CHUNK_SECTION_SIZE; y++) {
                     for (int z = 0; z < CHUNK_SECTION_SIZE; z++) {
+                        VirtualBiome phony = resolved[sectionIndex][x >> 2][y >> 2][z >> 2];
+                        if (phony == null || phony.blockReplacements().isEmpty()) {
+                            continue;
+                        }
                         BlockState state = section.getBlockState(x, y, z);
                         Material asBukkitMaterial = state.getBukkitMaterial();
 
-                        for (BlockReplacement replacement : blockReplacements) {
+                        for (BlockReplacement replacement : phony.blockReplacements()) {
                             if (asBukkitMaterial != replacement.originalBlock()) continue;
                             BlockState newState = CraftMagicNumbers.getBlock(replacement.replacementBlock())
                                     .defaultBlockState();
                             section.setBlockState(x, y, z, newState);
+                            modified = true;
                             break;
                         }
                     }
                 }
             }
+        }
+
+        if (!modified) {
+            return;
         }
 
         byte[] modifiedData = serializeChunkSections(sections);
@@ -96,6 +97,23 @@ public final class NmsNativeChunkPacketHandler implements NativeChunkPacketHandl
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Failed to update chunk data", e);
         }
+    }
+
+    private Holder<net.minecraft.world.level.biome.Biome> minecraftBiome(
+        VirtualBiome phony,
+        Map<dev.wyck.keys.ResourceKey, Holder<net.minecraft.world.level.biome.Biome>> cache
+    ) {
+        Holder<net.minecraft.world.level.biome.Biome> cached = cache.get(phony.biomeResourceKey());
+        if (cached != null) {
+            return cached;
+        }
+        org.bukkit.block.Biome bukkitBiome = phony.biome().bukkitBiome();
+        Holder<net.minecraft.world.level.biome.Biome> minecraftBiome = CraftBiome.bukkitToMinecraftHolder(bukkitBiome);
+        if (minecraftBiome == null) {
+            throw new IllegalStateException("Failed to get Minecraft biome for " + bukkitBiome);
+        }
+        cache.put(phony.biomeResourceKey(), minecraftBiome);
+        return minecraftBiome;
     }
 
     private LevelChunkSection[] extractChunkSections(ClientboundLevelChunkPacketData chunkData, int sectionCount) {

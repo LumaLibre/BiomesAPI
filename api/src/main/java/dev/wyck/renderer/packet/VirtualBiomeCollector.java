@@ -6,6 +6,7 @@ import dev.wyck.keys.ResourceKey;
 import dev.wyck.misc.ChunkLocation;
 import dev.wyck.renderer.packet.data.SnapshotChunkData;
 import dev.wyck.renderer.packet.data.VirtualBiome;
+import dev.wyck.misc.BiomePosition;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -20,7 +21,7 @@ import java.util.function.BiPredicate;
 /**
  * A collector for managing PhonyCustomBiome instances.
  *
- * @version 2.2.0
+ * @version 3.3.0
  * @since 0.0.6
  * @author Jsinco
  */
@@ -111,8 +112,41 @@ public class VirtualBiomeCollector {
 
         return backing.stream()
                 .filter((VirtualBiome phony) -> phony.conditional().test(player, chunkLocation))
+                .filter((VirtualBiome phony) -> phony.positionCondition() == null)
                 .max(Comparator.comparingInt((VirtualBiome phony) -> phony.priority().getLevel()))
                 .orElse(null);
+    }
+
+    /**
+     * Picks the highest-priority virtual biome at the supplied block position without decoding
+     * chunk data. Biome-aware conditions are not evaluated on this path.
+     * @param player the player receiving the packet
+     * @param blockX the world block X
+     * @param blockY the world block Y
+     * @param blockZ the world block Z
+     * @return the matching virtual biome, or null if none match
+     * @since 3.3.0
+     */
+    @AsOf("3.3.0")
+    public @Nullable VirtualBiome bestBiomeFor(Player player, int blockX, int blockY, int blockZ) {
+        ChunkLocation location = ChunkLocation.fromBlockCoords(blockX, blockZ);
+        BiomePosition position = BiomePosition.fromBlock(
+            location, player.getWorld().getMinHeight() >> 2, blockX, blockY, blockZ
+        );
+        VirtualBiome best = null;
+        int bestLevel = Integer.MIN_VALUE;
+        for (VirtualBiome phony : spatialCandidates(player, location)) {
+            BiPredicate<Player, BiomePosition> condition = phony.positionCondition();
+            if (condition != null && !condition.test(player, position)) {
+                continue;
+            }
+            int level = phony.priority().getLevel();
+            if (level > bestLevel) {
+                bestLevel = level;
+                best = phony;
+            }
+        }
+        return best;
     }
 
     /**
@@ -145,7 +179,28 @@ public class VirtualBiomeCollector {
         if (candidates.isEmpty()) {
             return null;
         }
-        return snapshot -> bestMatching(candidates, player, snapshot);
+        int minQuartY = player.getWorld().getMinHeight() >> 2;
+        return new VirtualBiomeResolver() {
+            private @Nullable SnapshotChunkData preparedSnapshot;
+            private List<VirtualBiome> preparedCandidates = List.of();
+
+            @Override
+            public @Nullable VirtualBiome resolve(
+                SnapshotChunkData snapshot,
+                int localQuartX,
+                int localQuartY,
+                int localQuartZ
+            ) {
+                if (this.preparedSnapshot != snapshot) {
+                    this.preparedSnapshot = snapshot;
+                    this.preparedCandidates = biomeCandidates(candidates, player, snapshot);
+                }
+                BiomePosition position = BiomePosition.fromLocalQuart(
+                    chunkLocation, minQuartY, localQuartX, localQuartY, localQuartZ
+                );
+                return bestMatching(this.preparedCandidates, player, position);
+            }
+        };
     }
 
     private List<VirtualBiome> spatialCandidates(Player player, ChunkLocation chunkLocation) {
@@ -161,12 +216,31 @@ public class VirtualBiomeCollector {
         return candidates;
     }
 
-    private @Nullable VirtualBiome bestMatching(List<VirtualBiome> candidates, Player player, SnapshotChunkData snapshot) {
+    private List<VirtualBiome> biomeCandidates(
+        List<VirtualBiome> candidates,
+        Player player,
+        SnapshotChunkData snapshot
+    ) {
+        List<VirtualBiome> matches = new ArrayList<>();
+        for (VirtualBiome phony : candidates) {
+            BiPredicate<Player, SnapshotChunkData> condition = phony.biomeCondition();
+            if (condition == null || condition.test(player, snapshot)) {
+                matches.add(phony);
+            }
+        }
+        return matches;
+    }
+
+    private @Nullable VirtualBiome bestMatching(
+        List<VirtualBiome> candidates,
+        Player player,
+        BiomePosition position
+    ) {
         VirtualBiome best = null;
         int bestLevel = Integer.MIN_VALUE;
         for (VirtualBiome phony : candidates) {
-            BiPredicate<Player, SnapshotChunkData> biomeCondition = phony.biomeCondition();
-            if (biomeCondition != null && !biomeCondition.test(player, snapshot)) {
+            BiPredicate<Player, BiomePosition> positionCondition = phony.positionCondition();
+            if (positionCondition != null && !positionCondition.test(player, position)) {
                 continue;
             }
             int level = phony.priority().getLevel();
