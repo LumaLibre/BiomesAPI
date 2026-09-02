@@ -1,7 +1,6 @@
 package dev.wyck.level;
 
 import dev.wyck.annotations.AsOf;
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,7 +17,6 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 @AsOf("3.3.0")
-@ApiStatus.Experimental
 public enum LevelType {
 
     NORMAL("normal"),
